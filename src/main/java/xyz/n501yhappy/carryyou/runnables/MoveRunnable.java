@@ -1,0 +1,69 @@
+package xyz.n501yhappy.carryyou.runnables;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Shulker;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.utils.CarryManager;
+
+import java.util.UUID;
+
+public class MoveRunnable extends BukkitRunnable {
+    private static final double RANGE = 1.1;
+    
+    @Override
+    public void run() {
+        // 创建副本以避免并发修改异常
+        UUID[] targetUUIDs = CarryManager.mappingCarry.keySet().toArray(new UUID[0]);
+        
+        for (UUID targetUUID : targetUUIDs) {
+            Entity target = Bukkit.getEntity(targetUUID);
+            UUID carrierUUID = CarryManager.mappingCarry.get(targetUUID);
+            
+            if (carrierUUID == null)  continue;
+            Player carrier = (Player) Bukkit.getEntity(carrierUUID);
+            if (target == null || carrier == null) {
+                CarryManager.remove(carrierUUID,targetUUID);
+                continue;
+            }
+            if (!carrier.isOnline()) {
+                CarryManager.removeByTarget(targetUUID);
+                continue;
+            }
+            
+            Location targetLoc = target.getLocation();
+            Location loc = getCarryLoc(carrier);
+            loc.setYaw(targetLoc.getYaw());
+            loc.setPitch(targetLoc.getPitch());
+            if (target instanceof Shulker) target.teleport(loc);
+            else {
+                smoothMove(target, loc);
+            }
+        }
+    }
+    
+    private Location getCarryLoc(Player carrier) {
+        Location carryLoc = carrier.getLocation();
+        double radians = Math.toRadians(carryLoc.getYaw());
+        double nx = carryLoc.getX() - Math.sin(radians) * RANGE;
+        double ny = carryLoc.getY() + 1.2;
+        double nz = carryLoc.getZ() + Math.cos(radians) * RANGE;
+        return new Location(carryLoc.getWorld(), nx, ny, nz);
+    }
+    
+    private void smoothMove(Entity target, Location loc) {
+        Location targetLoc = target.getLocation();
+        Vector vector = loc.toVector().subtract(targetLoc.toVector());
+        
+        if (vector.length() <= 0.2) {
+            target.teleport(loc);
+            return;
+        }
+        
+        vector.normalize().multiply(0.35);
+        target.setVelocity(vector);
+    }
+}
