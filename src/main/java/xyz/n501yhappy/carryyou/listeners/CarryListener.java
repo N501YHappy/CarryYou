@@ -8,7 +8,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -20,11 +23,11 @@ public class CarryListener implements Listener {
     public void onCarry(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         //是不是抱别人了？
-        if (CarryManager.carryMapping.containsKey(player.getUniqueId())) {
-            Entity currentTarget = Bukkit.getEntity(CarryManager.carryMapping.get(player.getUniqueId()));
+        if (CarryManager.isCarrying(player.getUniqueId())) {
+            Entity currentTarget = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
             if (currentTarget != null) {
                 CarryManager.drop(currentTarget);
-                player.sendMessage("§aDropped " + currentTarget.getName());
+                event.setCancelled(true); // 取消交互事件，防止其他插件处理
             }
             return;
         }
@@ -36,12 +39,9 @@ public class CarryListener implements Listener {
 
 
         //不能抢别人的
-        if (CarryManager.mappingCarry.containsKey(target.getUniqueId())) return;
+        if (CarryManager.isCarried(target.getUniqueId())) return;
 
-        if (CarryManager.carry(player, target)) {
-            player.sendMessage("§aCarried " + target.getName());
-            event.setCancelled(true); // 取消交互事件，防止其他插件处理
-        }
+        if (CarryManager.carry(player, target)) event.setCancelled(true); // 取消交互事件，防止其他插件处理
     }
     private Entity getTargetEntity(Player player) {
         Location eyeLocation = player.getEyeLocation();
@@ -57,5 +57,34 @@ public class CarryListener implements Listener {
                 entity -> entity instanceof LivingEntity && !entity.equals(player)
         );
         return (result != null && result.getHitEntity() != null) ? result.getHitEntity() : null;
+    }
+    @EventHandler
+    public void onDrop(PlayerInteractEvent event){
+        Player player = event.getPlayer();
+        if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+        if (target != null) {
+            Vector playerVector = player.getEyeLocation().toVector();
+            Vector targetVector = target.getVelocity();
+            Vector dirt = targetVector.subtract(playerVector).normalize().multiply(0.5);
+            CarryManager.drop(target);
+            target.setVelocity(dirt);
+        }
+    }
+    @EventHandler
+    public void onAttack(EntityDamageByEntityEvent event){
+        if (!(event.getDamager() instanceof Player)) return;
+        Player player = (Player) event.getDamager();
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+        if (target != null) {
+            event.setCancelled(true);
+            Vector playerVector = player.getEyeLocation().toVector();
+            Vector targetVector = target.getVelocity();
+            Vector dirt = targetVector.subtract(playerVector).normalize().multiply(0.9);
+            CarryManager.drop(target);
+            target.setVelocity(dirt);
+        }
     }
 }

@@ -16,19 +16,21 @@ public class MoveRunnable extends BukkitRunnable {
     
     @Override
     public void run() {
-        // 创建副本以避免并发修改异常
-        UUID[] targetUUIDs = CarryManager.mappingCarry.keySet().toArray(new UUID[0]);
+        // 获取所有被抓实体的UUID
+        UUID[] targetUUIDs = CarryManager.getAllTargets();
         
         for (UUID targetUUID : targetUUIDs) {
             Entity target = Bukkit.getEntity(targetUUID);
-            UUID carrierUUID = CarryManager.mappingCarry.get(targetUUID);
+            UUID carrierUUID = CarryManager.getCarrierByTarget(targetUUID);
             
-            if (carrierUUID == null)  continue;
+            if (carrierUUID == null) continue;
             Player carrier = (Player) Bukkit.getEntity(carrierUUID);
+            
             if (target == null || carrier == null) {
-                CarryManager.remove(carrierUUID,targetUUID);
+                CarryManager.removeByTarget(targetUUID);
                 continue;
             }
+            
             if (!carrier.isOnline()) {
                 CarryManager.removeByTarget(targetUUID);
                 continue;
@@ -38,8 +40,10 @@ public class MoveRunnable extends BukkitRunnable {
             Location loc = getCarryLoc(carrier);
             loc.setYaw(targetLoc.getYaw());
             loc.setPitch(targetLoc.getPitch());
-            if (target instanceof Shulker) target.teleport(loc);
-            else {
+            
+            if (target instanceof Shulker) {
+                target.teleport(loc);
+            } else {
                 smoothMove(target, loc);
             }
         }
