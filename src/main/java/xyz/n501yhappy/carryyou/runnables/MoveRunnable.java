@@ -38,8 +38,8 @@ public class MoveRunnable extends BukkitRunnable {
             
             Location targetLoc = target.getLocation();
             Location loc = getCarryLoc(carrier);
-            loc.setYaw(targetLoc.getYaw());
-            loc.setPitch(targetLoc.getPitch());
+//            loc.setYaw(targetLoc.getYaw());
+//            loc.setPitch(targetLoc.getPitch());
             
             if (target instanceof Shulker) {
                 target.teleport(loc);
@@ -59,15 +59,6 @@ public class MoveRunnable extends BukkitRunnable {
     }
     
     private void smoothMove(Entity target, Location loc) {
-        Location targetLoc = target.getLocation();
-        Vector vector = loc.toVector().subtract(targetLoc.toVector());
-        
-        if (vector.length() <= 0.2) {
-            target.teleport(loc);
-            return;
-        }
-        
-        vector.normalize().multiply(0.35);
-        target.setVelocity(vector);
+        target.teleport(loc); //骗你的，这就是平滑
     }
 }

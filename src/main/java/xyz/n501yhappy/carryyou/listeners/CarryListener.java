@@ -22,6 +22,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onCarry(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
+        if (!player.isSneaking()) return;
         //是不是抱别人了？
         if (CarryManager.isCarrying(player.getUniqueId())) {
             Entity currentTarget = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
@@ -33,7 +34,7 @@ public class CarryListener implements Listener {
         }
         Entity target = getTargetEntity(player);
         if (target == null) return;
-        if (!player.isSneaking()) return;
+
         if (target.getUniqueId().equals(player.getUniqueId()))return;
         
 
@@ -65,9 +66,9 @@ public class CarryListener implements Listener {
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
         Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
         if (target != null) {
-            Vector playerVector = player.getEyeLocation().toVector();
+            Vector playerVector = player.getEyeLocation().getDirection();
             Vector targetVector = target.getVelocity();
-            Vector dirt = targetVector.subtract(playerVector).normalize().multiply(0.5);
+            Vector dirt = playerVector.subtract(targetVector).normalize().multiply(0.5);
             CarryManager.drop(target);
             target.setVelocity(dirt);
         }
@@ -80,9 +81,9 @@ public class CarryListener implements Listener {
         Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
         if (target != null) {
             event.setCancelled(true);
-            Vector playerVector = player.getEyeLocation().toVector();
+            Vector playerVector = player.getEyeLocation().getDirection();
             Vector targetVector = target.getVelocity();
-            Vector dirt = targetVector.subtract(playerVector).normalize().multiply(0.9);
+            Vector dirt = playerVector.subtract(targetVector).normalize().multiply(0.9);
             CarryManager.drop(target);
             target.setVelocity(dirt);
         }

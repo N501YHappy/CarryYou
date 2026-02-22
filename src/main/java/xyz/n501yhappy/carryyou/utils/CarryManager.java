@@ -20,7 +20,6 @@ public class CarryManager {
         
         put(carrierUUID, targetUUID);
         if (target instanceof Player) ((Player) target).setFlying(true);
-        target.setGravity(false);
         return true;
     }
     
@@ -30,7 +29,6 @@ public class CarryManager {
         
         removeByTarget(targetUUID);
         if (target instanceof Player) ((Player) target).setFlying(false);
-        target.setGravity(true);
         return true;
     }
     
@@ -92,12 +90,5 @@ public class CarryManager {
     // 获取所有抓取者的UUID
     public static UUID[] getAllCarriers() {
         return carryMapping.keySet().toArray(new UUID[0]);
-    }
-    
-    public static Boolean isCarrier(Player player){ //是抓人的
-        return carryMapping.containsKey(player.getUniqueId());
-    }
-    public static Boolean isCarried(Entity entity){ //是被抓的
-        return mappingCarry.containsKey(entity.getUniqueId());
     }
 }
