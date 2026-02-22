@@ -35,12 +35,9 @@ public class MoveRunnable extends BukkitRunnable {
                 CarryManager.removeByTarget(targetUUID);
                 continue;
             }
-            
-            Location targetLoc = target.getLocation();
+
             Location loc = getCarryLoc(carrier);
-//            loc.setYaw(targetLoc.getYaw());
-//            loc.setPitch(targetLoc.getPitch());
-            
+            loc.setYaw(carrier.getLocation().getYaw());
             if (target instanceof Shulker) {
                 target.teleport(loc);
             } else {

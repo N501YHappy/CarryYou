@@ -19,7 +19,10 @@ public class CarryManager {
         if (carryMapping.containsKey(carrierUUID)) return false;
         
         put(carrierUUID, targetUUID);
-        if (target instanceof Player) ((Player) target).setFlying(true);
+        if (target instanceof Player){
+            ((Player) target).sendMessage("Fly!!!");
+            ((Player) target).setFlying(true);
+        }
         return true;
     }
     
@@ -28,7 +31,10 @@ public class CarryManager {
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
         
         removeByTarget(targetUUID);
-        if (target instanceof Player) ((Player) target).setFlying(false);
+        if (target instanceof Player){
+            ((Player) target).sendMessage("NOFly!!!");
+            ((Player) target).setFlying(false);
+        }
         return true;
     }
     
