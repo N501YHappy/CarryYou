@@ -49,12 +49,12 @@ public class CarryListener implements Listener {
         Vector direction = eyeLocation.getDirection();
 
         RayTraceResult result = player.getWorld().rayTrace(
-                eyeLocation,           // 起点：玩家眼睛位置
-                direction,             // 方向：玩家视线方向
+                eyeLocation,
+                direction,
                 5,   // 最大距离
-                FluidCollisionMode.NEVER, // 忽略流体
-                true,                  // 忽略可通过的方块
-                0.1,              // 射线粗细
+                FluidCollisionMode.NEVER,
+                true,
+                0.1,
                 entity -> entity instanceof LivingEntity && !entity.equals(player)
         );
         return (result != null && result.getHitEntity() != null) ? result.getHitEntity() : null;

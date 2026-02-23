@@ -13,12 +13,13 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static xyz.n501yhappy.carryyou.ConfigLoader.PROGRESS_BAR_LENGTH;
 
 public class BreakRunnable extends BukkitRunnable {
-    private static Map<UUID, Integer> score = new HashMap<>();
-    private static Map<UUID, Long> lastActionTime = new HashMap<>(); // 记录最后一次操作的tick
+    private static Map<UUID, Integer> score = new ConcurrentHashMap<>();
+    private static Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
     private static final int TARGET_SCORE = 20;
     private static final int TIMEOUT_TIME = 2*1000;
 

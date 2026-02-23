@@ -7,10 +7,11 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CarryManager {
-    private static Map<UUID,UUID> carryMapping = new HashMap<>();
-    private static Map<UUID,UUID> mappingCarry = new HashMap<>(); //反向映射，从value找key
+    private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>();
+    private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
     
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
@@ -28,7 +29,7 @@ public class CarryManager {
     public static Boolean drop(Entity target) {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
-        
+        target.setFallDistance(0); //别玩死了(?)
         removeByTarget(targetUUID);
         if (target instanceof Player){
             ((Player) target).setAllowFlight(false);

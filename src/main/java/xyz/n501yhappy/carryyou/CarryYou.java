@@ -21,11 +21,14 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
 
+        int pluginId = 29710;
+        Metrics metrics = new Metrics(this, pluginId);
+
         moveRunnable = new MoveRunnable();
-        moveRunnable.runTaskTimer(this, 0L, 1L);
+        moveRunnable.runTaskTimer(this, 20L, 1L);
 
         breakRunnable = new BreakRunnable();
-        breakRunnable.runTaskTimer(this, 0L, 1L);
+        breakRunnable.runTaskTimer(this, 20L, 1L);
 
         instance = this;
         ConfigLoader.load();
