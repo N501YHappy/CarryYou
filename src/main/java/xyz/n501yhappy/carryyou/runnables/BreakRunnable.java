@@ -41,7 +41,7 @@ public class BreakRunnable extends BukkitRunnable {
             if (currentScore == null || lastTick == null) continue;
 
             //扣分！
-            currentScore -= koufen;
+            currentScore -= koufen * (currentScore != 0 ? 1 : 0); //三元运算符很好用你知道吗(bushi
             score.put(playerUUID,currentScore);
 
             //不想玩啦？
@@ -59,10 +59,8 @@ public class BreakRunnable extends BukkitRunnable {
             if (currentScore >= TARGET_SCORE) {
                 Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
                 if (carrier != null) {
+                    player.sendTitle("§7(§a♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥§7)","§e快速点击左键挣脱！", 0, 20, 10);
                     CarryManager.drop(player);
-                    if (carrier instanceof Player) {
-                        ((Player) carrier).sendMessage("§c" + player.getName() + " 挣脱了你的控制！");
-                    }
                 }
                 removePlayer(playerUUID);
             }
@@ -95,7 +93,7 @@ public class BreakRunnable extends BukkitRunnable {
             sb.append("♥");
         }
 
-        sb.append("§r");
+        sb.append("§c");
         for (int i = needed + 1; i <= PROGRESS_BAR_LENGTH; i++) {
             sb.append("♡");
         }

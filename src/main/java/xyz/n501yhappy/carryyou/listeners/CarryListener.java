@@ -71,6 +71,7 @@ public class CarryListener implements Listener {
             Vector dirt = playerVector.subtract(targetVector).normalize().multiply(0.5);
             CarryManager.drop(target);
             target.setVelocity(dirt);
+            event.setCancelled(true);
         }
     }
     @EventHandler
@@ -86,6 +87,22 @@ public class CarryListener implements Listener {
             Vector dirt = playerVector.subtract(targetVector).normalize().multiply(0.9);
             CarryManager.drop(target);
             target.setVelocity(dirt);
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onInteract(PlayerInteractEntityEvent event){
+        Player player = event.getPlayer();
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+        if (target != null) {
+            event.setCancelled(true);
+            Vector playerVector = player.getEyeLocation().getDirection();
+            Vector targetVector = target.getVelocity();
+            Vector dirt = playerVector.subtract(targetVector).normalize().multiply(0.9);
+            CarryManager.drop(target);
+            target.setVelocity(dirt);
+            event.setCancelled(true);
         }
     }
 }

@@ -20,8 +20,8 @@ public class CarryManager {
         
         put(carrierUUID, targetUUID);
         if (target instanceof Player){
-            ((Player) target).sendMessage("Fly!!!");
-            ((Player) target).setFlying(true);
+            target.sendMessage("Fly!!!");
+            ((Player) target).setAllowFlight(true);
         }
         return true;
     }
@@ -33,7 +33,7 @@ public class CarryManager {
         removeByTarget(targetUUID);
         if (target instanceof Player){
             ((Player) target).sendMessage("NOFly!!!");
-            ((Player) target).setFlying(false);
+            ((Player) target).setAllowFlight(false);
         }
         return true;
     }
