@@ -1,21 +1,26 @@
 package xyz.n501yhappy.carryyou.runnables;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import xyz.n501yhappy.carryyou.ConfigLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static xyz.n501yhappy.carryyou.ConfigLoader.PROGRESS_BAR_LENGTH;
+
 public class BreakRunnable extends BukkitRunnable {
     private static Map<UUID, Integer> score = new HashMap<>();
     private static Map<UUID, Long> lastActionTime = new HashMap<>(); // 记录最后一次操作的tick
     private static final int TARGET_SCORE = 20;
     private static final int TIMEOUT_TIME = 2*1000;
-    private static final int PROGRESS_BAR_LENGTH = 20;
 
     private static long lastSub = 0;//上一次扣分的时间  2ticks = 100ms
 
@@ -24,7 +29,7 @@ public class BreakRunnable extends BukkitRunnable {
         long currentTime = System.currentTimeMillis();
         UUID[] playerUUIDs = score.keySet().toArray(new UUID[0]);
         int koufen = 0; //对，扣分
-        if (currentTime - lastSub > 200) {
+        if (currentTime - lastSub > 1000/ ConfigLoader.NEEDED_CPS) {
             lastSub = currentTime;
             koufen = 1;
         }
@@ -59,7 +64,10 @@ public class BreakRunnable extends BukkitRunnable {
             if (currentScore >= TARGET_SCORE) {
                 Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
                 if (carrier != null) {
-                    player.sendTitle("§7(§a♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥§7)","§e快速点击左键挣脱！", 0, 20, 10);
+                    World world = player.getWorld();
+                    Location particleLocation = player.getLocation();
+                    world.spawnParticle(Particle.EXPLOSION_NORMAL, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
+                    world.spawnParticle(Particle.EXPLOSION_LARGE, particleLocation, 1);
                     CarryManager.drop(player);
                 }
                 removePlayer(playerUUID);
@@ -84,21 +92,13 @@ public class BreakRunnable extends BukkitRunnable {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("§7(");
+        sb.append(ConfigLoader.PROGRESS_BAR_LEFT);
 
         int needed = (int) (PROGRESS_BAR_LENGTH * ((double) score / total));
+        for (int i = 1; i <= needed; i++) sb.append(ConfigLoader.PROGRESS_BAR_FILLED);
+        for (int i = needed + 1; i <= PROGRESS_BAR_LENGTH; i++) sb.append(ConfigLoader.PROGRESS_BAR_EMPTY);
 
-        sb.append("§c");
-        for (int i = 1; i <= needed; i++) {
-            sb.append("♥");
-        }
-
-        sb.append("§c");
-        for (int i = needed + 1; i <= PROGRESS_BAR_LENGTH; i++) {
-            sb.append("♡");
-        }
-
-        sb.append("§7)");
+        sb.append(ConfigLoader.PROGRESS_BAR_RIGHT);
         return sb.toString();
     }
 }

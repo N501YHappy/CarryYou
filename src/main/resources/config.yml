@@ -1,0 +1,7 @@
+needed_cps: 6.0 #逃脱所需要的cps
+progress_bar:
+  length: 20
+  left: "&7["
+  right: "&7]"
+  empty: "&c♡"
+  filled: "&c♥"
