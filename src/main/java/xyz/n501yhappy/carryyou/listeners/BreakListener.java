@@ -22,8 +22,12 @@ public class BreakListener implements Listener {
         
         if (!CarryManager.isCarried(playerUUID)) return;
         event.setCancelled(true);
-        if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+        if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
             event.getPlayer().sendMessage("§c你现在处于虚弱状态！");
+            return;
+        }
+        if (player.hasPermission("carryyou.unbreak") && !player.isOp()) {
+            event.getPlayer().sendMessage("§c你现在不能挣脱哦...忍一会吧~");
             return;
         }
         BreakRunnable.addScore(playerUUID);

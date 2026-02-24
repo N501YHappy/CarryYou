@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.ConfigLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 public class CarryListener implements Listener {
@@ -23,6 +24,11 @@ public class CarryListener implements Listener {
     public void onCarry(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if (!player.isSneaking()) return;
+        if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()){
+            player.sendMessage("§c当前世界不允许你抱它...");
+            return;
+        }
+
         //是不是抱别人了？
         if (CarryManager.isCarrying(player.getUniqueId())) {
             Entity currentTarget = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
@@ -36,11 +42,22 @@ public class CarryListener implements Listener {
         if (target == null) return;
 
         if (target.getUniqueId().equals(player.getUniqueId()))return;
-        
-
 
         //不能抢别人的
         if (CarryManager.isCarried(target.getUniqueId())) return;
+        if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()){
+            player.sendMessage("§c你不能抱它！");
+            event.setCancelled(true); // 取消交互事件，防止其他插件处理
+            return;
+        }
+        if (target instanceof Player){
+            Player targetP = (Player) target;
+            if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()){
+                player.sendMessage("§c你不能抱它！");
+                event.setCancelled(true); // 取消交互事件，防止其他插件处理
+                return;
+            }
+        }
 
         if (CarryManager.carry(player, target)) event.setCancelled(true); // 取消交互事件，防止其他插件处理
     }

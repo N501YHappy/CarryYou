@@ -16,3 +16,10 @@ permissions:
   carryyou.reload:
     description: 允许重新加载插件配置
     default: op
+  carryyou.uncarried:
+    description: 抱不了！
+    default: false
+
+  carryyou.unbreak:
+    description: 跑不了！
+    default: false

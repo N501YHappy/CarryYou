@@ -1,3 +1,4 @@
+# config.yml
 
 # 逃脱所需要的CPS（每秒点击次数）
 # 默认值: 6.0 表示需要每秒点击6次才能挣脱
@@ -19,3 +20,8 @@ progress_bar:
 
   # 实心的心形（已完成部分）
   filled: "&c♥"
+deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
+  - "world_the_end"
+
+deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
+  - "ender_dragon"
