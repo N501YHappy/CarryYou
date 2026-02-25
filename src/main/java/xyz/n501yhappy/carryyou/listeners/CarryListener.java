@@ -1,6 +1,5 @@
 package xyz.n501yhappy.carryyou.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -16,7 +15,9 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.ConfigLoader;
+import xyz.n501yhappy.carryyou.DependsLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.utils.DependsChecker;
 
 public class CarryListener implements Listener {
     
@@ -31,6 +32,10 @@ public class CarryListener implements Listener {
         }
         if (!player.hasPermission("carryyou.can") && !player.isOp()){
             player.sendMessage("§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
+            return;
+        }
+        if (DependsLoader.worldguard_enabled && DependsChecker.worldguardCheck(player)){
+            player.sendMessage("§cguard告诉我这是别人的领地！你不可以这样！");
             return;
         }
         //是不是抱别人了？
@@ -123,4 +128,5 @@ public class CarryListener implements Listener {
             event.setCancelled(true);
         }
     }
+
 }

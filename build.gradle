@@ -15,11 +15,13 @@ repositories {
         name 'sonatype'
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
+    maven { url "https://maven.enginehub.org/repo/" }
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
-}
+    compileOnly ("com.sk89q.worldguard:worldguard-bukkit:7.0.0") //W! O! R! L! D! G! R! O! U! N! D!
+ }
 
 
 def targetJavaVersion = 8
