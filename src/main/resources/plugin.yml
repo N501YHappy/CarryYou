@@ -23,3 +23,6 @@ permissions:
   carryyou.unbreak:
     description: 跑不了！
     default: false
+  carryyou.can:
+    description: 可以抱别人
+    default: true

@@ -27,7 +27,7 @@
 2. **大力飞天**：左键/右键
 
 ## 预览图
-![cxk](./Preview/img.png)
+![cxk](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img.png)
 
 ### 挣脱机制 (注意，这并不是第五人格)
 如果你被其他玩家抓取，可以：
@@ -43,11 +43,12 @@
 | `/carryyou` | `/cy reload` | 重新加载插件配置 | `carryyou.reload` | OP |
 
 ### 权限节点
-| 权限节点               | 描述          | 默认   |
-|--------------------|-------------|------|
-| `carryyou.reload`  | 允许重新加载插件配置  | OP   |
+| 权限节点                 | 描述          | 默认   |
+|----------------------|-------------|------|
+| `carryyou.reload`    | 允许重新加载插件配置  | OP   |
 | `carryyou.uncarried` | 有这个权限的人抱不起来 | 谁都没有 |
-| `carryyou.unbreak` | 有这个的跑不掉     | 谁都没有 |
+| `carryyou.unbreak`   | 有这个的跑不掉     | 谁都没有 |
+| `carryyou.can`       | 有这个可以抱别人    | 人人有份 |
 
 ## 配置文件 (config.yml)
 
