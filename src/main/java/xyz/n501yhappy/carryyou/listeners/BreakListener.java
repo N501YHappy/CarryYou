@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffectType;
+import xyz.n501yhappy.carryyou.ConfigLoader;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
@@ -23,11 +24,11 @@ public class BreakListener implements Listener {
         if (!CarryManager.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
-            event.getPlayer().sendMessage("§c你现在处于虚弱状态！");
+            event.getPlayer().sendMessage(ConfigLoader.PREFIX + "§c你现在处于虚弱状态！");
             return;
         }
         if (player.hasPermission("carryyou.unbreak") && !player.isOp()) {
-            event.getPlayer().sendMessage("§c你现在不能挣脱哦...忍一会吧~");
+            event.getPlayer().sendMessage(ConfigLoader.PREFIX + "§c你现在不能挣脱哦...忍一会吧~");
             return;
         }
         BreakRunnable.addScore(playerUUID);

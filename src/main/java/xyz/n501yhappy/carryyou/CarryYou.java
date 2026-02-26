@@ -18,7 +18,11 @@ public final class CarryYou extends JavaPlugin {
 
     public static Plugin instance;
 
-
+    @Override
+    public void onLoad() {
+        instance = this;
+        loadWGDepends();
+    }
 
     @Override
     public void onEnable() {
@@ -34,12 +38,9 @@ public final class CarryYou extends JavaPlugin {
         breakRunnable = new BreakRunnable();
         breakRunnable.runTaskTimer(this, 20L, 1L);
 
-        instance = this;
         ConfigLoader.load();
 
         getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
-        DependsLoader.worldguard_enabled = CarryYou.instance.getServer().getPluginManager().getPlugin("WorldGuard") != null;
-        if (worldguard_enabled) loadWGDepends();
 
         getLogger().info("§aCarryYou Enabled！");
     }

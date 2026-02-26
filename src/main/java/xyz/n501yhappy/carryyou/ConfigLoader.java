@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public class ConfigLoader {
+    public static String PREFIX = "&7[&aCarry&bYou&7] ";
     public static double NEEDED_CPS = 6.0;
     public static String PROGRESS_BAR_LEFT = "§7[";
     public static String PROGRESS_BAR_RIGHT = "§7]";
@@ -23,6 +24,7 @@ public class ConfigLoader {
         CarryYou.instance.reloadConfig();
         FileConfiguration config = CarryYou.instance.getConfig();
 
+        PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
 
         if (config.contains("progress_bar")) {

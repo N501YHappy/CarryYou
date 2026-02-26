@@ -14,16 +14,16 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("carryyou.reload")) {
-            sender.sendMessage("§c你没有权限使用此命令！");
+            sender.sendMessage(ConfigLoader.PREFIX + "§c你没有权限使用此命令！");
             return true;
         }
         
         try {
             ConfigLoader.reload();
-            sender.sendMessage("§a配置文件已重新加载！");
+            sender.sendMessage(ConfigLoader.PREFIX + "§a配置文件已重新加载！");
             return true;
         } catch (Exception e) {
-            sender.sendMessage("§c重新加载配置文件时出错: " + e.getMessage());
+            sender.sendMessage(ConfigLoader.PREFIX + "§c重新加载配置文件时出错: " + e.getMessage());
             e.printStackTrace();
             return true;
         }

@@ -2,7 +2,7 @@ name: CarryYou
 version: '${version}'
 main: xyz.n501yhappy.carryyou.CarryYou
 api-version: '1.16'
-prefix: §7[§aCarry§bYou§7]
+prefix: §aCarry§bYou§r
 authors: [ N501YHappy ]
 description: 把生物拿在手上
 softdepend: [WorldGuard]

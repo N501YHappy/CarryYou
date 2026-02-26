@@ -27,15 +27,15 @@ public class CarryListener implements Listener {
         if (!player.isSneaking()) return;
         event.setCancelled(true); // 取消交互事件，防止其他插件处理
         if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()){
-            player.sendMessage("§c当前世界不允许你抱它...");
+            player.sendMessage(ConfigLoader.PREFIX + "§c当前世界不允许你抱它...");
             return;
         }
         if (!player.hasPermission("carryyou.can") && !player.isOp()){
-            player.sendMessage("§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
+            player.sendMessage(ConfigLoader.PREFIX + "§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
             return;
         }
-        if (DependsLoader.worldguard_enabled && DependsChecker.worldguardCheck(player)){
-            player.sendMessage("§cguard告诉我这是别人的领地！你不可以这样！");
+        if (DependsLoader.worldguard_enabled && !DependsChecker.worldguardCheck(player)){
+            player.sendMessage(ConfigLoader.PREFIX + "§c小guard告诉我这是别人的领地！你不可以这样！");
             return;
         }
         //是不是抱别人了？
@@ -54,13 +54,13 @@ public class CarryListener implements Listener {
         //不能抢别人的
         if (CarryManager.isCarried(target.getUniqueId())) return;
         if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()){
-            player.sendMessage("§c你不能抱它！");
+            player.sendMessage(ConfigLoader.PREFIX + "§c你不能抱它！");
             return;
         }
         if (target instanceof Player){
             Player targetP = (Player) target;
             if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()){
-                player.sendMessage("§c你不能抱它！");
+                player.sendMessage(ConfigLoader.PREFIX + "§c你不能抱它！");
                 return;
             }
         }
