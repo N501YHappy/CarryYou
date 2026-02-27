@@ -12,6 +12,7 @@
 3. 重启服务器或使用 `/reload` 命令
 4. 插件会自动生成配置文件
 
+[CarryYou.jar点击下载](https://www.minebbs.com/resources/carryyou.15388/download)
 
 ## 使用方法
 
@@ -28,6 +29,7 @@
 
 ## 预览图
 ![cxk](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img.png)
+![nya](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img2.png)
 
 ### 挣脱机制 (注意，这并不是第五人格)
 如果你被其他玩家抓取，可以：
