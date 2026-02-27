@@ -12,7 +12,7 @@
 3. 重启服务器或使用 `/reload` 命令
 4. 插件会自动生成配置文件
 
-[CarryYou.jar点击下载](https://www.minebbs.com/resources/carryyou.15388/download)
+[CarryYou.jar点击下载](https://pluginversion.n501yhappy.icu/carryyou/download)
 
 ## 使用方法
 
