@@ -50,6 +50,12 @@
 | `carryyou.unbreak`   | 有这个的跑不掉     | 谁都没有 |
 | `carryyou.can`       | 有这个可以抱别人    | 人人有份 |
 
+# 杂交
+## WorldGuard
+通过调用WorldGuard的API,注册Flag `carriable` 可设置领地内是否抓举
+## Residence
+通过调用Residence的API,注册Flag `carriable` 可设置领地内是否抓举
+
 ## 配置文件 (config.yml)
 
 插件首次运行时会自动生成配置文件。以下是默认配置和说明：
@@ -57,8 +63,12 @@
 ```yaml
 # config.yml
 
+# 插件提示前缀
+prefix: "&7[&aCarry&bYou&7] "
+
 # 逃脱所需要的CPS（每秒点击次数）
 # 默认值: 6.0 表示需要每秒点击6次才能挣脱
+
 needed_cps: 6.0
 
 # 进度条设置
@@ -91,7 +101,7 @@ deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
 - **Java版本**: 8+
 ## 贡献指南
 1. 遇到bug不要憋着不说！
-2. 有什么主意在issues说
+2. 有什么主意在issues说，或者通过邮件n501yhappy@outlook.com或者qq:3029340076
 ## 许可证
 
 ~~我都抄袭蛋仔派对了要什么许可证？~~

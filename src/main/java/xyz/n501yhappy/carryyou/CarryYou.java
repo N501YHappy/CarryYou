@@ -7,9 +7,9 @@ import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.MoveRunnable;
+import xyz.n501yhappy.carryyou.utils.DependsChecker;
 
-import static xyz.n501yhappy.carryyou.DependsLoader.loadWGDepends;
-import static xyz.n501yhappy.carryyou.DependsLoader.worldguard_enabled;
+import static xyz.n501yhappy.carryyou.DependsLoader.*;
 
 public final class CarryYou extends JavaPlugin {
     
@@ -26,6 +26,8 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        loadResDepends();
+        DependsChecker.init();
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);

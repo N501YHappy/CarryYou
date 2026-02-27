@@ -5,7 +5,7 @@ api-version: '1.16'
 prefix: §aCarry§bYou§r
 authors: [ N501YHappy ]
 description: 把生物拿在手上
-softdepend: [WorldGuard]
+softdepend: [WorldGuard,Residence]
 
 commands:
   carryyou:
