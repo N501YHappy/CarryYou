@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.ConfigLoader;
 import xyz.n501yhappy.carryyou.DependsLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
-import xyz.n501yhappy.carryyou.utils.DependsChecker;
+import xyz.n501yhappy.carryyou.utils.Checkers;
 
 public class CarryListener implements Listener {
     
@@ -46,11 +46,11 @@ public class CarryListener implements Listener {
             player.sendMessage(ConfigLoader.PREFIX + "§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
             return;
         }
-        if (DependsLoader.worldguard_enabled && !DependsChecker.worldguardCheck(player)){
+        if (DependsLoader.worldguard_enabled && !Checkers.worldguardCheck(player) && !player.isOp()){
             player.sendMessage(ConfigLoader.PREFIX + "§c小guard告诉我这是别人的领地！你不可以这样！");
             return;
         }
-        if (DependsLoader.residence_enabled && !DependsChecker.residenceCheck(player)){
+        if (DependsLoader.residence_enabled && !Checkers.residenceCheck(player) && !player.isOp()){
             player.sendMessage(ConfigLoader.PREFIX + "§cres管理员不让你这么做哦");
             return;
         }

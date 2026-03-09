@@ -1,32 +1,29 @@
 package xyz.n501yhappy.carryyou.utils;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extension.platform.Platform;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.DependsLoader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Vector;
 
-public class DependsChecker {
-    private static Class<?> WorldGuard;
-    private static Class<?> RegionContainer;
-    private static Class<?> BukkitAdapter;
-    private static Class<?> WG_World;
-    private static Class<?> BlockVector3;
-    private static Class<?> State;
-    private static Class<?> ProtectedRegion;
-    private static Class<?> Flag;
-
-    private static Method getInstance;
-
-    private static Class<?> residenceClass;
-    private static Class<?> claimedResidenceClass;
-    private static Class<?> residenceManagerClass;
-    private static Class<?> residencePermissionsClass;
-
-    private static Method residenceGetInstance;
-    private static Method getResidenceManager;
+public class Checkers {
 
     public static void init(){
         if (DependsLoader.worldguard_enabled){
@@ -64,57 +61,18 @@ public class DependsChecker {
         }
     }
     public static Boolean worldguardCheck(Player player) {
-        try {
-            Object worldguard =getInstance.invoke(null);
+        WorldGuard worldGuard = WorldGuard.getInstance();
+        WorldGuardPlatform platform = worldGuard.getPlatform();
+        RegionContainer container = platform.getRegionContainer();
+        RegionManager regions = container.get(BukkitAdapter.adapt(player.getWorld()));
 
-            Object platform = worldguard.getClass().getMethod("getPlatform").invoke(worldguard);
-
-            Object region_container = platform.getClass().getMethod("getRegionContainer").invoke(platform);
-
-            Object LocalWorld = BukkitAdapter
-                    .getMethod("adapt", org.bukkit.World.class)
-                    .invoke(null, player.getWorld());
-
-            Object RegionManager = RegionContainer.getMethod("get", WG_World)
-                    .invoke(region_container, LocalWorld);
-
-            if (RegionManager != null) {
-                Object playerLocation = player.getClass().getMethod("getLocation").invoke(player);
-                Object adaptResult = BukkitAdapter.getMethod("adapt", Location.class)
-                        .invoke(null, playerLocation);
-
-                Method toVectorMethod = adaptResult.getClass().getMethod("toVector");
-                Object vector = toVectorMethod.invoke(adaptResult);
-
-                Method toBlockPointMethod = vector.getClass().getMethod("toBlockPoint");
-                Object blockPoint = toBlockPointMethod.invoke(vector);
-
-                Method getApplicableRegionsMethod = RegionManager.getClass().getMethod("getApplicableRegions",
-                        BlockVector3);
-                Object applicableRegions = getApplicableRegionsMethod.invoke(RegionManager, blockPoint);
-                Iterable<?> regionsIterable = (Iterable<?>) applicableRegions;
-
-                Object flag = DependsLoader.FLAG_CARRIABLE;
-                if (flag == null) return true;
-                Field allowField = State.getField("ALLOW");
-                Object allowState = allowField.get(null);
-
-                Method getFlagMethod = ProtectedRegion.getMethod("getFlag", Flag);
-
-                for (Object region : regionsIterable) {
-                    Object sf = getFlagMethod.invoke(region, flag);
-                    if (sf == null) continue;
-                    if (!sf.equals(allowState)) return false;
-                }
-                return true;
-            }
-            return true;
-
-        } catch (NoSuchMethodException |
-                 InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-            return true;
+        if (regions != null) {
+            RegionQuery query = container.createQuery();
+            LocalPlayer WPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            return query.testState(BukkitAdapter.adapt(player.getLocation()), WPlayer, DependsLoader.FLAG_CARRIABLE) ||
+                    platform.getSessionManager().hasBypass(WPlayer,BukkitAdapter.adapt(player.getWorld()));
         }
+        return true;
     }
     public static boolean residenceCheck(Player player){
         if (!DependsLoader.residence_enabled) {
