@@ -8,10 +8,10 @@ import xyz.n501yhappy.carryyou.listeners.CarryListener;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.MoveRunnable;
 
-import static xyz.n501yhappy.carryyou.DependsLoader.*;
 
 public final class CarryYou extends JavaPlugin {
-    
+    public static Boolean worldguard_enabled = false;
+    public static Boolean residence_enabled = false;
     private MoveRunnable moveRunnable;
     private BreakRunnable breakRunnable;
 
@@ -20,12 +20,26 @@ public final class CarryYou extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-        loadWGDepends();
+        worldguard_enabled = true;
+        try {
+            Class.forName("com.sk89q.worldguard.WorldGuard");
+            DependsLoader.loadWGDepends();
+        } catch (ClassNotFoundException e) {
+            worldguard_enabled = false;
+        }
     }
 
     @Override
     public void onEnable() {
-        loadResDepends();
+        //Load residence
+        residence_enabled = true;
+        try {
+            Class.forName("com.bekvon.bukkit.residence.Residence");
+            DependsLoader.loadResDepends();
+        } catch (ClassNotFoundException e) {
+            residence_enabled = false;
+        }
+        //Loaded
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);

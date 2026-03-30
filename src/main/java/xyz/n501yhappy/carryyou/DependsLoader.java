@@ -7,15 +7,14 @@ import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 
+import static xyz.n501yhappy.carryyou.CarryYou.worldguard_enabled;
+import static xyz.n501yhappy.carryyou.CarryYou.residence_enabled;
+
 public class DependsLoader { //这里用来加载依赖的一些小东西
-    public static Boolean worldguard_enabled;
-    public static Boolean residence_enabled = false;
 
     public static StateFlag FLAG_CARRIABLE; // 我自己的旗帜！
     public static void loadWGDepends(){
-        worldguard_enabled = CarryYou.instance.getServer().getPluginManager().getPlugin("WorldGuard").isEnabled();
         if (!worldguard_enabled) return;
-
         try {
             CarryYou.instance.getLogger().info("§a看到了！看到小Guard了！我要去找她玩了！");
             FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
@@ -40,7 +39,7 @@ public class DependsLoader { //这里用来加载依赖的一些小东西
             CarryYou.instance.getLogger().warning("§c小guard哈气了！她打我了: " + e.getMessage());
             worldguard_enabled = false; // 和guard绝交了QAQ
             e.printStackTrace();
-        } catch (ClassNotFoundException)
+        }
     }
 
     public static void loadResDepends(){
