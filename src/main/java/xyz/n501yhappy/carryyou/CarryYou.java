@@ -7,7 +7,6 @@ import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.MoveRunnable;
-import xyz.n501yhappy.carryyou.utils.Checkers;
 
 import static xyz.n501yhappy.carryyou.DependsLoader.*;
 
