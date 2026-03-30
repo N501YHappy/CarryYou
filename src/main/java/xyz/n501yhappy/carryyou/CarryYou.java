@@ -27,7 +27,6 @@ public final class CarryYou extends JavaPlugin {
     @Override
     public void onEnable() {
         loadResDepends();
-        Checkers.init();
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);

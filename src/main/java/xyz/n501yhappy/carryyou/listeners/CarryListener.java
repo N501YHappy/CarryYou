@@ -46,11 +46,11 @@ public class CarryListener implements Listener {
             player.sendMessage(ConfigLoader.PREFIX + "§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
             return;
         }
-        if (DependsLoader.worldguard_enabled && !Checkers.worldguardCheck(player) && !player.isOp()){
+        if (DependsLoader.worldguard_enabled && !Checkers.worldguard_check(player) && !player.isOp()){
             player.sendMessage(ConfigLoader.PREFIX + "§c小guard告诉我这是别人的领地！你不可以这样！");
             return;
         }
-        if (DependsLoader.residence_enabled && !Checkers.residenceCheck(player) && !player.isOp()){
+        if (DependsLoader.residence_enabled && !Checkers.residence_check(player) && !player.isOp()){
             player.sendMessage(ConfigLoader.PREFIX + "§cres管理员不让你这么做哦");
             return;
         }
