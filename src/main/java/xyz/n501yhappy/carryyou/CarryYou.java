@@ -26,6 +26,7 @@ public final class CarryYou extends JavaPlugin {
             DependsLoader.loadWGDepends();
         } catch (ClassNotFoundException e) {
             worldguard_enabled = false;
+            //Worldgurad未安装
         }
     }
 
@@ -38,6 +39,7 @@ public final class CarryYou extends JavaPlugin {
             DependsLoader.loadResDepends();
         } catch (ClassNotFoundException e) {
             residence_enabled = false;
+            //Residence未安装
         }
         //Loaded
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
