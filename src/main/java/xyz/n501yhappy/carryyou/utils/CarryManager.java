@@ -1,17 +1,21 @@
 package xyz.n501yhappy.carryyou.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CarryManager {
-    private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>();
+    private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
     private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
+
+    private static Map<UUID,UUID> armorMapping = new ConcurrentHashMap<>(); //Target -> Armor stand
+    private static Map<UUID,UUID> mappingArmor = new ConcurrentHashMap<>(); //反向映射，从value找key
     
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
@@ -23,6 +27,7 @@ public class CarryManager {
         if (target instanceof Player){
             ((Player) target).setAllowFlight(true);
         }
+        spawnArmorStand(carrierUUID, targetUUID);
         return true;
     }
     
@@ -30,16 +35,32 @@ public class CarryManager {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
         target.setFallDistance(0); //别玩死了(?)
+        removeArmorStandByTarget(targetUUID);
         removeByTarget(targetUUID);
         if (target instanceof Player){
             ((Player) target).setAllowFlight(false);
         }
         return true;
     }
-    
+
+    private static UUID spawnArmorStand(UUID carrierUUID, UUID targetUUID){
+        Entity carrier = Bukkit.getEntity(carrierUUID);
+        Entity target = Bukkit.getEntity(targetUUID);
+        Location loc = carrier.getLocation();
+        ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
+        UUID armorUUID = armorStand.getUniqueId();
+        Armorput(targetUUID, armorUUID);
+        return armorUUID;
+    }
+
     public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
         carryMapping.put(carrierUUID, targetUUID);
         mappingCarry.put(targetUUID, carrierUUID);
+    }
+
+    public static void Armorput(UUID targetUUID, UUID armorUUID) { //保证原子性直接拿函数
+        armorMapping.put(targetUUID, armorUUID);
+        mappingArmor.put(armorUUID, targetUUID);
     }
     
     public static void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
@@ -54,7 +75,44 @@ public class CarryManager {
             mappingCarry.remove(targetUUID);
         }
     }
-    
+
+    // ArmorStand的一些东西
+    public static void removeArmorStandByTarget(UUID targetUUID) { //根据target删除
+        UUID armorUUID = armorMapping.remove(targetUUID);
+        if (armorUUID != null) {
+            mappingArmor.remove(armorUUID);
+            ArmorStand as = (ArmorStand) Bukkit.getEntity(armorUUID);
+            if (as != null) {
+                as.remove();
+            }
+        }
+    }
+    public static void removeArmorStandByArmorStand(UUID armorUUID) {
+        UUID targetUUID = mappingArmor.remove(armorUUID);
+        if (targetUUID != null) {
+            armorMapping.remove(targetUUID);
+            ArmorStand as = (ArmorStand) Bukkit.getEntity(armorUUID);
+            if (as != null) {
+                as.remove();
+            }
+        }
+    }
+
+    //target get ArmorStand
+    public static ArmorStand getArmorStandByTarget(UUID targetUUID) {
+        UUID armorUUID = armorMapping.get(targetUUID);
+        return armorUUID != null ? (ArmorStand) Bukkit.getEntity(armorUUID) : null;
+    }
+
+    // 通过 ArmorStand 获取 target UUID
+    public static UUID getTargetByArmorStand(UUID armorUUID) {
+        return mappingArmor.get(armorUUID);
+    }
+
+    // 检查 target 是否有对应的 ArmorStand
+    public static boolean hasArmorStand(UUID targetUUID) {
+        return armorMapping.containsKey(targetUUID);
+    }
 
     public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
         return carryMapping.get(carrierUUID);

@@ -2,11 +2,13 @@ package xyz.n501yhappy.carryyou.runnables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.UUID;
@@ -30,6 +32,7 @@ public class MoveRunnable extends BukkitRunnable {
                 CarryManager.removeByTarget(targetUUID);
                 continue;
             }
+
             
             if (!carrier.isOnline()) {
                 CarryManager.removeByTarget(targetUUID);
@@ -38,11 +41,8 @@ public class MoveRunnable extends BukkitRunnable {
 
             Location loc = getCarryLoc(carrier);
             loc.setYaw(carrier.getLocation().getYaw());
-            if (target instanceof Shulker) {
-                target.teleport(loc);
-            } else {
-                smoothMove(target, loc);
-            }
+            ArmorStand armorStand = CarryManager.getArmorStandByTarget(targetUUID);
+            //TODO Teleport armorstand -> loc
         }
     }
     
@@ -53,9 +53,5 @@ public class MoveRunnable extends BukkitRunnable {
         double ny = carryLoc.getY() + 1.2;
         double nz = carryLoc.getZ() + Math.cos(radians) * RANGE;
         return new Location(carryLoc.getWorld(), nx, ny, nz);
-    }
-    
-    private void smoothMove(Entity target, Location loc) {
-        target.teleport(loc); //骗你的，这就是平滑
     }
 }
