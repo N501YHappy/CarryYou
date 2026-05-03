@@ -24,7 +24,6 @@ public class Versions {
      */
     private static void load(String nmsVersion) throws Throwable {
         String pkg = Versions.class.getPackage().getName() + "." + nmsVersion;
-        //nms.impl.
         nmsItemAdapter = newInstance(pkg, "ItemAdapterImpl");
     }
 

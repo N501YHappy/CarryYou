@@ -3,13 +3,18 @@ plugins {
 }
 
 group = "xyz.n501yhappy"
-version = "1.2"
+version = "2.0"
 
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://mirrors.huaweicloud.com/repository/maven")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://oss.sonatype.org/content/groups/public/")
 }
 
 dependencies {

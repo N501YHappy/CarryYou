@@ -2,7 +2,7 @@ plugins{
     java
 }
 val targetJavaVersion = 17
-val source = repositories.RoseWoodDev
+val source = _repositories.RoseWoodDev
 val sharedSpigotAPI = "1.21"
 subprojects{
     apply(plugin = "java")

@@ -4,9 +4,8 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 import org.gradle.kotlin.dsl.withType
-object repositories{
+object _repositories{
     class Sources(
         val repository: String,
         val dependency: (String) -> String
@@ -16,9 +15,9 @@ object repositories{
         dependency = { zako -> "org.spigotmc:spigot:$zako" }
     )
 }
-fun DependencyHandler.loadNMS(mcversion : String,source:repositories.Sources){
+fun DependencyHandler.loadNMS(mcversion : String){
     add("compileOnly", "org.spigotmc:spigot-api:$mcversion-R0.1-SNAPSHOT")
-    add("compileOnly", source.dependency(mcversion))
+    add("compileOnly", _repositories.RoseWoodDev.dependency(mcversion))
 }
 fun Project.loadJava(javaVersion: Int) {
     val ver = JavaVersion.toVersion(javaVersion)
