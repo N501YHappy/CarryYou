@@ -1,6 +1,5 @@
 package xyz.n501yhappy.carryyou;
 
-import nms.impl.Version;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.listeners.BreakListener;
@@ -20,9 +19,7 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        if(!Version.init(getLogger())){
-            getLogger().warning("唔...NMS加载失败了！出了点小问题但是不影响哦");
-        }
+        if(!nms.impl.Version.init(getLogger())) getLogger().warning("唔...NMS加载失败了！出了点小问题但是不影响哦");
         instance = this;
         worldguard_enabled = true;
         try {
@@ -50,7 +47,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
 
-        Metrics metrics = new Metrics(this, 29710);
+        new Metrics(this, 29710);
 
         moveRunnable = new MoveRunnable();
         moveRunnable.runTaskTimer(this, 20L, 1L);

@@ -1,6 +1,4 @@
 package xyz.n501yhappy.carryyou.runnables;
-
-import nms.impl.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -8,9 +6,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
+import nms.impl.Version;
 
 import java.util.UUID;
 
@@ -21,7 +18,6 @@ public class MoveRunnable extends BukkitRunnable {
     public void run() {
         // 获取所有被抓实体的UUID
         UUID[] targetUUIDs = CarryManager.getAllTargets();
-
         for (UUID targetUUID : targetUUIDs) {
             Entity target = Bukkit.getEntity(targetUUID);
             UUID carrierUUID = CarryManager.getCarrierByTarget(targetUUID);
