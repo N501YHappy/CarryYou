@@ -1,5 +1,6 @@
 package xyz.n501yhappy.carryyou.runnables;
 
+import nms.impl.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -15,25 +16,25 @@ import java.util.UUID;
 
 public class MoveRunnable extends BukkitRunnable {
     private static final double RANGE = 1.1;
-    
+
     @Override
     public void run() {
         // 获取所有被抓实体的UUID
         UUID[] targetUUIDs = CarryManager.getAllTargets();
-        
+
         for (UUID targetUUID : targetUUIDs) {
             Entity target = Bukkit.getEntity(targetUUID);
             UUID carrierUUID = CarryManager.getCarrierByTarget(targetUUID);
-            
+
             if (carrierUUID == null) continue;
             Player carrier = (Player) Bukkit.getEntity(carrierUUID);
-            
+
             if (target == null || carrier == null) {
                 CarryManager.removeByTarget(targetUUID);
                 continue;
             }
 
-            
+
             if (!carrier.isOnline()) {
                 CarryManager.removeByTarget(targetUUID);
                 continue;
@@ -43,9 +44,10 @@ public class MoveRunnable extends BukkitRunnable {
             loc.setYaw(carrier.getLocation().getYaw());
             ArmorStand armorStand = CarryManager.getArmorStandByTarget(targetUUID);
             //TODO Teleport armorstand -> loc
+            Version.getTeleport().teleport(armorStand, loc.getX(), loc.getY(), loc.getZ());
         }
     }
-    
+
     private Location getCarryLoc(Player carrier) {
         Location carryLoc = carrier.getLocation();
         double radians = Math.toRadians(carryLoc.getYaw());

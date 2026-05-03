@@ -2,61 +2,46 @@ package nms.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
+import org.bukkit.plugin.PluginLogger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class Versions {
+public class Version {
+    private static TeleportImpl nmsTeleport;
 
-    // ============ 模板使用者 编辑引导区 ================
-
-    private static ItemAdapter nmsItemAdapter;
-    public static ItemAdapter getItemAdapter() {
-        return nmsItemAdapter;
+    public static TeleportImpl getTeleport() {
+        return nmsTeleport;
     }
 
-    /**
-     * 根据 NMS 版本，反射读取各个实现类
-     */
-    private static void load(String nmsVersion) throws Throwable {
-        String pkg = Versions.class.getPackage().getName() + "." + nmsVersion;
-        nmsItemAdapter = newInstance(pkg, "ItemAdapterImpl");
-    }
-
-    // ================================================
-
-    private static boolean loaded = false;
-    // 1.20+ paper remapping org.bukkit.craftbukkit.v1_xx_Rx
-    private static final Map<String, String> VERSION_TO_REVISION = new HashMap<String, String>() {{
-        put("1.20", "v1_20_R1");
-        put("1.20.1", "v1_20_R1");
-        put("1.20.2", "v1_20_R2");
-        put("1.20.3", "v1_20_R3");
-        put("1.20.4", "v1_20_R3");
-        put("1.20.5", "v1_20_R4");
-        put("1.20.6", "v1_20_R4");
-        put("1.21", "v1_21_R1");
-        put("1.21.1", "v1_21_R1");
-        put("1.21.2", "v1_21_R2");
-        put("1.21.3", "v1_21_R2");
-        put("1.21.4", "v1_21_R3");
-        put("1.21.5", "v1_21_R4");
-        put("1.21.6", "v1_21_R5");
-        put("1.21.7", "v1_21_R5");
-        put("1.21.8", "v1_21_R5");
-        put("1.21.9", "v1_21_R6");
-        put("1.21.10", "v1_21_R6");
-        put("1.21.11", "v1_21_R7");
-    }};
-
-    public static boolean isLoaded() {
-        return loaded;
-    }
-
+    private static Boolean loaded = false;
+    private static final Map<String, String> VERSION_TO_REVISION = new HashMap<String, String>() {
+        {
+            this.put("1.20", "MC1_20_R1");
+            this.put("1.20.1", "MC1_20_R1");
+            this.put("1.20.2", "MC1_20_R2");
+            this.put("1.20.3", "MC1_20_R3");
+            this.put("1.20.4", "MC1_20_R3");
+            this.put("1.20.5", "MC1_20_R4");
+            this.put("1.20.6", "MC1_20_R4");
+            this.put("1.21", "MC1_21_R1");
+            this.put("1.21.1", "MC1_21_R1");
+            this.put("1.21.2", "MC1_21_R2");
+            this.put("1.21.3", "MC1_21_R2");
+            this.put("1.21.4", "MC1_21_R3");
+            this.put("1.21.5", "MC1_21_R4");
+            this.put("1.21.6", "MC1_21_R5");
+            this.put("1.21.7", "MC1_21_R5");
+            this.put("1.21.8", "MC1_21_R5");
+            this.put("1.21.9", "MC1_21_R6");
+            this.put("1.21.10", "MC1_21_R6");
+            this.put("1.21.11", "MC1_21_R7");
+            this.put("26.1", "MC26_1");
+        }
+    };
     @SuppressWarnings("UnusedReturnValue")
     public static boolean init(Logger logger) {
         if (loaded) return true;
@@ -109,12 +94,8 @@ public class Versions {
     private static <T> T newInstance(Class<?> type) throws ReflectiveOperationException {
         return (T) type.getDeclaredConstructor().newInstance();
     }
-
-    public static int getInt(Field field, Object obj) {
-        try {
-            return field.getInt(obj);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+    private static void load(String nmsVersion) throws Throwable {
+        String pkg = Version.class.getPackage().getName() + "." + nmsVersion;
+        nmsTeleport = newInstance(pkg, "TeleportImpl");
     }
 }

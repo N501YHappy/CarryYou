@@ -21,8 +21,10 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly ("com.sk89q.worldguard:worldguard-bukkit:7.0.0") //W! O! R! L! D! G! R! O! U! N! D!
     compileOnly (files("./libs/Residence6.0.1.6.jar"))
+
+    compileOnly(project(":nms:shared"))
 }
-val targetJavaVersion = 8
+val targetJavaVersion = 17
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
