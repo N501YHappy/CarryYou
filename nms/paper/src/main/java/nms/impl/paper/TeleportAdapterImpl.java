@@ -1,4 +1,4 @@
-package nms.impl;
+package nms.impl.paper;
 public class TeleportAdapterImpl {
     
 }

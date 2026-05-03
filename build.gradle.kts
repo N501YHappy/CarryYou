@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.register
+
 plugins {
     java
     id("com.gradleup.shadow") version "9.4.1"
@@ -25,7 +27,7 @@ dependencies {
     compileOnly (files("./libs/Residence6.0.1.6.jar"))
     for (nms in project.project(":nms").subprojects) {
         if (nms.name == "shared") implementation(nms)
-        else add("shadowLink", nms)
+        add("shadowLink", nms)
     }
 }
 val targetJavaVersion = 17
@@ -43,16 +45,6 @@ tasks {
         configurations.add(project.configurations.getByName("shadowLink"))
         relocate("nms.impl", "xyz.n501yhappy.carryyou.nms")
     }
-    val copyTask = create<Copy>("copyBuildArtifact") {
-        dependsOn(shadowJar)
-        from(shadowJar.get().outputs)
-        rename { "${project.name}-$version.jar" }
-        into(rootProject.file("nya"))
-    }
-    build {
-        dependsOn(copyTask)
-    }
-
     withType<JavaCompile>().configureEach {
         options?.encoding = "UTF-8"
 
