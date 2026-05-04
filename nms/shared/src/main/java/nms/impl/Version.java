@@ -20,39 +20,39 @@ public class Version {
     private static Boolean loaded = false;
     private static final Map<String, String> VERSION_TO_REVISION = new HashMap<String, String>() {
         {
-            this.put("1.20", "MC1_20_R1");
-            this.put("1.20.1", "MC1_20_R1");
-            this.put("1.20.2", "MC1_20_R2");
-            this.put("1.20.3", "MC1_20_R3");
-            this.put("1.20.4", "MC1_20_R3");
-            this.put("1.20.5", "MC1_20_R4");
-            this.put("1.20.6", "MC1_20_R4");
-            this.put("1.21", "MC1_21_R1");
-            this.put("1.21.1", "MC1_21_R1");
-            this.put("1.21.2", "MC1_21_R2");
-            this.put("1.21.3", "MC1_21_R2");
-            this.put("1.21.4", "MC1_21_R3");
-            this.put("1.21.5", "MC1_21_R4");
-            this.put("1.21.6", "MC1_21_R5");
-            this.put("1.21.7", "MC1_21_R5");
-            this.put("1.21.8", "MC1_21_R5");
-            this.put("1.21.9", "MC1_21_R6");
-            this.put("1.21.10", "MC1_21_R6");
-            this.put("1.21.11", "MC1_21_R7");
-            this.put("26.1", "MC26_1");
+            this.put("1.20", "v1_20_R1");
+            this.put("1.20.1", "v1_20_R1");
+            this.put("1.20.2", "v1_20_R2");
+            this.put("1.20.3", "v1_20_R3");
+            this.put("1.20.4", "v1_20_R3");
+            this.put("1.20.5", "v1_20_R4");
+            this.put("1.20.6", "v1_20_R4");
+            this.put("1.21", "v1_21_R1");
+            this.put("1.21.1", "v1_21_R1");
+            this.put("1.21.2", "v1_21_R2");
+            this.put("1.21.3", "v1_21_R2");
+            this.put("1.21.4", "v1_21_R3");
+            this.put("1.21.5", "v1_21_R4");
+            this.put("1.21.6", "v1_21_R5");
+            this.put("1.21.7", "v1_21_R5");
+            this.put("1.21.8", "v1_21_R5");
+            this.put("1.21.9", "v1_21_R6");
+            this.put("1.21.10", "v1_21_R6");
+            this.put("1.21.11", "v1_21_R7");
+            this.put("26.1", "v26_1");
         }
     };
     @SuppressWarnings("UnusedReturnValue")
     public static boolean init(Logger logger) {
         if (loaded) return true;
         String nmsVersion = null;
-        try {
-            // noinspection JavaReflectionMemberAccess
-            Item.class.getDeclaredMethod("getHealth");
-            nmsVersion = "paper";
-            logger.info("Found Minecraft: " + nmsVersion + "! Trying to find NMS support");
-        } catch (ReflectiveOperationException ignored) {
-        }
+//        try {
+//            // noinspection JavaReflectionMemberAccess
+//            Item.class.getDeclaredMethod("getHealth");
+//            nmsVersion = "paper";
+//            logger.info("Found Minecraft: " + nmsVersion + "! Trying to find NMS support");
+//        } catch (ReflectiveOperationException ignored) {
+//        }
         if (nmsVersion == null) {
             // Thanks https://github.com/tr7zw/Item-NBT-API - MIT License
             try {
@@ -69,7 +69,7 @@ public class Version {
             }
         }
         try {
-            load(nmsVersion);
+            load(nmsVersion,logger);
             loaded = true;
             logger.info("NMS support '" + nmsVersion + "' loaded!");
         } catch (Throwable t) {
@@ -94,8 +94,9 @@ public class Version {
     private static <T> T newInstance(Class<?> type) throws ReflectiveOperationException {
         return (T) type.getDeclaredConstructor().newInstance();
     }
-    private static void load(String nmsVersion) throws Throwable {
+    private static void load(String nmsVersion,Logger logger) throws Throwable {
         String pkg = Version.class.getPackage().getName() + "." + nmsVersion;
-        nmsTeleport = newInstance(pkg, "TeleportImpl");
+        logger.info(pkg);
+        nmsTeleport = newInstance(pkg, "TeleportAdapterImpl");
     }
 }

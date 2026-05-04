@@ -40,7 +40,7 @@ public class MoveRunnable extends BukkitRunnable {
             loc.setYaw(carrier.getLocation().getYaw());
             ArmorStand armorStand = CarryManager.getArmorStandByTarget(targetUUID);
             //TODO Teleport armorstand -> loc
-            Version.getTeleport().teleport(armorStand, loc.getX(), loc.getY(), loc.getZ());
+            Version.getTeleport().teleport(armorStand, loc);
         }
     }
 

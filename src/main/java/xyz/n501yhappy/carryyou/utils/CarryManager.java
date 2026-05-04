@@ -49,6 +49,7 @@ public class CarryManager {
         Location loc = carrier.getLocation();
         ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
         UUID armorUUID = armorStand.getUniqueId();
+        armorStand.addPassenger(target);
         Armorput(targetUUID, armorUUID);
         return armorUUID;
     }
