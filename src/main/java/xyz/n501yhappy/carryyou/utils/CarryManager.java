@@ -27,7 +27,7 @@ public class CarryManager {
         if (target instanceof Player){
             ((Player) target).setAllowFlight(true);
         }
-        spawnArmorStand(carrierUUID, targetUUID);
+        spawnArmor(carrierUUID, targetUUID);
         return true;
     }
     
@@ -43,14 +43,24 @@ public class CarryManager {
         return true;
     }
 
-    private static UUID spawnArmorStand(UUID carrierUUID, UUID targetUUID){
+    private static UUID spawnArmor(UUID carrierUUID, UUID targetUUID){
         Entity carrier = Bukkit.getEntity(carrierUUID);
         Entity target = Bukkit.getEntity(targetUUID);
         Location loc = carrier.getLocation();
         ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
+        //config
+        armorStand.setGravity(false);
+        armorStand.setArms(false);
+        armorStand.setBasePlate(false);
+        armorStand.setSmall(true);
+        armorStand.setMarker(true);
+        armorStand.setVisible(false);
+        armorStand.setCustomName("Chihaya Anon");
+        armorStand.setCustomNameVisible(false);
+        //
         UUID armorUUID = armorStand.getUniqueId();
         armorStand.addPassenger(target);
-        Armorput(targetUUID, armorUUID);
+        armor_put(targetUUID, armorUUID);
         return armorUUID;
     }
 
@@ -59,7 +69,7 @@ public class CarryManager {
         mappingCarry.put(targetUUID, carrierUUID);
     }
 
-    public static void Armorput(UUID targetUUID, UUID armorUUID) { //保证原子性直接拿函数
+    public static void armor_put(UUID targetUUID, UUID armorUUID) { //保证原子性直接拿函数
         armorMapping.put(targetUUID, armorUUID);
         mappingArmor.put(armorUUID, targetUUID);
     }

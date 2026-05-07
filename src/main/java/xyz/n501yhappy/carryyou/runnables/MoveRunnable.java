@@ -48,7 +48,7 @@ public class MoveRunnable extends BukkitRunnable {
         Location carryLoc = carrier.getLocation();
         double radians = Math.toRadians(carryLoc.getYaw());
         double nx = carryLoc.getX() - Math.sin(radians) * RANGE;
-        double ny = carryLoc.getY() + 1.2;
+        double ny = carryLoc.getY() + 1.2 ;
         double nz = carryLoc.getZ() + Math.cos(radians) * RANGE;
         return new Location(carryLoc.getWorld(), nx, ny, nz);
     }

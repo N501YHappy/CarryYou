@@ -1,13 +1,26 @@
 package nms.impl.v1_21_R3;
 
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Set;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
     public void teleport(LivingEntity entity, Location loc) {
         CraftEntity _entity = (CraftEntity) entity;
-        _entity.getHandle().b(loc.getX(),loc.getY(),loc.getZ(),loc.getYaw(),loc.getPitch());
+//        _entity.getHandle().b(loc.getX(),loc.getY(),loc.getZ(),loc.getYaw(),loc.getPitch());
+        CraftWorld world = (CraftWorld) loc.getWorld();
+        _entity.getHandle().teleportTo(
+                world.getHandle(),
+                loc.getX(), loc.getY(), loc.getZ(),
+                Set.of(),
+                loc.getYaw(), loc.getPitch(),
+                false, //我不知道啊..
+                PlayerTeleportEvent.TeleportCause.PLUGIN
+        );
     }
 }
