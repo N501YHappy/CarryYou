@@ -1,7 +1,7 @@
 package nms.impl.v1_21_R2;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {

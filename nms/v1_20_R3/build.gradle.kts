@@ -1,4 +1,4 @@
 loadJava(17)
 dependencies {
-    loadNMS("1.21.4")
+    loadNMS("1.20.4")
 }
