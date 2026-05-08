@@ -76,8 +76,8 @@ public class BreakRunnable extends BukkitRunnable {
         }
     }
 
-    public static void addScore(UUID uuid) {
-        int newScore = score.getOrDefault(uuid, 0) + 1;
+    public static void addScore(UUID uuid,Integer _score) {
+        int newScore = score.getOrDefault(uuid, 0) + _score;
         score.put(uuid, newScore);
         lastActionTime.put(uuid,System.currentTimeMillis());
     }

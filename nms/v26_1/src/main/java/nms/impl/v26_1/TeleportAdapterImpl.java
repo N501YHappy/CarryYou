@@ -1,11 +1,12 @@
-package nms.impl.v1_19_R3;
+package nms.impl.v26_1;
 
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.Position;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Set;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
@@ -14,7 +15,11 @@ public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
         CraftWorld world = (CraftWorld) loc.getWorld();
         _entity.getHandle().teleportTo(
                 world.getHandle(),
-                new Position(loc.getX(),loc.getY(),loc.getZ())
+                loc.getX(), loc.getY(), loc.getZ(),
+                Set.of(),
+                loc.getYaw(), loc.getPitch(),
+                false,
+                PlayerTeleportEvent.TeleportCause.PLUGIN
         );
     }
 }

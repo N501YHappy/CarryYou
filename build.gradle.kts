@@ -19,6 +19,8 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.md-5.net/content/repositories/snapshots/")
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
@@ -44,6 +46,15 @@ tasks {
         // 添加 shadowLink 配置到打包任务，不在代码进行依赖引用，单纯打包 NMS 实现进去，即可杂交编译目标
         configurations.add(project.configurations.getByName("shadowLink"))
         relocate("nms.impl", "xyz.n501yhappy.carryyou.nms")
+    }
+    val copyTask = create<Copy>("copyBuildArtifact") {
+        dependsOn(shadowJar)
+        from(shadowJar.get().outputs)
+        rename { "${project.name}-$version.jar" }
+        into(rootProject.file("Nya_Build"))
+    }
+    build {
+        dependsOn(copyTask)
     }
     withType<JavaCompile>().configureEach {
         options?.encoding = "UTF-8"

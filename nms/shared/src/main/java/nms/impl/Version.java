@@ -1,8 +1,6 @@
 package nms.impl;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
-import org.bukkit.plugin.PluginLogger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -46,24 +44,19 @@ public class Version {
     public static boolean init(Logger logger) {
         if (loaded) return true;
         String nmsVersion = null;
-//        try {
-//            // noinspection JavaReflectionMemberAccess
-//            Item.class.getDeclaredMethod("getHealth");
-//            nmsVersion = "paper";
-//            logger.info("Found Minecraft: " + nmsVersion + "! Trying to find NMS support");
-//        } catch (ReflectiveOperationException ignored) {
-//        }
+        String pkg = Bukkit.getServer().getClass().getPackage().getName();
+        logger.info(pkg);
         if (nmsVersion == null) {
             // Thanks https://github.com/tr7zw/Item-NBT-API - MIT License
             try {
-                String pkg = Bukkit.getServer().getClass().getPackage().getName();
                 String ver = pkg.split("\\.")[3];
                 logger.info("Found Minecraft: " + ver + "! Trying to find NMS support");
                 nmsVersion = ver;
             } catch (Throwable e) {
                 String bukkit = Bukkit.getServer().getBukkitVersion();
+                logger.info("The bukkit version is " + bukkit);
                 int index = bukkit.indexOf('-');
-                String ver = index > 4 ? bukkit.substring(0, index) : bukkit;
+                String ver = index != -1 ? bukkit.substring(0, index) : bukkit;
                 nmsVersion = VERSION_TO_REVISION.getOrDefault(ver, "unknown");
                 logger.info("Found Minecraft: " + ver + " (" + nmsVersion + ")! Trying to find NMS support");
             }

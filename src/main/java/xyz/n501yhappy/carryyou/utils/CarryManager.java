@@ -27,7 +27,9 @@ public class CarryManager {
         if (target instanceof Player){
             ((Player) target).setAllowFlight(true);
         }
-        spawnArmor(carrierUUID, targetUUID);
+        UUID armorUUID = spawnArmor(carrierUUID);
+        ((ArmorStand) Bukkit.getEntity(armorUUID)).addPassenger(target);
+        armor_put(targetUUID, armorUUID);
         return true;
     }
     
@@ -43,9 +45,8 @@ public class CarryManager {
         return true;
     }
 
-    private static UUID spawnArmor(UUID carrierUUID, UUID targetUUID){
+    private static UUID spawnArmor(UUID carrierUUID){
         Entity carrier = Bukkit.getEntity(carrierUUID);
-        Entity target = Bukkit.getEntity(targetUUID);
         Location loc = carrier.getLocation();
         ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
         //config
@@ -58,10 +59,7 @@ public class CarryManager {
         armorStand.setCustomName("Chihaya Anon");
         armorStand.setCustomNameVisible(false);
         //
-        UUID armorUUID = armorStand.getUniqueId();
-        armorStand.addPassenger(target);
-        armor_put(targetUUID, armorUUID);
-        return armorUUID;
+        return armorStand.getUniqueId();
     }
 
     public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数

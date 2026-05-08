@@ -12,7 +12,6 @@ public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
     public void teleport(LivingEntity entity, Location loc) {
         CraftEntity _entity = (CraftEntity) entity;
-//        _entity.getHandle().b(loc.getX(),loc.getY(),loc.getZ(),loc.getYaw(),loc.getPitch());
         CraftWorld world = (CraftWorld) loc.getWorld();
         _entity.getHandle().teleportTo(
                 world.getHandle(),
