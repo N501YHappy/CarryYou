@@ -38,6 +38,8 @@ public class Version {
             this.put("1.21.10", "v1_21_R6");
             this.put("1.21.11", "v1_21_R7");
             this.put("26.1", "v26_1");
+            this.put("26.1.1", "v26_1");
+            this.put("26.1.2", "v26_1");
         }
     };
     @SuppressWarnings("UnusedReturnValue")
