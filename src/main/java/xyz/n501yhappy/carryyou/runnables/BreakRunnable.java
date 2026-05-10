@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import xyz.n501yhappy.carryyou.ConfigLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,8 +66,8 @@ public class BreakRunnable extends BukkitRunnable {
                 if (carrier != null) {
                     World world = player.getWorld();
                     Location particleLocation = player.getLocation();
-                    world.spawnParticle(Particle.EXPLOSION_NORMAL, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
-                    world.spawnParticle(Particle.EXPLOSION_LARGE, particleLocation, 1);
+                    world.spawnParticle(Particle.SMOKE, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
+                    world.spawnParticle(Particle.EXPLOSION, particleLocation, 1);
                     CarryManager.drop(player);
                 }
                 removePlayer(playerUUID);

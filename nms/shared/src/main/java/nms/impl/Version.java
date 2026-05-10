@@ -45,18 +45,21 @@ public class Version {
     @SuppressWarnings("UnusedReturnValue")
     public static boolean init(Logger logger) {
         if (loaded) return true;
-        String nmsVersion = null;
-        String pkg = Bukkit.getServer().getClass().getPackage().getName();
-        logger.info(pkg);
-        if (nmsVersion == null) {
+        //感谢大佬MrXiaoM的代码与教程   恩情还不玩QAQ
+        String nmsVersion = "Chihaya Anon!!! Love!";
+        try {
+            String ver = Bukkit.getServer().getMinecraftVersion();
+            nmsVersion = VERSION_TO_REVISION.getOrDefault(ver, "unknown");
+            logger.info("Found Minecraft: " + ver + " (Paper, " + nmsVersion + ")! Trying to find NMS support");
+        } catch (LinkageError ignored) {
             // Thanks https://github.com/tr7zw/Item-NBT-API - MIT License
             try {
+                String pkg = Bukkit.getServer().getClass().getPackage().getName();
                 String ver = pkg.split("\\.")[3];
                 logger.info("Found Minecraft: " + ver + "! Trying to find NMS support");
                 nmsVersion = ver;
             } catch (Throwable e) {
                 String bukkit = Bukkit.getServer().getBukkitVersion();
-                logger.info("The bukkit version is " + bukkit);
                 int index = bukkit.indexOf('-');
                 String ver = index != -1 ? bukkit.substring(0, index) : bukkit;
                 nmsVersion = VERSION_TO_REVISION.getOrDefault(ver, "unknown");

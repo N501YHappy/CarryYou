@@ -1,22 +1,21 @@
 plugins{
     java
 }
-val targetJavaVersion = 17
 val source = _repositories.RoseWoodDev
-val sharedSpigotAPI = "1.21"
+val sharedPaperAPI = "1.21"
 subprojects{
     apply(plugin = "java")
     repositories {
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots")
-        maven("https://maven.enginehub.org/repo/")
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven(source.repository)
     }
+    loadJava(8)
 }
 val shared = project("shared")
 shared.dependencies {
-    add("compileOnly", "org.spigotmc:spigot-api:$sharedSpigotAPI-R0.1-SNAPSHOT")
+    add("compileOnly", "io.papermc.paper:paper-api:$sharedPaperAPI-R0.1-SNAPSHOT") //坏paper
 }
 subprojects {
     dependencies {

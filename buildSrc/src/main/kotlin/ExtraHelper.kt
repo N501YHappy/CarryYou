@@ -19,20 +19,20 @@ fun DependencyHandler.loadNMS(mcversion : String){
     add("compileOnly", "org.spigotmc:spigot-api:$mcversion-R0.1-SNAPSHOT")
     add("compileOnly", _repositories.RoseWoodDev.dependency(mcversion))
 }
-fun Project.loadJava(javaVersion: Int) {
-    val ver = JavaVersion.toVersion(javaVersion)
-
+fun Project.loadJava(javaVer: Int) {
     extensions.configure(JavaPluginExtension::class.java) {
+        disableAutoTargetJvm()
+        val ver = JavaVersion.toVersion(javaVer)
+        if (JavaVersion.current() < ver) {
+            val lang = JavaLanguageVersion.of(javaVer)
+            toolchain.languageVersion.set(lang)
+        }
         sourceCompatibility = ver
         targetCompatibility = ver
-        if (JavaVersion.current() < ver) {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion))
-        }
     }
-
     tasks.withType<JavaCompile>().configureEach {
-        options?.encoding = "UTF-8"
-        sourceCompatibility = ver.toString()
-        targetCompatibility = ver.toString()
+        options.encoding = "UTF-8"
+        sourceCompatibility = javaVer.toString()
+        targetCompatibility = javaVer.toString()
     }
 }
