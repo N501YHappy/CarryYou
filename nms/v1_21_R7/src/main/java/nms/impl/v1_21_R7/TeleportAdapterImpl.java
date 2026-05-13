@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
-    public void teleport(LivingEntity entity, Location loc) {
+    public Boolean teleport(LivingEntity entity, Location loc) {
         CraftEntity _entity = (CraftEntity) entity;
         CraftWorld world = (CraftWorld) loc.getWorld();
         _entity.getHandle().teleportTo(
@@ -21,5 +21,6 @@ public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
                 false,
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
+        return true;
     }
 }

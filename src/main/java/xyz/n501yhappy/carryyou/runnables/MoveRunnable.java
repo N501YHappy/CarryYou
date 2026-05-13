@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.scheduler.BukkitRunnable;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import nms.impl.Version;
 

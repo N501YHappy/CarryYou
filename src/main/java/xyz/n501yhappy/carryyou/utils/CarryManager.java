@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import xyz.n501yhappy.carryyou.CarryYou;
 
 import java.util.Map;
 import java.util.UUID;
@@ -55,10 +56,9 @@ public class CarryManager {
         armorStand.setBasePlate(false);
         armorStand.setSmall(true);
         armorStand.setMarker(true);
-        armorStand.setVisible(false);
+        armorStand.setVisible(true);
         armorStand.setCustomName("Chihaya Anon");
         armorStand.setCustomNameVisible(false);
-        //
         return armorStand.getUniqueId();
     }
 
@@ -111,16 +111,6 @@ public class CarryManager {
     public static ArmorStand getArmorStandByTarget(UUID targetUUID) {
         UUID armorUUID = armorMapping.get(targetUUID);
         return armorUUID != null ? (ArmorStand) Bukkit.getEntity(armorUUID) : null;
-    }
-
-    // 通过 ArmorStand 获取 target UUID
-    public static UUID getTargetByArmorStand(UUID armorUUID) {
-        return mappingArmor.get(armorUUID);
-    }
-
-    // 检查 target 是否有对应的 ArmorStand
-    public static boolean hasArmorStand(UUID targetUUID) {
-        return armorMapping.containsKey(targetUUID);
     }
 
     public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体

@@ -1,6 +1,5 @@
 package nms.impl.v1_21_R1;
 
-import net.minecraft.world.phys.Vec3D;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
@@ -11,7 +10,7 @@ import java.util.Set;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
-    public void teleport(LivingEntity entity, Location loc) {
+    public Boolean teleport(LivingEntity entity, Location loc) {
         CraftEntity _entity = (CraftEntity) entity;
         CraftWorld world = (CraftWorld) loc.getWorld();
         _entity.getHandle().teleportTo(
@@ -21,5 +20,6 @@ public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
                 loc.getYaw(), loc.getPitch(),
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
+        return true;
     }
 }

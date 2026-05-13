@@ -8,12 +8,13 @@ import org.bukkit.entity.LivingEntity;
 
 public class TeleportAdapterImpl implements nms.impl.TeleportImpl {
     @Override
-    public void teleport(LivingEntity entity, Location loc) {
+    public Boolean teleport(LivingEntity entity, Location loc) {
         CraftEntity _entity = (CraftEntity) entity;
         CraftWorld world = (CraftWorld) loc.getWorld();
         _entity.getHandle().teleportTo(
                 world.getHandle(),
                 new BlockPosition(loc.getX(),loc.getY(),loc.getZ())
         );
+        return true;
     }
 }
