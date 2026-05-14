@@ -1,6 +1,7 @@
 package xyz.n501yhappy.carryyou.runnables;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import nms.impl.Version;
 import java.util.UUID;
 
 public class MoveRunnable extends BukkitRunnable {
-    private static final double RANGE = 1.1;
+    private static final double RANGE = 3.1;
 
     @Override
     public void run() {

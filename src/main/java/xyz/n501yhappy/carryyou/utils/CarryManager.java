@@ -56,7 +56,7 @@ public class CarryManager {
         armorStand.setBasePlate(false);
         armorStand.setSmall(true);
         armorStand.setMarker(true);
-        armorStand.setVisible(true);
+        armorStand.setVisible(false);
         armorStand.setCustomName("Chihaya Anon");
         armorStand.setCustomNameVisible(false);
         return armorStand.getUniqueId();
