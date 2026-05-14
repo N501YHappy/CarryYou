@@ -6,20 +6,17 @@ import xyz.n501yhappy.carryyou.listeners.BreakListener;
 import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
-import xyz.n501yhappy.carryyou.runnables.MoveRunnable;
 
 
 public final class CarryYou extends JavaPlugin {
     public static Boolean worldguard_enabled = false;
     public static Boolean residence_enabled = false;
-    private MoveRunnable moveRunnable;
     private BreakRunnable breakRunnable;
 
     public static Plugin instance;
 
     @Override
     public void onLoad() {
-        if(!nms.impl.Version.init(getLogger())) getLogger().warning("唔...NMS加载失败了！出了点小问题但是不影响哦");
         instance = this;
         worldguard_enabled = true;
         try {
@@ -49,9 +46,6 @@ public final class CarryYou extends JavaPlugin {
 
         new Metrics(this, 29710);
 
-        moveRunnable = new MoveRunnable();
-        moveRunnable.runTaskTimer(this, 20L, 1L);
-
         breakRunnable = new BreakRunnable();
         breakRunnable.runTaskTimer(this, 20L, 1L);
 
@@ -64,13 +58,9 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (moveRunnable != null) {
-            moveRunnable.cancel();
-        }
         if (breakRunnable != null) {
             breakRunnable.cancel();
         }
-        
         getLogger().info("§cCarryYou Disabled！");
     }
 }

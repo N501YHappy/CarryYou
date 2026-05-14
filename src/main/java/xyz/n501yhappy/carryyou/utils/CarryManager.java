@@ -5,8 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.CarryYou;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,9 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CarryManager {
     private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
     private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
-
-    private static Map<UUID,UUID> armorMapping = new ConcurrentHashMap<>(); //Target -> Armor stand
-    private static Map<UUID,UUID> mappingArmor = new ConcurrentHashMap<>(); //反向映射，从value找key
     
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
@@ -25,94 +24,27 @@ public class CarryManager {
         if (carryMapping.containsKey(carrierUUID)) return false;
         
         put(carrierUUID, targetUUID);
-        if (target instanceof Player){
-            ((Player) target).setAllowFlight(true);
-        }
-        UUID armorUUID = spawnArmor(carrierUUID);
-        ((ArmorStand) Bukkit.getEntity(armorUUID)).addPassenger(target);
-        armor_put(targetUUID, armorUUID);
+        carrier.addPassenger(target); //坐在头上
         return true;
     }
     
     public static Boolean drop(Entity target) {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
-        target.setFallDistance(0); //别玩死了(?)
-        removeArmorStandByTarget(targetUUID);
-        removeByTarget(targetUUID);
-        if (target instanceof Player){
-            ((Player) target).setAllowFlight(false);
-        }
+        Entity carrier = getCarrierEntityByTarget(targetUUID);
+        Vector vec = calcVector(carrier.getLocation(),1.0);
+        target.eject();
         return true;
     }
-
-    private static UUID spawnArmor(UUID carrierUUID){
-        Entity carrier = Bukkit.getEntity(carrierUUID);
-        Location loc = carrier.getLocation();
-        ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
-        //config
-        armorStand.setGravity(false);
-        armorStand.setArms(false);
-        armorStand.setBasePlate(false);
-        armorStand.setSmall(true);
-        armorStand.setMarker(true);
-        armorStand.setVisible(false);
-        armorStand.setCustomName("Chihaya Anon");
-        armorStand.setCustomNameVisible(false);
-        return armorStand.getUniqueId();
-    }
-
     public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
         carryMapping.put(carrierUUID, targetUUID);
         mappingCarry.put(targetUUID, carrierUUID);
-    }
-
-    public static void armor_put(UUID targetUUID, UUID armorUUID) { //保证原子性直接拿函数
-        armorMapping.put(targetUUID, armorUUID);
-        mappingArmor.put(armorUUID, targetUUID);
     }
     
     public static void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
         carryMapping.remove(carrierUUID, targetUUID);
         mappingCarry.remove(targetUUID, carrierUUID);
     }
-    
-    public static void removeByTarget(UUID targetUUID) { //保证原子性直接拿函数
-        UUID carrierUUID = mappingCarry.get(targetUUID);
-        if (carrierUUID != null) {
-            carryMapping.remove(carrierUUID, targetUUID);
-            mappingCarry.remove(targetUUID);
-        }
-    }
-
-    // ArmorStand的一些东西
-    public static void removeArmorStandByTarget(UUID targetUUID) { //根据target删除
-        UUID armorUUID = armorMapping.remove(targetUUID);
-        if (armorUUID != null) {
-            mappingArmor.remove(armorUUID);
-            ArmorStand as = (ArmorStand) Bukkit.getEntity(armorUUID);
-            if (as != null) {
-                as.remove();
-            }
-        }
-    }
-    public static void removeArmorStandByArmorStand(UUID armorUUID) {
-        UUID targetUUID = mappingArmor.remove(armorUUID);
-        if (targetUUID != null) {
-            armorMapping.remove(targetUUID);
-            ArmorStand as = (ArmorStand) Bukkit.getEntity(armorUUID);
-            if (as != null) {
-                as.remove();
-            }
-        }
-    }
-
-    //target get ArmorStand
-    public static ArmorStand getArmorStandByTarget(UUID targetUUID) {
-        UUID armorUUID = armorMapping.get(targetUUID);
-        return armorUUID != null ? (ArmorStand) Bukkit.getEntity(armorUUID) : null;
-    }
-
     public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
         return carryMapping.get(carrierUUID);
     }
@@ -133,24 +65,23 @@ public class CarryManager {
         UUID carrierUUID = getCarrierByTarget(targetUUID);
         return carrierUUID != null ? Bukkit.getEntity(carrierUUID) : null;
     }
-    
-    // 检查抓取者是否在携带实体
+    // 检查实体是否抓着别人
     public static boolean isCarrying(UUID carrierUUID) {
         return carryMapping.containsKey(carrierUUID);
     }
-    
-    // 检查实体是否被携带
+    // 检查实体是否被抓
     public static boolean isCarried(UUID targetUUID) {
         return mappingCarry.containsKey(targetUUID);
     }
-    
-    // 获取所有被抓实体的UUID
-    public static UUID[] getAllTargets() {
-        return mappingCarry.keySet().toArray(new UUID[0]);
-    }
-    
-    // 获取所有抓取者的UUID
-    public static UUID[] getAllCarriers() {
-        return carryMapping.keySet().toArray(new UUID[0]);
+    private static Vector calcVector(Location loc,double power){
+        double yaw = Math.toRadians(loc.getYaw());
+        double pitch = Math.toRadians(loc.getPitch());
+        Vector result = new Vector();
+        result.normalize();
+        result.setX(Math.cos(pitch));
+        result.setZ(Math.sin(pitch));
+        result.setY(Math.cos(yaw));
+        result.multiply(power);
+        return result;
     }
 }
