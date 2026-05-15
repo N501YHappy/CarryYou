@@ -19,11 +19,11 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         UUID playerUUID = player.getUniqueId();
         if (CarryManager.isCarrying(playerUUID)) {
             Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
-            if (target != null) CarryManager.drop(target);
+            if (target != null) CarryManager.drop(target,0);
         }
         if (CarryManager.isCarried(playerUUID)) {
             Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
-            if (carrier != null) CarryManager.drop(player);
+            if (carrier != null) CarryManager.drop(player,0);
         }
         BreakRunnable.removePlayer(playerUUID);
     }
@@ -33,12 +33,12 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         UUID entityUUID = entity.getUniqueId();
         if (CarryManager.isCarried(entityUUID)) {
             Entity carrier = CarryManager.getCarrierEntityByTarget(entityUUID);
-            if (carrier != null) CarryManager.drop(entity);
+            if (carrier != null) CarryManager.drop(entity,0);
         }
 
         if (CarryManager.isCarrying(entityUUID)) {
             Entity target = CarryManager.getTargetEntityByCarrier(entityUUID);
-            if (target != null) CarryManager.drop(target);
+            if (target != null) CarryManager.drop(target,0);
         }
         if (entity instanceof Player) {
             BreakRunnable.removePlayer(entityUUID);

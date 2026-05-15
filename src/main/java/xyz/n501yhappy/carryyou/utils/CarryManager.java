@@ -2,13 +2,9 @@ package xyz.n501yhappy.carryyou.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import xyz.n501yhappy.carryyou.CarryYou;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,12 +24,14 @@ public class CarryManager {
         return true;
     }
     
-    public static Boolean drop(Entity target) {
+    public static Boolean drop(Entity target,double power) {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
         Entity carrier = getCarrierEntityByTarget(targetUUID);
-        Vector vec = calcVector(carrier.getLocation(),1.0);
-        target.eject();
+        Vector vec = calcVector(carrier.getLocation(),power);
+        carrier.eject();
+        target.setVelocity(vec);
+        remove(carrier.getUniqueId(),targetUUID);
         return true;
     }
     public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
@@ -74,13 +72,13 @@ public class CarryManager {
         return mappingCarry.containsKey(targetUUID);
     }
     private static Vector calcVector(Location loc,double power){
-        double yaw = Math.toRadians(loc.getYaw());
-        double pitch = Math.toRadians(loc.getPitch());
+        double yaw = Math.toRadians(-loc.getYaw()); //minecraft的小巧思
+        //mc里面yaw和平面直角坐标系里面那个不一样，这里给乘-1就好了
+        double pitch = Math.toRadians(-loc.getPitch());
         Vector result = new Vector();
-        result.normalize();
-        result.setX(Math.cos(pitch));
-        result.setZ(Math.sin(pitch));
-        result.setY(Math.cos(yaw));
+        result.setX(Math.sin(yaw));
+        result.setZ(Math.cos(yaw));
+        result.setY(Math.sin(pitch));
         result.multiply(power);
         return result;
     }

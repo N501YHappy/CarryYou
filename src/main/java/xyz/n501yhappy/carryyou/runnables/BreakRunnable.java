@@ -68,7 +68,7 @@ public class BreakRunnable extends BukkitRunnable {
                     Location particleLocation = player.getLocation();
                     world.spawnParticle(Particle.SMOKE_LARGE, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
                     world.spawnParticle(Particle.EXPLOSION_HUGE, particleLocation, 1);
-                    CarryManager.drop(player);
+                    CarryManager.drop(player,0);
                 }
                 removePlayer(playerUUID);
             }
