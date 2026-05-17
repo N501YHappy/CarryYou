@@ -11,7 +11,7 @@
 3. 重启服务器或使用 `/reload` 命令
 4. 插件会自动生成配置文件
 
-[CarryYou.jar点击下载](https://pluginversion.n501yhappy.icu/carryyou/download)
+[CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
 
 ## 使用方法
 
