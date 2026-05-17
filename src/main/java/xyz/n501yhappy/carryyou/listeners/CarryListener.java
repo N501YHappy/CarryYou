@@ -24,7 +24,7 @@ import static xyz.n501yhappy.carryyou.CarryYou.worldguard_enabled;
 public class CarryListener implements Listener {
 
     private static final double MAX_RAY_DISTANCE = 2.5; //玩家可以够到的距离
-    private static final double THROW_POWER_DROP = 0.5; //drop时的力气
+    private static final double THROW_POWER_DROP = 0.1; //drop时的力气
     private static final double THROW_POWER_ATTACK = 0.9; //攻击丢出去的力气
     private static final double THROW_POWER_INTERACT = 0.9; //右键丢出去的力气
 
@@ -99,10 +99,16 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onDrop(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, THROW_POWER_ATTACK);
-        event.setCancelled(true);
+        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            throwEntity(player, THROW_POWER_ATTACK);
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            throwEntity(player, THROW_POWER_INTERACT);
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler

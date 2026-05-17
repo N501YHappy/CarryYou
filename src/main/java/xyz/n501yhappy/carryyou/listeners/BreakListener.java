@@ -36,13 +36,13 @@ public class BreakListener implements Listener {
     }
     @EventHandler
     public void onBreak_Dismount(EntityDismountEvent event) {
-        if (event.getDismounted().getCustomName() == null) return;
-        if (!event.getDismounted().getCustomName().equals("Chihaya Anon")) return;//这里现在由我接管awa
+        if (!CarryManager.isCarrying(event.getDismounted().getUniqueId())) return;
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
             UUID playerUUID = player.getUniqueId();
 
             if (!CarryManager.isCarried(playerUUID)) return;
+            player.sendMessage(ConfigLoader.PREFIX + "§c笨蛋！点击左键挣脱！");
             event.setCancelled(true);
         }
     }

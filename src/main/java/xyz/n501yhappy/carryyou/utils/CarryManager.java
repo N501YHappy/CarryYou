@@ -16,9 +16,10 @@ public class CarryManager {
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
         UUID targetUUID = target.getUniqueId();
-        
+
         if (carryMapping.containsKey(carrierUUID)) return false;
-        
+        if (!carrier.getPassengers().isEmpty()) return false; //有人在上面也不行
+
         put(carrierUUID, targetUUID);
         carrier.addPassenger(target); //坐在头上
         return true;
@@ -28,10 +29,11 @@ public class CarryManager {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
         Entity carrier = getCarrierEntityByTarget(targetUUID);
-        Vector vec = calcVector(carrier.getLocation(),power);
+        Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
+
+        remove(carrier.getUniqueId(),targetUUID); //一定记住清理映射，否则会被BreakListener拦截掉
         carrier.eject();
         target.setVelocity(vec);
-        remove(carrier.getUniqueId(),targetUUID);
         return true;
     }
     public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
@@ -71,15 +73,22 @@ public class CarryManager {
     public static boolean isCarried(UUID targetUUID) {
         return mappingCarry.containsKey(targetUUID);
     }
-    private static Vector calcVector(Location loc,double power){
-        double yaw = Math.toRadians(-loc.getYaw()); //minecraft的小巧思
+    private static Vector calcVector(Vector speed, Location loc,double power){
         //mc里面yaw和平面直角坐标系里面那个不一样，这里给乘-1就好了
-        double pitch = Math.toRadians(-loc.getPitch());
+        //Yaw: 我们 水平旋转 我们的头，也就是左右转头，这就是一次Yaw转动
+        //Pitch: 我们 上下旋转 我们的头，也就是上下点头，这就是一次Pitch转动
+        double phi = Math.toRadians(90 + loc.getPitch()); //90 - (-pitch)
+        double theta = Math.toRadians(-loc.getYaw());
         Vector result = new Vector();
-        result.setX(Math.sin(yaw));
-        result.setZ(Math.cos(yaw));
-        result.setY(Math.sin(pitch));
+        double x = Math.cos(theta)*Math.sin(phi);
+        double z = Math.cos(phi);
+        double y = Math.sin(theta)*Math.sin(phi);
+
+        result.setX(y);
+        result.setY(z);
+        result.setZ(x);
         result.multiply(power);
+        if(speed != null) result.add(speed);
         return result;
     }
 }
