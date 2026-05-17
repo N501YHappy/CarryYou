@@ -1,10 +1,9 @@
-# CarryYou - 把玩家抱起来?
+# CarryYou - 把玩家抱起来
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.16+-brightgreen)
 
 一个允许玩家抓取和携带其他实体（包括玩家）的Minecraft插件
 
-~~猜您想找:蛋仔派对~~
 ## 安装方法 (还用说嘛？)
 
 1. 下载**最新版本**的 `CarryYou.jar` 文件
@@ -20,7 +19,7 @@
 1. **潜行**（按住Shift键）
 2. **看向**想要抓取的生物或玩家
 3. **按下交换主副手键**（默认是 `F` 键）
-4. 成功抓取后，实体会出现在你前方
+4. 成功抓取后，实体会坐在你头上
 
 ### 放下实体
 
@@ -64,6 +63,7 @@
 
 ```yaml
 # config.yml
+# config.yml
 
 # 插件提示前缀
 prefix: "&7[&aCarry&bYou&7] "
@@ -95,6 +95,15 @@ deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
 deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
   - "ender_dragon"
 
+# 丢出力度设置
+throw_power:
+  # SHIFT + F键丢出的力度
+  drop: 0.1
+  # 左键/攻击丢出的力度
+  attack: 0.9
+  # 右键丢出的力度
+  interact: 0.4
+
 ```
 
 
@@ -104,8 +113,11 @@ deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
 ## 贡献指南
 1. 遇到bug不要憋着不说！
 2. 有什么主意在issues说，或者通过邮件n501yhappy@outlook.com或者qq:3029340076
-## 许可证
 
-~~我都抄袭蛋仔派对了要什么许可证？~~
+>一些小事情
+我知道我插件写的很烂，但是如果有bug可以给我说吗qwq
+github上面交issues,发邮件n501yhappy@outlook.com,QQ3029340076 什么的，有bug一定告诉我QAQ
+还有就是你服务器如果运行不了的话...你把服务端告诉我我会尽快给你做适配的
+总之有什么建议直接说就行了，我不会杀死你的(
 
 ![bstats](https://bstats.org/signatures/bukkit/CarryYou.svg)
