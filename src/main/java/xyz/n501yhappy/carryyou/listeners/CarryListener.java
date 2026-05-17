@@ -24,9 +24,6 @@ import static xyz.n501yhappy.carryyou.CarryYou.worldguard_enabled;
 public class CarryListener implements Listener {
 
     private static final double MAX_RAY_DISTANCE = 2.5; //玩家可以够到的距离
-    private static final double THROW_POWER_DROP = 0.1; //drop时的力气
-    private static final double THROW_POWER_ATTACK = 0.9; //攻击丢出去的力气
-    private static final double THROW_POWER_INTERACT = 0.9; //右键丢出去的力气
 
     @EventHandler
     public void onCarry(PlayerSwapHandItemsEvent event) {
@@ -36,7 +33,7 @@ public class CarryListener implements Listener {
         // 不能抱两个，暂时不行
         if (CarryManager.isCarrying(player.getUniqueId())){
             Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
-            if (target != null) throwEntity(player,THROW_POWER_DROP);
+            if (target != null) throwEntity(player, ConfigLoader.THROW_POWER_DROP);
         }
         handlePickup(player);
     }
@@ -101,12 +98,12 @@ public class CarryListener implements Listener {
         Player player = event.getPlayer();
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            throwEntity(player, THROW_POWER_ATTACK);
+            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
             event.setCancelled(true);
             return;
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            throwEntity(player, THROW_POWER_INTERACT);
+            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
             event.setCancelled(true);
         }
     }
@@ -116,7 +113,7 @@ public class CarryListener implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, THROW_POWER_ATTACK);
+        throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
         event.setCancelled(true);
     }
 
@@ -124,7 +121,7 @@ public class CarryListener implements Listener {
     public void onInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, THROW_POWER_INTERACT);
+        throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
         event.setCancelled(true);
     }
     //扔出去

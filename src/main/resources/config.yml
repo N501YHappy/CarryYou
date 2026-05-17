@@ -29,3 +29,12 @@ deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
 
 deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
   - "ender_dragon"
+
+# 丢出力度设置
+throw_power:
+  # SHIFT + F键丢出的力度
+  drop: 0.1
+  # 左键/攻击丢出的力度
+  attack: 0.9
+  # 右键丢出的力度
+  interact: 0.4

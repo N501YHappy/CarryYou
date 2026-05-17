@@ -18,6 +18,9 @@ public class ConfigLoader {
     public static int PROGRESS_BAR_LENGTH = 20;
     public static List<String> DENY_WORLDS = new ArrayList<>();
     public static List<String> DENY_ENTITIES = new ArrayList<>();
+    public static double THROW_POWER_DROP = 0.5;
+    public static double THROW_POWER_ATTACK = 0.9;
+    public static double THROW_POWER_INTERACT = 0.9;
 
     public static void load() {
         CarryYou.instance.saveDefaultConfig();
@@ -41,6 +44,11 @@ public class ConfigLoader {
         DENY_ENTITIES = config.getStringList("deny_entities");
         for (int i = 0; i < DENY_ENTITIES.size(); i++) {
             DENY_ENTITIES.set(i,DENY_ENTITIES.get(i).toUpperCase());
+        }
+        if (config.contains("throw_power")) {
+            THROW_POWER_DROP = config.getDouble("throw_power.drop", 0.5);
+            THROW_POWER_ATTACK = config.getDouble("throw_power.attack", 0.9);
+            THROW_POWER_INTERACT = config.getDouble("throw_power.interact", 0.9);
         }
     }
     public static void reload() {
