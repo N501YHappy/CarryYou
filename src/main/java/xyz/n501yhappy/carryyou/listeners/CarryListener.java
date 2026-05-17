@@ -33,7 +33,10 @@ public class CarryListener implements Listener {
         // 不能抱两个，暂时不行
         if (CarryManager.isCarrying(player.getUniqueId())){
             Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
-            if (target != null) throwEntity(player, ConfigLoader.THROW_POWER_DROP);
+            if (target != null) {
+                throwEntity(player, ConfigLoader.THROW_POWER_DROP);
+                return; // 丢出后不立即拾取新实体
+            }
         }
         handlePickup(player);
     }
@@ -144,7 +147,7 @@ public class CarryListener implements Listener {
                 FluidCollisionMode.NEVER,
                 true,
                 0.1,
-                entity -> entity instanceof LivingEntity && !entity.equals(player)
+                entity -> entity instanceof LivingEntity && !entity.equals(player) && !entity.isDead()
         );
         return (result != null && result.getHitEntity() != null) ? result.getHitEntity() : null;
     }

@@ -32,7 +32,7 @@ public class CarryManager {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrier.getUniqueId(),targetUUID); //一定记住清理映射，否则会被BreakListener拦截掉
-        carrier.eject();
+        carrier.removePassenger(target);
         target.setVelocity(vec);
         return true;
     }
@@ -42,8 +42,8 @@ public class CarryManager {
     }
     
     public static void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
-        carryMapping.remove(carrierUUID, targetUUID);
-        mappingCarry.remove(targetUUID, carrierUUID);
+        carryMapping.remove(carrierUUID);
+        mappingCarry.remove(targetUUID);
     }
     public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
         return carryMapping.get(carrierUUID);

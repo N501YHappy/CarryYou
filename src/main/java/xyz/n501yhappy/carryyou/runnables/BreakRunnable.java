@@ -19,20 +19,14 @@ import static xyz.n501yhappy.carryyou.ConfigLoader.PROGRESS_BAR_LENGTH;
 public class BreakRunnable extends BukkitRunnable {
     private static Map<UUID, Integer> score = new ConcurrentHashMap<>();
     private static Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
+    private static Map<UUID, Long> lastSubTime = new ConcurrentHashMap<>(); // 每个玩家独立的扣分计时器
     private static final int TARGET_SCORE = 20;
     private static final int TIMEOUT_TIME = 2*1000;
-
-    private static long lastSub = 0;//上一次扣分的时间  2ticks = 100ms
 
     @Override
     public void run() {
         long currentTime = System.currentTimeMillis();
         UUID[] playerUUIDs = score.keySet().toArray(new UUID[0]);
-        int koufen = 0; //对，扣分
-        if (currentTime - lastSub > 1000/ ConfigLoader.NEEDED_CPS) {
-            lastSub = currentTime;
-            koufen = 1;
-        }
         for (UUID playerUUID : playerUUIDs) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player == null || !player.isOnline() || !CarryManager.isCarried(playerUUID)) {
@@ -45,15 +39,19 @@ public class BreakRunnable extends BukkitRunnable {
 
             if (currentScore == null || lastTick == null) continue;
 
-            //扣分！
-            currentScore -= koufen * (currentScore != 0 ? 1 : 0); //三元运算符很好用你知道吗(bushi
-            score.put(playerUUID,currentScore);
-
             //不想玩啦？
             if (currentTime - lastTick > TIMEOUT_TIME) {
                 player.sendTitle("", "", 0, 0, 0);
                 removePlayer(playerUUID);
                 continue;
+            }
+
+            //扣分！
+            Long lastSub = lastSubTime.get(playerUUID);
+            if (lastSub == null || currentTime - lastSub > 1000 / ConfigLoader.NEEDED_CPS) {
+                lastSubTime.put(playerUUID, currentTime);
+                currentScore -= (currentScore != 0 ? 1 : 0);
+                score.put(playerUUID, currentScore);
             }
 
             // 显示进度条
@@ -84,6 +82,7 @@ public class BreakRunnable extends BukkitRunnable {
     public static void removePlayer(UUID uuid) {
         score.remove(uuid);
         lastActionTime.remove(uuid);
+        lastSubTime.remove(uuid);
     }
 
     private static String getProgressBar(Integer score, Integer total) {
