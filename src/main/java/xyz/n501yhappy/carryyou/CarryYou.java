@@ -5,8 +5,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.listeners.BreakListener;
 import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
+import xyz.n501yhappy.carryyou.listeners.CarryProtection;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
-
+import adapts.impl.Version;
 
 public final class CarryYou extends JavaPlugin {
     public static Boolean worldguard_enabled = false;
@@ -26,6 +27,13 @@ public final class CarryYou extends JavaPlugin {
             worldguard_enabled = false;
             //Worldgurad未安装
         }
+        try {
+            Version.init(getLogger());
+        } catch (Throwable e) {
+            getLogger().warning("坏掉了！！！");
+            e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
+        }
     }
 
     @Override
@@ -43,24 +51,21 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
+        getServer().getPluginManager().registerEvents(new CarryProtection(), this);
 
         new Metrics(this, 29710);
-
-        breakRunnable = new BreakRunnable();
-        breakRunnable.runTaskTimer(this, 20L, 1L);
 
         ConfigLoader.load();
 
         getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
+
+        Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
 
         getLogger().info("§aCarryYou Enabled！");
     }
 
     @Override
     public void onDisable() {
-        if (breakRunnable != null) {
-            breakRunnable.cancel();
-        }
         getLogger().info("§cCarryYou Disabled！");
     }
 }

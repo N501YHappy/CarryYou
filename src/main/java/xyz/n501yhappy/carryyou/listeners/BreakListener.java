@@ -42,7 +42,6 @@ public class BreakListener implements Listener {
             UUID playerUUID = player.getUniqueId();
 
             if (!CarryManager.isCarried(playerUUID)) return;
-            player.sendMessage(ConfigLoader.PREFIX + "§c笨蛋！点击左键挣脱！");
             event.setCancelled(true);
         }
     }
