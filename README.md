@@ -1,8 +1,14 @@
 # CarryYou - 把玩家抱起来
 
-![Minecraft](https://img.shields.io/badge/Minecraft-1.16+-brightgreen)
+<div align="center" style="font-size: 24px;">
+  <a href="./README.md">简体中文  </a>
+  <a href="./README_en.md">  English</a>
+</div>
+
 
 一个允许玩家抓取和携带其他实体（包括玩家）的Minecraft插件
+
+![Minecraft](https://img.shields.io/badge/Minecraft-1.16+-brightgreen)
 
 ## 安装方法 (还用说嘛？)
 
