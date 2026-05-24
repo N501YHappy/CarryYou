@@ -2,4 +2,6 @@
 build
 .idea
 .gitignore
-Nya_Build
+adapts/shared/build
+adapts/folia/build
+adapts/bukkit/build

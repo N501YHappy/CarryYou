@@ -1,6 +1,7 @@
 package xyz.n501yhappy.carryyou.listeners;
 
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -23,12 +24,14 @@ import static xyz.n501yhappy.carryyou.CarryYou.worldguard_enabled;
 
 public class CarryListener implements Listener {
 
-    private static final double MAX_RAY_DISTANCE = 2.5; //玩家可以够到的距离
+    private static final double MAX_RAY_DISTANCE = 3; //玩家可以够到的距离
+    private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2; //创造模式下玩家可以够到的距离
 
     @EventHandler
     public void onCarry(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if (!player.isSneaking()) return;
+        if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
         // 不能抱两个，暂时不行
         if (CarryManager.isCarrying(player.getUniqueId())){
@@ -143,7 +146,7 @@ public class CarryListener implements Listener {
         RayTraceResult result = player.getWorld().rayTrace(
                 eyeLocation,
                 direction,
-                MAX_RAY_DISTANCE,
+                (player.getGameMode() == GameMode.CREATIVE ? MAX_RAY_DISTANCE_CREATIVE : MAX_RAY_DISTANCE),
                 FluidCollisionMode.NEVER,
                 true,
                 0.1,
