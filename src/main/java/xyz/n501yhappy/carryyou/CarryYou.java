@@ -2,6 +2,8 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.listeners.BreakListener;
 import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
@@ -12,7 +14,6 @@ import adapts.impl.Version;
 public final class CarryYou extends JavaPlugin {
     public static Boolean worldguard_enabled = false;
     public static Boolean residence_enabled = false;
-    private BreakRunnable breakRunnable;
 
     public static Plugin instance;
 
@@ -30,7 +31,6 @@ public final class CarryYou extends JavaPlugin {
         try {
             Version.init(getLogger());
         } catch (Throwable e) {
-            getLogger().warning("坏掉了！！！");
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }
@@ -61,11 +61,11 @@ public final class CarryYou extends JavaPlugin {
 
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
 
-        getLogger().info("§aCarryYou Enabled！");
+        getLogger().info("§aPlugin Enabled!");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("§cCarryYou Disabled！");
+        getLogger().info("§cPlugin Disabled!");
     }
 }

@@ -1,0 +1,21 @@
+# 逃离消息
+break:
+  weakness: "&c你现在处于虚弱状态！"
+  unbreak: "&c你现在不能挣脱哦...忍一会吧~"
+  break_free_subtitle: "&e快速点击左键挣脱！"
+  progress_bar_broken: "&7(&c坏掉了！&7)"
+
+# 一些消息
+carry:
+  world_deny: "&c当前世界不允许你抱它..."
+  no_permission: "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"
+  worldguard_deny: "&c小guard告诉我这是别人的领地！你不可以这样！"
+  residence_deny: "&cres管理员不让你这么做哦"
+  entity_deny: "&c你不能抱它！"
+  player_uncarried: "&c你不能抱它！"
+
+# 命令提示
+command:
+  no_permission: "&c你没有权限使用此命令！"
+  reload_success: "&a配置文件已重新加载！"
+  reload_error: "&c重新加载配置文件时出错: "

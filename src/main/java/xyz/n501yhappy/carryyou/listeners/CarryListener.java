@@ -15,7 +15,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import xyz.n501yhappy.carryyou.ConfigLoader;
+import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 
@@ -60,31 +61,31 @@ public class CarryListener implements Listener {
     private boolean checkCarry(Player player, Entity target) {
         // 世界检查
         if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + "§c当前世界不允许你抱它...");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
             return false;
         }
 
         // 权限检查
         if (!player.hasPermission("carryyou.can") && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + "§c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_NO_PERMISSION.get());
             return false;
         }
 
         // WorldGuard 检查
         if (worldguard_enabled && !Checkers.worldguard_check(player) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + "§c小guard告诉我这是别人的领地！你不可以这样！");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
             return false;
         }
 
         // Residence 检查
         if (residence_enabled && !Checkers.residence_check(player) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + "§cres管理员不让你这么做哦");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
             return false;
         }
 
         // 禁止实体检查
         if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + "§c你不能抱它！");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_ENTITY_DENY.get());
             return false;
         }
 
@@ -92,7 +93,7 @@ public class CarryListener implements Listener {
         if (target instanceof Player) {
             Player targetP = (Player) target;
             if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
-                player.sendMessage(ConfigLoader.PREFIX + "§c你不能抱它！");
+                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;
             }
         }

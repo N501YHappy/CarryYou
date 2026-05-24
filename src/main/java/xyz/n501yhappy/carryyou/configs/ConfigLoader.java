@@ -1,8 +1,8 @@
-package xyz.n501yhappy.carryyou;
+package xyz.n501yhappy.carryyou.configs;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import xyz.n501yhappy.carryyou.CarryYou;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ public class ConfigLoader {
         CarryYou.instance.saveDefaultConfig();
         CarryYou.instance.reloadConfig();
         FileConfiguration config = CarryYou.instance.getConfig();
+        MessageConfig.load(CarryYou.instance, CarryYou.instance.getLogger());
 
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
