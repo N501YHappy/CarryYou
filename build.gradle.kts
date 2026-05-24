@@ -24,6 +24,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
     compileOnly(files("./libs/Residence6.0.1.6.jar"))
+    compileOnly("cn.lunadeer:DominionAPI:4.7.3")
 
     implementation(project(":adapts:shared"))
     add("shadowLink", project(":adapts:folia"))

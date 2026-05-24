@@ -18,6 +18,7 @@ public class MessageConfig {
         CARRY_WORLD_DENY("carry.world_deny", "&c当前世界不允许你抱它..."),
         CARRY_NO_PERMISSION("carry.no_permission", "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"),
         CARRY_WORLDGUARD_DENY("carry.worldguard_deny", "&c小guard告诉我这是别人的领地！你不可以这样！"),
+        CARRY_DOMINION_DENY("carry.dominion_deny", "&c不行！这是别人的地盘！"),
         CARRY_RESIDENCE_DENY("carry.residence_deny", "&cres管理员不让你这么做哦"),
         CARRY_ENTITY_DENY("carry.entity_deny", "&c你不能抱它！"),
         CARRY_PLAYER_UNCARRIED("carry.player_uncarried", "&c你不能抱它！"),
@@ -59,9 +60,13 @@ public class MessageConfig {
             plugin.saveResource("messages.yml", false);
         }
         Configuration config = YamlConfiguration.loadConfiguration(file);
+        if (config.getKeys(false).isEmpty() && file.length() > 0) {
+            logger.warning("§c配置文件格式错误！才不是特意提醒你的呢喵！");
+            return;
+        }
         for (Message message : Message.values()) {
             String raw = config.getString(message.getPath(), message.getDefault());
-            message.set(ChatColor.translateAlternateColorCodes('&', raw));
+            message.set(ChatColor.translateAlternateColorCodes('&', raw) + "§r");
         }
     }
 }

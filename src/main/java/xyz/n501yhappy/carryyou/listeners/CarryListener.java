@@ -15,18 +15,19 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.depends.DominionDepends;
+import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
+import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 
-import static xyz.n501yhappy.carryyou.CarryYou.residence_enabled;
-import static xyz.n501yhappy.carryyou.CarryYou.worldguard_enabled;
-
 public class CarryListener implements Listener {
 
-    private static final double MAX_RAY_DISTANCE = 3; //玩家可以够到的距离
-    private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2; //创造模式下玩家可以够到的距离
+    private static final double MAX_RAY_DISTANCE = 3;
+    private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
 
     @EventHandler
     public void onCarry(PlayerSwapHandItemsEvent event) {
@@ -34,62 +35,58 @@ public class CarryListener implements Listener {
         if (!player.isSneaking()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
-        // 不能抱两个，暂时不行
-        if (CarryManager.isCarrying(player.getUniqueId())){
+        if (CarryManager.isCarrying(player.getUniqueId())) {
             Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
             if (target != null) {
                 throwEntity(player, ConfigLoader.THROW_POWER_DROP);
-                return; // 丢出后不立即拾取新实体
+                return;
             }
         }
         handlePickup(player);
     }
-    // 处理抱起
+
     private void handlePickup(Player player) {
         Entity target = getTargetEntity(player);
         if (target == null) return;
         if (target.getUniqueId().equals(player.getUniqueId())) return;
 
         if (!checkCarry(player, target)) return;
-        // 不能抢别人的
         if (CarryManager.isCarried(target.getUniqueId())) return;
 
         CarryManager.carry(player, target);
     }
 
-    // 玩家能不能抱
     private boolean checkCarry(Player player, Entity target) {
-        // 世界检查
         if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
             return false;
         }
 
-        // 权限检查
         if (!player.hasPermission("carryyou.can") && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_NO_PERMISSION.get());
             return false;
         }
 
-        // WorldGuard 检查
-        if (worldguard_enabled && !Checkers.worldguard_check(player) && !player.isOp()) {
+        if (CarryYou.worldguard_enable && !Checkers.worldguard_check(target, player) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
             return false;
         }
 
-        // Residence 检查
-        if (residence_enabled && !Checkers.residence_check(player) && !player.isOp()) {
+        if (CarryYou.residence_enable && !Checkers.residence_check(target, player) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
             return false;
         }
 
-        // 禁止实体检查
+        if (CarryYou.dominion_enable && !Checkers.dominion_check(target, player) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_DOMINION_DENY.get());
+            return false;
+        }
+
         if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_ENTITY_DENY.get());
             return false;
         }
 
-        // 权限检查
         if (target instanceof Player) {
             Player targetP = (Player) target;
             if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
@@ -100,6 +97,7 @@ public class CarryListener implements Listener {
 
         return true;
     }
+
     @EventHandler
     public void onDrop(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -131,15 +129,13 @@ public class CarryListener implements Listener {
         throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
         event.setCancelled(true);
     }
-    //扔出去
+
     private void throwEntity(Player player, double power) {
         Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
         if (target == null) return;
-        CarryManager.drop(target,power);
+        CarryManager.drop(target, power);
     }
 
-
-    //获取玩家盯着的实体
     private Entity getTargetEntity(Player player) {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();

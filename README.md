@@ -56,6 +56,8 @@
 通过调用WorldGuard的API,注册Flag `carriable` 可设置领地内是否抓举
 ## Residence
 通过调用Residence的API,注册Flag `carriable` 可设置领地内是否抓举
+## Dominion
+通过调用Dominion的API,注册PriFlag `carriable` 可设置领地内是否抓举
 
 ## 配置文件 (config.yml)
 
@@ -106,6 +108,38 @@ throw_power:
 
 ```
 
+## 消息配置 (messages.yml)
+
+插件首次运行时会自动生成消息配置文件，你可以自定义所有插件消息。
+
+```yaml
+# messages.yml
+
+# 逃离/挣脱相关消息
+break:
+  weakness: "&c你现在处于虚弱状态！"
+  unbreak: "&c你现在不能挣脱哦...忍一会吧~"
+  break_free_subtitle: "&e快速点击左键挣脱！"
+  progress_bar_broken: "&7(&c坏掉了！&7)"
+
+# 抓取相关消息
+carry:
+  world_deny: "&c当前世界不允许你抱它..."
+  no_permission: "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"
+  worldguard_deny: "&c小guard告诉我这是别人的领地！你不可以这样！"
+  residence_deny: "&cres管理员不让你这么做哦"
+  dominion_deny: "&c不行！这是别人的地盘！"
+  entity_deny: "&c你不能抱它！"
+  player_uncarried: "&c你不能抱它！"
+
+# 命令相关消息
+command:
+  no_permission: "&c你没有权限使用此命令！"
+  reload_success: "&a配置文件已重新加载！"
+  reload_error: "&c重新加载配置文件时出错: "
+```
+
+支持 `&` 颜色代码。修改后使用 `/carryyou reload` 重新加载。
 
 ### 技术要求
 - **Minecraft版本**: 1.16+ （不清楚）

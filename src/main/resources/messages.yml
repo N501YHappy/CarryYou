@@ -11,6 +11,7 @@ carry:
   no_permission: "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"
   worldguard_deny: "&c小guard告诉我这是别人的领地！你不可以这样！"
   residence_deny: "&cres管理员不让你这么做哦"
+  dominion_deny: "&c不行！这是别人的地盘！"
   entity_deny: "&c你不能抱它！"
   player_uncarried: "&c你不能抱它！"
 

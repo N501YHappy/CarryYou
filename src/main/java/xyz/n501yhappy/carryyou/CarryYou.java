@@ -1,9 +1,10 @@
 package xyz.n501yhappy.carryyou;
 
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.depends.DominionDepends;
+import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
+import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
 import xyz.n501yhappy.carryyou.listeners.BreakListener;
 import xyz.n501yhappy.carryyou.listeners.CarryCleanupListener;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
@@ -12,21 +13,19 @@ import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import adapts.impl.Version;
 
 public final class CarryYou extends JavaPlugin {
-    public static Boolean worldguard_enabled = false;
-    public static Boolean residence_enabled = false;
+    public static JavaPlugin instance;
 
-    public static Plugin instance;
-
+    public static Boolean worldguard_enable = false;
+    public static Boolean residence_enable = false;
+    public static Boolean dominion_enable = false;
     @Override
     public void onLoad() {
         instance = this;
-        worldguard_enabled = true;
         try {
             Class.forName("com.sk89q.worldguard.WorldGuard");
-            DependsLoader.loadWGDepends();
+            WorldGuardDepends.load();
         } catch (ClassNotFoundException e) {
-            worldguard_enabled = false;
-            //Worldgurad未安装
+            worldguard_enable = false;
         }
         try {
             Version.init(getLogger());
@@ -38,16 +37,16 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //Load residence
-        residence_enabled = true;
+        // Load residence
         try {
             Class.forName("com.bekvon.bukkit.residence.Residence");
-            DependsLoader.loadResDepends();
+            ResidenceDepends.load();
         } catch (ClassNotFoundException e) {
-            residence_enabled = false;
-            //Residence未安装
+            residence_enable = false;
         }
-        //Loaded
+        // Load dominion
+        DominionDepends.load();
+
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
@@ -61,11 +60,11 @@ public final class CarryYou extends JavaPlugin {
 
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
 
-        getLogger().info("§aPlugin Enabled!");
+        getLogger().info("§aPlugin Enabled!§r");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("§cPlugin Disabled!");
+        getLogger().info("§cPlugin Disabled!§r");
     }
 }
