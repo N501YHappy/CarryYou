@@ -24,8 +24,11 @@ public final class CarryYou extends JavaPlugin {
         try {
             Class.forName("com.sk89q.worldguard.WorldGuard");
             WorldGuardDepends.load();
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
             worldguard_enable = false;
+        } catch (Throwable e) {
+            worldguard_enable = false;
+            getLogger().warning("Failed to load WorldGuard integration: " + e.getMessage());
         }
         try {
             Version.init(getLogger());
@@ -41,11 +44,22 @@ public final class CarryYou extends JavaPlugin {
         try {
             Class.forName("com.bekvon.bukkit.residence.Residence");
             ResidenceDepends.load();
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
             residence_enable = false;
+        } catch (Throwable e) {
+            residence_enable = false;
+            getLogger().warning("Failed to load Residence integration: " + e.getMessage());
         }
         // Load dominion
-        DominionDepends.load();
+        try {
+            Class.forName("cn.lunadeer.dominion.api.DominionAPI");
+            DominionDepends.load();
+        } catch (ClassNotFoundException ignored) {
+            dominion_enable = false;
+        }catch (Throwable e) {
+            dominion_enable = false;
+            getLogger().warning("Failed to load Dominion integration: " + e.getMessage());
+        }
 
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
