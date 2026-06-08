@@ -2,6 +2,7 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.depends.DominionDepends;
 import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
 import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
@@ -79,6 +80,8 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        CarryManager.cleanup();
+        Version.getAdapts().cancelTasks(this);
         getLogger().info("§cPlugin Disabled!§r");
     }
 }

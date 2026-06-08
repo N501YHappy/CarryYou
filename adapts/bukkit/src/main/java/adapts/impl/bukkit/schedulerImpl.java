@@ -16,4 +16,9 @@ public class schedulerImpl implements schedulerAdapts {
     public void EntityScheduler_execute(Plugin plugin, Entity entity, Runnable task) {
         task.run();
     }
+
+    @Override
+    public void cancelTasks(Plugin plugin) {
+        Bukkit.getScheduler().cancelTasks(plugin);
+    }
 }

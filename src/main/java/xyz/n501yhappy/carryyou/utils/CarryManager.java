@@ -20,18 +20,25 @@ public class CarryManager {
         if (carryMapping.containsKey(carrierUUID)) return false;
         if (!carrier.getPassengers().isEmpty()) return false; //有人在上面也不行
 
-        put(carrierUUID, targetUUID);
-        carrier.addPassenger(target); //坐在头上
-        return true;
+        if(carrier.addPassenger(target)){
+            put(carrierUUID, targetUUID);
+            return true;
+        }
+        return false;
     }
     
     public static Boolean drop(Entity target,double power) {
         UUID targetUUID = target.getUniqueId();
-        if (!carryMapping.containsValue(targetUUID)) return false; //没有这个人
-        Entity carrier = getCarrierEntityByTarget(targetUUID);
+        if (!carryMapping.containsValue(targetUUID)) return false;
+        UUID carrierUUID = getCarrierByTarget(targetUUID);
+        Entity carrier = carrierUUID != null ? Bukkit.getEntity(carrierUUID) : null;
+        if (carrier == null) {
+            remove(carrierUUID, targetUUID);
+            return false;
+        }
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
-        remove(carrier.getUniqueId(),targetUUID); //一定记住清理映射，否则会被BreakListener拦截掉
+        remove(carrierUUID, targetUUID);
         carrier.removePassenger(target);
         target.setVelocity(vec);
         return true;
@@ -73,6 +80,18 @@ public class CarryManager {
     public static boolean isCarried(UUID targetUUID) {
         return mappingCarry.containsKey(targetUUID);
     }
+    public static void cleanup() {
+        for (Map.Entry<UUID, UUID> entry : carryMapping.entrySet()) {
+            Entity carrier = Bukkit.getEntity(entry.getKey());
+            Entity target = Bukkit.getEntity(entry.getValue());
+            if (carrier != null && target != null) {
+                carrier.removePassenger(target);
+            }
+        }
+        carryMapping.clear();
+        mappingCarry.clear();
+    }
+
     private static Vector calcVector(Vector speed, Location loc,double power){
         //mc里面yaw和平面直角坐标系里面那个不一样，这里给乘-1就好了
         //Yaw: 我们 水平旋转 我们的头，也就是左右转头，这就是一次Yaw转动
