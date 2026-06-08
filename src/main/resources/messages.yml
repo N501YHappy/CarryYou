@@ -7,6 +7,7 @@ break:
 
 # 一些消息
 carry:
+  cooldown: "&c你还要再等 %s 秒" # %s是显示的秒数，不是毫秒数！
   world_deny: "&c当前世界不允许你抱它..."
   no_permission: "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"
   worldguard_deny: "&c小guard告诉我这是别人的领地！你不可以这样！"

@@ -13,6 +13,7 @@ prefix: "&7[&aCarry&bYou&7] "
 # 默认值: 6.0 表示需要每秒点击6次才能挣脱
 
 needed_cps: 6.0
+cooldown: 1000 # 抱起cd 以毫秒位单位 管理员不受限制
 # 进度条设置
 progress_bar:
   # 进度条长度（字符数）

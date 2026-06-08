@@ -11,6 +11,7 @@ import java.util.List;
 public class ConfigLoader {
     public static String PREFIX = "&7[&aCarry&bYou&7] ";
     public static double NEEDED_CPS = 6.0;
+    public static Integer COOLDOWN = 1000;
     public static String PROGRESS_BAR_LEFT = "§7[";
     public static String PROGRESS_BAR_RIGHT = "§7]";
     public static String PROGRESS_BAR_EMPTY = "§c♡";
@@ -30,6 +31,7 @@ public class ConfigLoader {
 
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
+        NEEDED_CPS = config.getDouble("cooldown", 1000);
 
         if (config.contains("progress_bar")) {
             PROGRESS_BAR_LEFT = translateColors(config.getString("progress_bar.left", "&7["));

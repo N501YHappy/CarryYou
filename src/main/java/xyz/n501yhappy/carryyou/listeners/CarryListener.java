@@ -23,6 +23,11 @@ import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
 import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
+import xyz.n501yhappy.carryyou.utils.Cooldown;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class CarryListener implements Listener {
 
@@ -57,6 +62,13 @@ public class CarryListener implements Listener {
     }
 
     private boolean checkCarry(Player player, Entity target) {
+        if(!Cooldown.checkCooldown(player.getUniqueId() )  && !player.isOp()){
+            double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
+            String message = ConfigLoader.PREFIX + MessageConfig.Message.COOLDOWN.get()
+                    .replace("%s", String.format("%.2f", remainingSeconds));
+            player.sendMessage(message);
+            return false;
+        }
         if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
             return false;
