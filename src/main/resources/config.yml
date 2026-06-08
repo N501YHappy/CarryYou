@@ -44,3 +44,7 @@ throw_power:
   attack: 0.9
   # 右键丢出的力度
   interact: 0.4
+
+trigger: # 什么情况触发抱起
+  shift_f_q: true #true则shift+f false 则shift+q
+  empty: true #空手时触发

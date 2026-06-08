@@ -3,16 +3,17 @@ package xyz.n501yhappy.carryyou.listeners;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.CarryYou;
@@ -35,8 +36,20 @@ public class CarryListener implements Listener {
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
 
     @EventHandler
-    public void onCarry(PlayerSwapHandItemsEvent event) {
+    public void onActive(PlayerSwapHandItemsEvent event) {
+        if (!ConfigLoader.TRIGGER_SHIFT_F) return; //不用shift+f
+        onCarry(event);
+    }
+    @EventHandler
+    public void onActive(PlayerDropItemEvent event) {
+        if (ConfigLoader.TRIGGER_SHIFT_F) return; //不用shift+f
+        onCarry(event);
+    }
+    private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();
+        if (ConfigLoader.TRIGGER_EMPTY && !(player.getEquipment().getItemInMainHand() == null || player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
+            return;
+        }
         if (!player.isSneaking()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
@@ -49,7 +62,6 @@ public class CarryListener implements Listener {
         }
         handlePickup(player);
     }
-
     private void handlePickup(Player player) {
         Entity target = getTargetEntity(player);
         if (target == null) return;
