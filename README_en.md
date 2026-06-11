@@ -21,14 +21,16 @@ A Minecraft mod that allows players to grab and carry other entities (including 
 ## How to Use
 
 ### Capturing Entities
-1. **Stealth** (Hold down the Shift key)
+1. **Sneak** (Hold down the Shift key)
 2. **Face** the mob or player you want to capture
-3. **Press the primary/secondary weapon swap key** (default is the `F` key)
+3. **Press the swap hand key** (default `F`) or **press the drop item key** (default `Q`, configurable)
 4. After a successful capture, the entity will sit on your head
+
+> **Cooldown**: There is a cooldown between two carries (configurable), admins are not restricted
 
 ### Dropping the Entity
 
-1. **Gently Place**: Press the main/off-hand swap key again (while in stealth mode)
+1. **Gently Place**: Press the carry key again (while sneaking)
 2. **Throw with Force**: Left-click/Right-click
 
 ## Preview Image
@@ -80,6 +82,10 @@ prefix: “&7[&aCarry&bYou&7] ”
 
 needed_cps: 6.0
 
+# Carry cooldown in milliseconds, admins are not restricted
+# Default: 1000 means 1 second between carries
+cooldown: 1000
+
 # Progress bar settings
 progress_bar:
   # Progress bar length (number of characters)
@@ -111,6 +117,13 @@ throw_power:
   # Throw power when right-clicking
   interact: 0.4
 
+# Trigger settings
+trigger:
+  # true = SHIFT+F trigger, false = SHIFT+Q trigger
+  shift_f_q: true
+  # true = require empty hand to trigger, false = no restriction
+  empty: true
+
 ```
 
 ## Message Configuration (messages.yml)
@@ -129,6 +142,7 @@ break:
 
 # Carry-related messages
 carry:
+  cooldown: “&cYou have to wait %s seconds” # %s displays seconds, not milliseconds!
   world_deny: “&cThe current world doesn't allow you to carry it...”
   no_permission: “&cYou're too small. Wait until you grow up a little more, and then it'll be willing to snuggle into your arms.”
   worldguard_deny: “&cLittle Guard told me this is someone else's territory! You can't do that!”
