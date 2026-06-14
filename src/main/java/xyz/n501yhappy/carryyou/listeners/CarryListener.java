@@ -54,11 +54,7 @@ public class CarryListener implements Listener {
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
         if (CarryManager.isCarrying(player.getUniqueId())) {
-            Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
-            if (target != null) {
-                throwEntity(player, ConfigLoader.THROW_POWER_DROP);
-                return;
-            }
+            return;
         }
         handlePickup(player);
     }
@@ -122,43 +118,7 @@ public class CarryListener implements Listener {
         return true;
     }
 
-    @EventHandler
-    public void onDrop(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
-            event.setCancelled(true);
-            return;
-        }
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
-            event.setCancelled(true);
-        }
-    }
 
-    @EventHandler
-    public void onAttack(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) return;
-        Player player = (Player) event.getDamager();
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEntityEvent event) {
-        Player player = event.getPlayer();
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
-        event.setCancelled(true);
-    }
-
-    private void throwEntity(Player player, double power) {
-        Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
-        if (target == null) return;
-        CarryManager.drop(target, power);
-    }
 
     private Entity getTargetEntity(Player player) {
         Location eyeLocation = player.getEyeLocation();

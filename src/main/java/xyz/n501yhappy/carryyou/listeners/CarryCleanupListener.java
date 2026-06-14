@@ -1,15 +1,14 @@
 package xyz.n501yhappy.carryyou.listeners;
 
-import org.bukkit.entity.Creeper;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
@@ -70,5 +69,21 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         if (entity instanceof Player) {
             BreakRunnable.removePlayer(entityUUID);
         }
+    }
+    // 切换旁观的时候
+    @EventHandler
+    public void onChangingMode(PlayerGameModeChangeEvent event){
+        Player player = event.getPlayer();
+        if (event.getNewGameMode() != GameMode.SPECTATOR) return;
+        UUID playerUUID = player.getUniqueId();
+        if (CarryManager.isCarrying(playerUUID)) {
+            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
+            if (target != null) CarryManager.drop(target,0);
+        }
+        if (CarryManager.isCarried(playerUUID)) {
+            Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
+            if (carrier != null) CarryManager.drop(player,0);
+        }
+        BreakRunnable.removePlayer(playerUUID);
     }
 }
