@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class StatePusher {
     }
 
     public static void onCarry(LivingEntity carrier, LivingEntity carried) {
+        if (!ConfigLoader.WITH_CHICKEN) return;
         if (isChicken(carried)){ // 如果抱的是鸡，直接把状态转移下去
             pushDown(carrier.getUniqueId(), carried.getUniqueId(),true);
         } else {
@@ -63,6 +65,7 @@ public class StatePusher {
     }
 
     public static void onDrop(LivingEntity carrier, LivingEntity carried) {
+        if (!ConfigLoader.WITH_CHICKEN) return;
         if (isChicken(carried) || hasChicken.getOrDefault(carrier.getUniqueId(), false)){
             pushDown(carrier.getUniqueId(), null,false);
         }

@@ -61,6 +61,8 @@ public final class CarryYou extends JavaPlugin {
             getLogger().warning("Failed to load Dominion integration: " + e.getMessage());
         }
 
+        ConfigLoader.load();
+
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
@@ -68,8 +70,6 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
 
         new Metrics(this, 29710);
-
-        ConfigLoader.load();
 
         getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
 

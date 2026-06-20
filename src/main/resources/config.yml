@@ -48,3 +48,7 @@ throw_power:
 trigger: # 什么情况触发抱起
   shift_f_q: true #true则shift+f false 则shift+q
   empty: true #空手时触发
+
+fun: # 一些有趣的功能
+  with_chicken: true #抱起鸡给予缓降
+  with_creeper: true #抱起苦力怕而不爆炸

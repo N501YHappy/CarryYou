@@ -24,6 +24,8 @@ public class ConfigLoader {
     public static Double THROW_POWER_INTERACT = 0.9;
     public static Boolean TRIGGER_SHIFT_F = true;
     public static Boolean TRIGGER_EMPTY = true;
+    public static Boolean WITH_CHICKEN = true;
+    public static Boolean WITH_CREEPER = true;
 
     public static void load() {
         CarryYou.instance.saveDefaultConfig();
@@ -58,6 +60,10 @@ public class ConfigLoader {
         if (config.contains("trigger")) {
             TRIGGER_SHIFT_F = config.getBoolean("trigger.shift_f_q", true);
             TRIGGER_EMPTY = config.getBoolean("trigger.empty", true);
+        }
+        if (config.contains("fun")) {
+            WITH_CHICKEN = config.getBoolean("fun.with_chicken", true);
+            WITH_CREEPER = config.getBoolean("fun.with_creeper", true);
         }
     }
     public static void reload() {
