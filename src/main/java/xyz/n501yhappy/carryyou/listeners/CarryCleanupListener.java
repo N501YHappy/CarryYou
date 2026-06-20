@@ -3,6 +3,7 @@ package xyz.n501yhappy.carryyou.listeners;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,7 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         if (CarryManager.isCarrying(playerUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
+            LivingEntity target = CarryManager.getTargetEntityByCarrier(playerUUID);
             if (target != null) CarryManager.drop(target,0);
         }
         if (CarryManager.isCarried(playerUUID)) {
@@ -77,7 +78,7 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         if (event.getNewGameMode() != GameMode.SPECTATOR) return;
         UUID playerUUID = player.getUniqueId();
         if (CarryManager.isCarrying(playerUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
+            LivingEntity target = CarryManager.getTargetEntityByCarrier(playerUUID);
             if (target != null) CarryManager.drop(target,0);
         }
         if (CarryManager.isCarried(playerUUID)) {

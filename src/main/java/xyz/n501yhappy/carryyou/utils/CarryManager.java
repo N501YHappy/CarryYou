@@ -3,6 +3,7 @@ package xyz.n501yhappy.carryyou.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 import java.util.Map;
@@ -27,11 +28,12 @@ public class CarryManager {
         return false;
     }
     
-    public static Boolean drop(Entity target,double power) {
+    public static Boolean drop(LivingEntity target, double power) {
         UUID targetUUID = target.getUniqueId();
         if (!carryMapping.containsValue(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
-        Entity carrier = carrierUUID != null ? Bukkit.getEntity(carrierUUID) : null;
+        LivingEntity carrier = carrierUUID != null ?(LivingEntity) Bukkit.getEntity(carrierUUID) : null;
+
         if (carrier == null) {
             remove(carrierUUID, targetUUID);
             return false;
@@ -39,6 +41,7 @@ public class CarryManager {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);
+        StatePusher.onDrop(carrier,target);
         carrier.removePassenger(target);
         target.setVelocity(vec);
         return true;
@@ -62,9 +65,9 @@ public class CarryManager {
     }
     
     // 获取被抓实体的Entity对象
-    public static Entity getTargetEntityByCarrier(UUID carrierUUID) {
+    public static LivingEntity getTargetEntityByCarrier(UUID carrierUUID) {
         UUID targetUUID = getTargetByCarrier(carrierUUID);
-        return targetUUID != null ? Bukkit.getEntity(targetUUID) : null;
+        return targetUUID != null ? (LivingEntity) Bukkit.getEntity(targetUUID) : null;
     }
     
     // 获取抓取者的Entity对象

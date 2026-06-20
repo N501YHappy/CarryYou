@@ -14,7 +14,6 @@ public class Cooldown {
         Long last = last_action.get(uuid);
 
         if (last == null) { // 第一次使用无冷却
-            last_action.put(uuid, now);
             return true;
         }
 
@@ -23,6 +22,10 @@ public class Cooldown {
             return true;
         }
         return false;
+    }
+    public static void setCooldown(UUID uuid){
+        long now = System.currentTimeMillis();
+        last_action.put(uuid, now);
     }
 
     public static Integer getRemains(UUID uuid){

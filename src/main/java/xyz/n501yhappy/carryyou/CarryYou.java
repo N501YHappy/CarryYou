@@ -3,6 +3,7 @@ package xyz.n501yhappy.carryyou;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.listeners.*;
+import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.depends.DominionDepends;
 import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
@@ -16,6 +17,7 @@ public final class CarryYou extends JavaPlugin {
     public static Boolean worldguard_enable = false;
     public static Boolean residence_enable = false;
     public static Boolean dominion_enable = false;
+
     @Override
     public void onLoad() {
         instance = this;
@@ -54,13 +56,12 @@ public final class CarryYou extends JavaPlugin {
             DominionDepends.load();
         } catch (ClassNotFoundException ignored) {
             dominion_enable = false;
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             dominion_enable = false;
             getLogger().warning("Failed to load Dominion integration: " + e.getMessage());
         }
 
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
-        getServer().getPluginManager().registerEvents(new DropListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
@@ -72,6 +73,7 @@ public final class CarryYou extends JavaPlugin {
         getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
 
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
+        Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new StateEffector(20), 20L, 20);
 
         getLogger().info("§aPlugin Enabled!§r");
     }

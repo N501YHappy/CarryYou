@@ -25,6 +25,7 @@ import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
+import xyz.n501yhappy.carryyou.utils.StatePusher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,21 +55,64 @@ public class CarryListener implements Listener {
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
         if (CarryManager.isCarrying(player.getUniqueId())) {
-            return;
+            Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+            if (target != null) {
+                throwEntity(player, ConfigLoader.THROW_POWER_DROP);
+                return;
+            }
         }
         handlePickup(player);
     }
     private void handlePickup(Player player) {
-        Entity target = getTargetEntity(player);
+        LivingEntity target = getTargetEntity(player);
         if (target == null) return;
         if (target.getUniqueId().equals(player.getUniqueId())) return;
 
         if (!checkCarry(player, target)) return;
         if (CarryManager.isCarried(target.getUniqueId())) return;
 
-        CarryManager.carry(player, target);
+        if (CarryManager.carry(player, target)){
+            StatePusher.onCarry(player,target);
+            Cooldown.setCooldown(player.getUniqueId());
+        }
+    }
+    @EventHandler
+    public void onDrop(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
+            event.setCancelled(true);
+        }
     }
 
+    @EventHandler
+    public void onAttack(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return;
+        Player player = (Player) event.getDamager();
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
+        event.setCancelled(true);
+    }
+
+    private void throwEntity(Player player, double power) {
+        LivingEntity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+        if (target == null) return;
+        CarryManager.drop(target, power);
+    }
     private boolean checkCarry(Player player, Entity target) {
         if(!Cooldown.checkCooldown(player.getUniqueId() )  && !player.isOp()){
             double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
@@ -120,7 +164,7 @@ public class CarryListener implements Listener {
 
 
 
-    private Entity getTargetEntity(Player player) {
+    private LivingEntity getTargetEntity(Player player) {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
 
@@ -133,6 +177,11 @@ public class CarryListener implements Listener {
                 0.1,
                 entity -> entity instanceof LivingEntity && !entity.equals(player) && !entity.isDead()
         );
-        return (result != null && result.getHitEntity() != null) ? result.getHitEntity() : null;
+        if ((result != null && result.getHitEntity() != null)){
+            if (result.getHitEntity() instanceof LivingEntity){
+                return (LivingEntity) result.getHitEntity();
+             }
+        }
+        return null;
     }
 }
