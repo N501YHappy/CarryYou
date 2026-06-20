@@ -65,6 +65,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
+        getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
 
         new Metrics(this, 29710);
 
