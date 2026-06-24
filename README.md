@@ -1,14 +1,14 @@
 # CarryYou - 把玩家抱起来
 
-<div align="center" style="font-size: 24px;">
-  <a href="./README.md">简体中文  </a>
-  <a href="./README_en.md">  English</a>
+<div align="center">
+  <a href="./README.md">简体中文</a> ｜
+  <a href="./README_en.md">English</a>
 </div>
 
+<br>
 
-一个允许玩家抓取和携带其他实体（包括玩家）的Minecraft插件
+一个允许玩家**抓取并携带**其他实体（包括玩家）的 Minecraft 插件。
 
-![Minecraft](https://img.shields.io/badge/Minecraft-1.16+-brightgreen)
 
 ## 安装方法 (还用说嘛？)
 
@@ -37,6 +37,11 @@
 ## 预览图
 ![cxk](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img.png)
 ![nya](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img2.png)
+
+### 特殊生物效
+- **抱起鸡**：自动获得缓降效果，防止摔落伤害
+- **抱起苦力怕**：苦力怕不会爆炸，安全无忧
+- 以上功能可在配置文件中开关（`fun.with_chicken` / `fun.with_creeper`）
 
 ### 挣脱机制 (注意，这并不是第五人格)
 如果你被其他玩家抓取，可以：
@@ -108,6 +113,13 @@ deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
 
 deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
   - "ender_dragon"
+
+# 有趣的功能设置
+fun:
+  # 抱起鸡时给予缓降效果
+  with_chicken: true
+  # 抱起苦力怕时不会爆炸
+  with_creeper: true
 
 # 丢出力度设置
 throw_power:
