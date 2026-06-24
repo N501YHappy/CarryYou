@@ -46,6 +46,9 @@ public class StatePusher {
             if (next == null) return;
             withChicken.remove(uuid);
         } else {
+            if (hasChicken.getOrDefault(fa, false)){
+                withChicken.add(fa);
+            }
             withChicken.remove(uuid);
             LivingEntity entity = getLivingEntity(uuid);
             if (entity != null && isChicken(entity)) return;
@@ -67,7 +70,7 @@ public class StatePusher {
     public static void onDrop(LivingEntity carrier, LivingEntity carried) {
         if (!ConfigLoader.WITH_CHICKEN) return;
         if (isChicken(carried) || hasChicken.getOrDefault(carrier.getUniqueId(), false)){
-            pushDown(carrier.getUniqueId(), null,false);
+            pushDown(carrier.getUniqueId(), carried.getUniqueId(),false);
         }
         if (!isChicken(carried)) {
             linked.put(carried.getUniqueId(), null);
