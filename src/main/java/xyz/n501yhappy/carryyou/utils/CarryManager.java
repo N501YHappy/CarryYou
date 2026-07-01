@@ -4,7 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CarryManager {
     private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
     private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
+    private static Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
     
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
@@ -93,6 +98,69 @@ public class CarryManager {
         }
         carryMapping.clear();
         mappingCarry.clear();
+    }
+
+    public static void setCarryDisabled(UUID uuid, boolean disabled) {
+        carryDisabled.put(uuid, disabled);
+    }
+
+    public static boolean isCarryDisabled(UUID uuid) {
+        return carryDisabled.getOrDefault(uuid, false);
+    }
+
+    public static boolean checkCarry(Player player, Entity target) {
+        if (isCarryDisabled(player.getUniqueId())) return false;
+
+        if(!Cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
+            double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
+            String message = ConfigLoader.PREFIX + MessageConfig.Message.COOLDOWN.get()
+                    .replace("%s", String.format("%.2f", remainingSeconds));
+            player.sendMessage(message);
+            return false;
+        }
+        if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
+            return false;
+        }
+
+        if (!player.hasPermission("carryyou.can") && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_NO_PERMISSION.get());
+            return false;
+        }
+
+        if (CarryYou.worldguard_enable && !Checkers.worldguard_check(target, player) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
+            return false;
+        }
+
+        if (CarryYou.residence_enable && !Checkers.residence_check(target, player) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
+            return false;
+        }
+
+        if (CarryYou.dominion_enable && !Checkers.dominion_check(target, player) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_DOMINION_DENY.get());
+            return false;
+        }
+
+        if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()) {
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_ENTITY_DENY.get());
+            return false;
+        }
+
+        if (target instanceof Player) {
+            Player targetP = (Player) target;
+            if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
+                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
+                return false;
+            }
+            if (isCarryDisabled(targetP.getUniqueId())) {
+                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static Vector calcVector(Vector speed, Location loc,double power){

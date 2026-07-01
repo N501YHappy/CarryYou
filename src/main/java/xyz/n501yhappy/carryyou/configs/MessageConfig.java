@@ -26,7 +26,9 @@ public class MessageConfig {
         COMMAND_NO_PERMISSION("command.no_permission", "&c你没有权限使用此命令！"),
         COMMAND_RELOAD_SUCCESS("command.reload_success", "&a配置文件已重新加载！"),
         COMMAND_RELOAD_ERROR("command.reload_error", "&c重新加载配置文件时出错: "),
-        COOLDOWN("carry.cooldown", "&c你还要再等 %s 秒");
+        COOLDOWN("carry.cooldown", "&c你还要再等 %s 秒"),
+        DISABLE_CARRY("carry.disable_carry", "&c你现在不可以被抱起来！"),
+        ENABLE_CARRY("carry.enable_carry", "&a你现在可以被抱起来！");
 
 
 

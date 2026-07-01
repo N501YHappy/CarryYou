@@ -17,20 +17,10 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.configs.MessageConfig;
-import xyz.n501yhappy.carryyou.depends.DominionDepends;
-import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
-import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
-import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.StatePusher;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class CarryListener implements Listener {
 
@@ -40,6 +30,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onActive(PlayerSwapHandItemsEvent event) {
         if (!ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+f进行触发时
+        if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
         event.setCancelled(true);
     }
@@ -49,6 +40,7 @@ public class CarryListener implements Listener {
 
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         // 左右手都会触发，这里做一下过滤
+        if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
         event.setCancelled(true);
     }
@@ -57,7 +49,6 @@ public class CarryListener implements Listener {
         if (ConfigLoader.TRIGGER_EMPTY && !(player.getEquipment().getItemInMainHand() == null || player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
             return;
         }
-        if (!player.isSneaking()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
         if (CarryManager.isCarrying(player.getUniqueId())) {
@@ -69,7 +60,7 @@ public class CarryListener implements Listener {
         }
         LivingEntity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
-        if (!checkCarry(player, target)) return;
+        if (!CarryManager.checkCarry(player, target)) return;
 
         handlePickup(player, target);
     }
@@ -123,55 +114,6 @@ public class CarryListener implements Listener {
         if (target == null) return;
         CarryManager.drop(target, power);
     }
-    private boolean checkCarry(Player player, Entity target) {
-        if(!Cooldown.checkCooldown(player.getUniqueId() )  && !player.isOp()){
-            double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
-            String message = ConfigLoader.PREFIX + MessageConfig.Message.COOLDOWN.get()
-                    .replace("%s", String.format("%.2f", remainingSeconds));
-            player.sendMessage(message);
-            return false;
-        }
-        if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
-            return false;
-        }
-
-        if (!player.hasPermission("carryyou.can") && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_NO_PERMISSION.get());
-            return false;
-        }
-
-        if (CarryYou.worldguard_enable && !Checkers.worldguard_check(target, player) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
-            return false;
-        }
-
-        if (CarryYou.residence_enable && !Checkers.residence_check(target, player) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
-            return false;
-        }
-
-        if (CarryYou.dominion_enable && !Checkers.dominion_check(target, player) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_DOMINION_DENY.get());
-            return false;
-        }
-
-        if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()) {
-            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_ENTITY_DENY.get());
-            return false;
-        }
-
-        if (target instanceof Player) {
-            Player targetP = (Player) target;
-            if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
-                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 
 
     private LivingEntity getTargetEntity(Player player) {

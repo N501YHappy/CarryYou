@@ -15,6 +15,8 @@ carry:
   dominion_deny: "&c不行！这是别人的地盘！"
   entity_deny: "&c你不能抱它！"
   player_uncarried: "&c你不能抱它！"
+  enable_carry: "&a你现在可以被抱起来！"
+  disable_carry: "&c你现在不可以被抱起来！"
 
 # 命令提示
 command:
