@@ -1,7 +1,0 @@
-.gradle/
-build
-.idea
-.gitignore
-adapts/shared/build
-adapts/folia/build
-adapts/bukkit/build

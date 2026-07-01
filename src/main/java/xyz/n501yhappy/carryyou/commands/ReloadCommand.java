@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReloadCommand implements CommandExecutor, TabExecutor {
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("carryyou.reload")) {
             sender.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.COMMAND_NO_PERMISSION.get());
             return true;
         }
-        
+
         try {
             ConfigLoader.reload();
             sender.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.COMMAND_RELOAD_SUCCESS.get());
@@ -29,7 +29,7 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
             return true;
         }
     }
-    
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return new ArrayList<>(); // 无自动补全
