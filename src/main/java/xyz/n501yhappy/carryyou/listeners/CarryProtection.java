@@ -9,6 +9,6 @@ public class CarryProtection implements Listener {
     @EventHandler
     public void onSuffocation(EntityDamageEvent event){ //抱在墙里面窒息
         if (!CarryManager.isCarried(event.getEntity().getUniqueId())) return;
-        event.setCancelled(true);
+        if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) event.setCancelled(true);
     }
 }
