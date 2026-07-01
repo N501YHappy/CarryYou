@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.CarryYou;
@@ -38,13 +39,18 @@ public class CarryListener implements Listener {
 
     @EventHandler
     public void onActive(PlayerSwapHandItemsEvent event) {
-        if (!ConfigLoader.TRIGGER_SHIFT_F) return; //不用shift+f
+        if (!ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+f进行触发时
         onCarry(event);
+        event.setCancelled(true);
     }
     @EventHandler
-    public void onActive(PlayerDropItemEvent event) {
-        if (ConfigLoader.TRIGGER_SHIFT_F) return; //不用shift+f
+    public void onActive(PlayerInteractEntityEvent event) {
+        if (ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+right click进行触发时
+
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;
+        // 左右手都会触发，这里做一下过滤
         onCarry(event);
+        event.setCancelled(true);
     }
     private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();
@@ -61,16 +67,19 @@ public class CarryListener implements Listener {
                 return;
             }
         }
-        handlePickup(player);
-    }
-    private void handlePickup(Player player) {
         LivingEntity target = getTargetEntity(player);
-        if (target == null) return;
-        if (target.getUniqueId().equals(player.getUniqueId())) return;
-
+        if (!isValidTarget(player, target)) return;
         if (!checkCarry(player, target)) return;
-        if (CarryManager.isCarried(target.getUniqueId())) return;
 
+        handlePickup(player, target);
+    }
+    private boolean isValidTarget(Player player, LivingEntity target) {
+        return target != null
+            && !target.getUniqueId().equals(player.getUniqueId())
+            && !CarryManager.isCarried(target.getUniqueId());
+    }
+
+    private void handlePickup(Player player,LivingEntity target) {
         if (CarryManager.carry(player, target)){
             StatePusher.onCarry(player,target);
             Cooldown.setCooldown(player.getUniqueId());
@@ -103,6 +112,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
+        if (player.isSneaking() && !ConfigLoader.TRIGGER_SHIFT_F) return; //防止与抓举冲突
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
         event.setCancelled(true);

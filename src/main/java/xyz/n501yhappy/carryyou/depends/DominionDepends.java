@@ -27,7 +27,7 @@ public class DominionDepends {
         DM_FLAG_CARRIABLE = new PriFlag("carriable", "可使用抓举", "在你的领地内，其他人可以抓举生物", false, true, Material.LEAD);
         Flags.registerPriFlag(CarryYou.instance, DM_FLAG_CARRIABLE);
         try {
-            Flags.applyNewCustomFlags(); //应用到其系统中喵~
+            Flags.applyNewCustomFlags(); //应用到其系统中
         } catch (Exception e) {
             e.printStackTrace();
             CarryYou.dominion_enable = false;

@@ -46,7 +46,7 @@ throw_power:
   interact: 0.4
 
 trigger: # 什么情况触发抱起
-  shift_f_q: true #true则shift+f false 则shift+q
+  shift_f: true #true则shift+f false则shift+右键
   empty: true #空手时触发
 
 fun: # 一些有趣的功能

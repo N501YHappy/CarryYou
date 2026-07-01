@@ -58,7 +58,7 @@ public class ConfigLoader {
             THROW_POWER_INTERACT = config.getDouble("throw_power.interact", 0.9);
         }
         if (config.contains("trigger")) {
-            TRIGGER_SHIFT_F = config.getBoolean("trigger.shift_f_q", true);
+            TRIGGER_SHIFT_F = config.getBoolean("trigger.shift_f", true);
             TRIGGER_EMPTY = config.getBoolean("trigger.empty", true);
         }
         if (config.contains("fun")) {
