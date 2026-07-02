@@ -23,7 +23,14 @@ public class CarryManager {
         UUID carrierUUID = carrier.getUniqueId();
         UUID targetUUID = target.getUniqueId();
 
-        if (carryMapping.containsKey(carrierUUID)) return false;
+        if (carryMapping.containsKey(carrierUUID)) {
+            UUID oldTarget = carryMapping.get(carrierUUID);
+            if (Bukkit.getEntity(oldTarget) == null) {
+                remove(carrierUUID, oldTarget); // 目标已被不见了，清理脏数据
+            } else {
+                return false;
+            }
+        }
         if (!carrier.getPassengers().isEmpty()) return false; //有人在上面也不行
 
         if(carrier.addPassenger(target)){
@@ -57,7 +64,7 @@ public class CarryManager {
     }
     
     public static void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
-        carryMapping.remove(carrierUUID);
+        carryMapping.remove(carrierUUID) ;
         mappingCarry.remove(targetUUID);
     }
     public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
@@ -109,7 +116,7 @@ public class CarryManager {
     }
 
     public static boolean checkCarry(Player player, Entity target) {
-        if (isCarryDisabled(player.getUniqueId())) return false;
+        if (isCarryDisabled(target.getUniqueId())) return false;
 
         if(!Cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
             double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
@@ -154,7 +161,7 @@ public class CarryManager {
                 player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;
             }
-            if (isCarryDisabled(targetP.getUniqueId())) {
+            if (isCarryDisabled(targetP.getUniqueId())  && !player.isOp()) {
                 player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;
             }

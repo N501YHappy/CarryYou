@@ -1,5 +1,6 @@
 package xyz.n501yhappy.carryyou.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
@@ -21,6 +23,8 @@ import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.StatePusher;
+
+import java.util.UUID;
 
 public class CarryListener implements Listener {
 
@@ -54,7 +58,7 @@ public class CarryListener implements Listener {
         if (CarryManager.isCarrying(player.getUniqueId())) {
             Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
             if (target != null) {
-                throwEntity(player, ConfigLoader.THROW_POWER_DROP);
+                throwEntity(player, ConfigLoader.THROW_POWER_DROP,event);
                 return;
             }
         }
@@ -81,13 +85,11 @@ public class CarryListener implements Listener {
         Player player = event.getPlayer();
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
-            event.setCancelled(true);
+            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
             return;
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
-            event.setCancelled(true);
+            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
         }
     }
 
@@ -96,8 +98,7 @@ public class CarryListener implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, ConfigLoader.THROW_POWER_ATTACK);
-        event.setCancelled(true);
+        throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
     }
 
     @EventHandler
@@ -105,14 +106,21 @@ public class CarryListener implements Listener {
         Player player = event.getPlayer();
         if (player.isSneaking() && !ConfigLoader.TRIGGER_SHIFT_F) return; //防止与抓举冲突
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
-        throwEntity(player, ConfigLoader.THROW_POWER_INTERACT);
-        event.setCancelled(true);
+        throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
     }
 
-    private void throwEntity(Player player, double power) {
-        LivingEntity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
-        if (target == null) return;
-        CarryManager.drop(target, power);
+    private <T extends Cancellable> void throwEntity(Player player, double power,T event) {
+        UUID targetUUID = CarryManager.getTargetByCarrier(player.getUniqueId());
+        if (targetUUID == null){
+            return;
+        }
+        Entity target = Bukkit.getEntity(targetUUID);
+        if (target == null){
+            CarryManager.remove(player.getUniqueId(),targetUUID);
+            return;
+        }
+        event.setCancelled(true);
+        CarryManager.drop((LivingEntity) target, power);
     }
 
 
