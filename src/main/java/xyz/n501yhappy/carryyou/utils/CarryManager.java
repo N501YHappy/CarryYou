@@ -42,7 +42,7 @@ public class CarryManager {
     
     public static Boolean drop(LivingEntity target, double power) {
         UUID targetUUID = target.getUniqueId();
-        if (!carryMapping.containsValue(targetUUID)) return false;
+        if (!carryMapping.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
         LivingEntity carrier = carrierUUID != null ?(LivingEntity) Bukkit.getEntity(carrierUUID) : null;
 

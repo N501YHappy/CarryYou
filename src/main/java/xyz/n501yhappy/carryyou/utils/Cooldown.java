@@ -5,9 +5,10 @@ import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Cooldown {
-    private static Map<UUID,Long> last_action = new HashMap<>();
+    private static Map<UUID,Long> last_action = new ConcurrentHashMap<>();
 
     public static boolean checkCooldown(UUID uuid){
         long now = System.currentTimeMillis();

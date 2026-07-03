@@ -7,11 +7,13 @@ import org.bukkit.entity.LivingEntity;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StatePusher {
-    private static Map<UUID, Boolean> hasChicken = new HashMap<>();
-    private static List<UUID> withChicken = new ArrayList<>();
-    private static Map<UUID, UUID> linked = new HashMap<>();
+    private static Map<UUID, Boolean> hasChicken = new ConcurrentHashMap<>();
+    private static List<UUID> withChicken = new CopyOnWriteArrayList<>();
+    private static Map<UUID, UUID> linked = new ConcurrentHashMap<>();
 
     private static boolean isChicken(LivingEntity entity){
         return entity instanceof Chicken;

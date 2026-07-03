@@ -36,7 +36,6 @@ public class CarryListener implements Listener {
         if (!ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+f进行触发时
         if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
-        event.setCancelled(true);
     }
     @EventHandler
     public void onActive(PlayerInteractEntityEvent event) {
@@ -46,7 +45,6 @@ public class CarryListener implements Listener {
         // 左右手都会触发，这里做一下过滤
         if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
-        event.setCancelled(true);
     }
     private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();

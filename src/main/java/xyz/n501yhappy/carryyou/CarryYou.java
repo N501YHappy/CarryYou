@@ -18,6 +18,8 @@ public final class CarryYou extends JavaPlugin {
     public static Boolean residence_enable = false;
     public static Boolean dominion_enable = false;
 
+    private Metrics metrics;
+
     @Override
     public void onLoad() {
         instance = this;
@@ -69,7 +71,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
 
-        new Metrics(this, 29710);
+        metrics = new Metrics(this, 29710);
 
         getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
 
@@ -83,6 +85,7 @@ public final class CarryYou extends JavaPlugin {
     public void onDisable() {
         CarryManager.cleanup();
         Version.getAdapts().cancelTasks(this);
+        metrics.shutdown();
         getLogger().info("§cPlugin Disabled!§r");
     }
 }
