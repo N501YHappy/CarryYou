@@ -16,6 +16,10 @@ public class schedulerImpl implements schedulerAdapts{
     public void EntityScheduler_execute(Plugin plugin, Entity entity, Runnable task) {
         entity.getScheduler().run(plugin, scheduledTask -> task.run(), null);
     }
+    @Override
+    public void EntityScheduler_runDelayed(Plugin plugin, Entity entity, Runnable task,long delay) {
+        entity.getScheduler().runDelayed(plugin, scheduledTask -> task.run(), null,delay);
+    }
 
     @Override
     public void cancelTasks(Plugin plugin) {

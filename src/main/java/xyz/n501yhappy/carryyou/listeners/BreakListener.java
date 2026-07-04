@@ -17,9 +17,7 @@ import java.util.UUID;
 public class BreakListener implements Listener {
 
     @EventHandler
-    public void onBreak(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
-
+    public void onBreak(PlayerInteractEvent event) { //左右键都进行检测
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
 

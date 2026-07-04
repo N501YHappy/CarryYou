@@ -7,6 +7,6 @@ public interface schedulerAdapts {
     void GlobalRegionScheduler_runAtFixedRate(Plugin plugin, Runnable runnable, long delay, long period);
 
     void EntityScheduler_execute(Plugin plugin, Entity entity, Runnable task);
-
+    void EntityScheduler_runDelayed(Plugin plugin, Entity entity, Runnable task,long delay);
     void cancelTasks(Plugin plugin);
 }

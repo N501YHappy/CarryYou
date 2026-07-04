@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StatePusher {
     private static Map<UUID, Boolean> hasChicken = new ConcurrentHashMap<>();
     private static List<UUID> withChicken = new CopyOnWriteArrayList<>();
-    private static Map<UUID, UUID> linked = new ConcurrentHashMap<>();
+    private static Map<UUID, UUID> linked = new ConcurrentHashMap<>(); // 被抓的指向抓人的
 
     private static boolean isChicken(LivingEntity entity){
         return entity instanceof Chicken;
@@ -75,7 +75,7 @@ public class StatePusher {
             pushDown(carrier.getUniqueId(), carried.getUniqueId(),false);
         }
         if (!isChicken(carried)) {
-            linked.put(carried.getUniqueId(), null);
+            linked.remove(carried.getUniqueId());
         }
     }
 

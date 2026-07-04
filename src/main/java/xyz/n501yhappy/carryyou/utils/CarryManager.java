@@ -18,7 +18,7 @@ public class CarryManager {
     private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
     private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
     private static Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
-    
+
     public static Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
         UUID targetUUID = target.getUniqueId();
@@ -42,7 +42,7 @@ public class CarryManager {
     
     public static Boolean drop(LivingEntity target, double power) {
         UUID targetUUID = target.getUniqueId();
-        if (!carryMapping.containsKey(targetUUID)) return false;
+        if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
         LivingEntity carrier = carrierUUID != null ?(LivingEntity) Bukkit.getEntity(carrierUUID) : null;
 
