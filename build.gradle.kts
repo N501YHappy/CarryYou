@@ -25,9 +25,6 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
     compileOnly(files("./libs/Residence6.0.1.6.jar"))
     compileOnly("cn.lunadeer:DominionAPI:4.7.3")
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.61")
-    implementation("com.squareup.okhttp3:okhttp:5.4.0")
-
     implementation(project(":adapts:shared"))
     add("shadowLink", project(":adapts:folia"))
     add("shadowLink", project(":adapts:bukkit"))
@@ -40,9 +37,6 @@ tasks {
         configurations.add(project.configurations.runtimeClasspath.get())
         // 重命名包避免和别的插件冲突
         relocate("adapts.impl", "xyz.n501yhappy.carryyou.adapts")
-        relocate("okhttp3", "xyz.n501yhappy.carryyou.libs.okhttp3")
-        relocate("okio", "xyz.n501yhappy.carryyou.libs.okio")
-        relocate("com.alibaba.fastjson2", "xyz.n501yhappy.carryyou.libs.fastjson2")
     }
 
     processResources {
