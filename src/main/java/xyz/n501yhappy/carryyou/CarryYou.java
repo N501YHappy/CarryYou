@@ -78,6 +78,8 @@ public final class CarryYou extends JavaPlugin {
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new StateEffector(20), 20L, 20);
 
+        Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
+
         getLogger().info("§aPlugin Enabled!§r");
     }
 

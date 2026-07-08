@@ -19,7 +19,6 @@ public class Cooldown {
         }
 
         if (now - last >= ConfigLoader.COOLDOWN) {
-            last_action.put(uuid, now);
             return true;
         }
         return false;

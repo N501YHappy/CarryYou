@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public class ConfigLoader {
+    public static Boolean CHECK_UPDATE = true;
     public static String PREFIX = "&7[&aCarry&bYou&7] ";
     public static Double NEEDED_CPS = 6.0;
     public static Integer COOLDOWN = 1000;
@@ -33,6 +34,7 @@ public class ConfigLoader {
         FileConfiguration config = CarryYou.instance.getConfig();
         MessageConfig.load(CarryYou.instance, CarryYou.instance.getLogger());
 
+        CHECK_UPDATE = config.getBoolean("check_update", true);
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
         COOLDOWN = (int) config.getDouble("cooldown", 1000);

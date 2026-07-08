@@ -20,6 +20,11 @@ public class schedulerImpl implements schedulerAdapts {
     public void EntityScheduler_runDelayed(Plugin plugin, Entity entity, Runnable task,long delay) {
         Bukkit.getScheduler().runTaskLater(plugin,task,delay);
     }
+    @Override
+    public void AsyncScheduler_run(Plugin plugin,Runnable task){
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,task);
+    }
+
 
     @Override
     public void cancelTasks(Plugin plugin) {
