@@ -24,7 +24,7 @@
 ### 抓取实体
 1. **潜行**（按住Shift键）
 2. **看向**想要抓取的生物或玩家
-3. **按下交换主副手键**（默认是 `F` 键）或 **按下丢弃物品键**（默认是 `Q` 键，可在配置中切换）
+3. **按下交换主副手键**（默认是 `F` 键）或 **右键**
 4. 成功抓取后，实体会坐在你头上
 
 > **冷却时间**：两次抓取之间需要等待冷却（可在配置中设置），管理员不受限制
@@ -52,17 +52,20 @@
 ## 权限和命令
 
 ### 命令
-| 命令 | 别名 | 描述 | 权限 | 默认 |
-|------|------|------|------|------|
-| `/carryyou` | `/cy reload` | 重新加载插件配置 | `carryyou.reload` | OP |
+| 命令 | 描述 | 权限 | 默认 |
+|------|------|------|------|
+| `/carryyou` | 切换自己是否允许被他人抱起 | 无 | 所有人 |
+| `/carryyou on` | 允许被他人抱起 | 无 | 所有人 |
+| `/carryyou off` | 禁止被他人抱起 | 无 | 所有人 |
+| `/carryyou reload` | 重新加载插件配置 | `carryyou.reload` | OP |
 
 ### 权限节点
-| 权限节点                 | 描述          | 默认   |
-|----------------------|-------------|------|
-| `carryyou.reload`    | 允许重新加载插件配置  | OP   |
-| `carryyou.uncarried` | 有这个权限的人抱不起来 | 谁都没有 |
-| `carryyou.unbreak`   | 有这个的跑不掉     | 谁都没有 |
-| `carryyou.can`       | 有这个可以抱别人    | 人人有份 |
+| 权限节点                 | 描述               | 默认   |
+|----------------------|------------------|------|
+| `carryyou.reload`    | 允许重新加载插件配置       | OP   |
+| `carryyou.uncarried` | 有此权限的玩家无法被他人抓举   | 谁都没有 |
+| `carryyou.unbreak`   | 有此权限的玩家无法挣脱被抓举   | 谁都没有 |
+| `carryyou.can`       | 有此权限才能抱起别人       | 人人有份 |
 
 # 杂交
 ## WorldGuard
@@ -78,7 +81,9 @@
 
 ```yaml
 # config.yml
-# config.yml
+
+# 是否检查更新 这样会第一时间把新版本告诉你！
+check_update: true
 
 # 插件提示前缀
 prefix: "&7[&aCarry&bYou&7] "
@@ -132,11 +137,10 @@ throw_power:
 
 # 触发方式设置
 trigger:
-  # true = SHIFT+F 触发，false = SHIFT+Q 触发
-  shift_f_q: true
+  # true = SHIFT+F 触发，false = SHIFT+右键 触发
+  shift_f: true
   # true = 需要空手才能触发，false = 不限制
-  empty: true
-
+  empty: false
 ```
 
 ## 消息配置 (messages.yml)
@@ -163,6 +167,8 @@ carry:
   dominion_deny: "&c不行！这是别人的地盘！"
   entity_deny: "&c你不能抱它！"
   player_uncarried: "&c你不能抱它！"
+  enable_carry: "&a你现在可以被抱起来！"
+  disable_carry: "&c你现在不可以被抱起来！"
 
 # 命令相关消息
 command:
