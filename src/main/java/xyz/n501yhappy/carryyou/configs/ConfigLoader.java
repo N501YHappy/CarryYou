@@ -3,6 +3,7 @@ package xyz.n501yhappy.carryyou.configs;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.listeners.CarryListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class ConfigLoader {
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
         COOLDOWN = (int) config.getDouble("cooldown", 1000);
+        CarryListener.setCarryCooldown(COOLDOWN);
 
         if (config.contains("progress_bar")) {
             PROGRESS_BAR_LEFT = translateColors(config.getString("progress_bar.left", "&7["));

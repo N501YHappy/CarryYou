@@ -9,12 +9,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
@@ -30,6 +28,13 @@ public class CarryListener implements Listener {
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
+
+    private static Cooldown carryCooldown = new Cooldown(ConfigLoader.COOLDOWN);
+    private static Cooldown CDCooldown = new Cooldown(100);
+
+    public static void setCarryCooldown(int cooldown) {
+        CarryListener.carryCooldown.setCooldown(cooldown);
+    }
 
     @EventHandler
     public void onActive(PlayerSwapHandItemsEvent event) {
@@ -62,7 +67,7 @@ public class CarryListener implements Listener {
         }
         LivingEntity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
-        if (!CarryManager.checkCarry(player, target)) return;
+        if (!CarryManager.checkCarry(player, target,carryCooldown)) return;
 
         handlePickup(player, target);
     }
@@ -75,7 +80,8 @@ public class CarryListener implements Listener {
     private void handlePickup(Player player,LivingEntity target) {
         if (CarryManager.carry(player, target)){
             StatePusher.onCarry(player,target);
-            Cooldown.setCooldown(player.getUniqueId());
+            carryCooldown.updateCooldown(player.getUniqueId());
+            CDCooldown.updateCooldown(player.getUniqueId());
         }
     }
     @EventHandler
@@ -87,6 +93,8 @@ public class CarryListener implements Listener {
             return;
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (player.isSneaking()) return; //防止与抓举冲突
+
             throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
         }
     }
@@ -102,12 +110,13 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        if (player.isSneaking() && !ConfigLoader.TRIGGER_SHIFT_F) return; //防止与抓举冲突
+        if (player.isSneaking()) return; //防止与抓举冲突
         if (!CarryManager.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
     }
 
     private <T extends Cancellable> void throwEntity(Player player, double power,T event) {
+        if (!CDCooldown.checkCooldown(player.getUniqueId())) return;
         UUID targetUUID = CarryManager.getTargetByCarrier(player.getUniqueId());
         if (targetUUID == null){
             return;
@@ -119,6 +128,7 @@ public class CarryListener implements Listener {
         }
         event.setCancelled(true);
         CarryManager.drop((LivingEntity) target, power);
+        CDCooldown.updateCooldown(player.getUniqueId());
     }
 
 

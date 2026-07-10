@@ -115,11 +115,11 @@ public class CarryManager {
         return carryDisabled.getOrDefault(uuid, false);
     }
 
-    public static boolean checkCarry(Player player, Entity target) {
+    public static boolean checkCarry(Player player, Entity target,Cooldown cooldown) {
         if (isCarryDisabled(target.getUniqueId())) return false;
 
-        if(!Cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
-            double remainingSeconds = Cooldown.getRemains(player.getUniqueId()) / 1000.0;
+        if(!cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
+            double remainingSeconds = cooldown.getRemains(player.getUniqueId()) / 1000.0;
             String message = ConfigLoader.PREFIX + MessageConfig.Message.COOLDOWN.get()
                     .replace("%s", String.format("%.2f", remainingSeconds));
             player.sendMessage(message);
