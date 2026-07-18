@@ -2,7 +2,9 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.depends.GSitDepends;
 import xyz.n501yhappy.carryyou.listeners.*;
+import xyz.n501yhappy.carryyou.listeners.depends.GSIT_PlayerSitPlayer;
 import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.depends.DominionDepends;
@@ -17,6 +19,7 @@ public final class CarryYou extends JavaPlugin {
     public static Boolean worldguard_enable = false;
     public static Boolean residence_enable = false;
     public static Boolean dominion_enable = false;
+    public static Boolean gsit_enable = false;
 
     private Metrics metrics;
 
@@ -62,7 +65,16 @@ public final class CarryYou extends JavaPlugin {
             dominion_enable = false;
             getLogger().warning("Failed to load Dominion integration: " + e.getMessage());
         }
-
+        // Load GSit
+        try {
+            Class.forName("dev.geco.gsit.GSitMain");
+            GSitDepends.load();
+        } catch (ClassNotFoundException ignored) {
+            gsit_enable = false;
+        } catch (Throwable e) {
+            gsit_enable = false;
+            getLogger().warning("Failed to load GSit integration: " + e.getMessage());
+        }
         ConfigLoader.load();
 
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
@@ -70,6 +82,8 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
+        if(gsit_enable)
+            getServer().getPluginManager().registerEvents(new GSIT_PlayerSitPlayer(), this);
 
         metrics = new Metrics(this, 29710);
 

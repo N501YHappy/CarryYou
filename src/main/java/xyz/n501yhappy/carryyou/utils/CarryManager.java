@@ -99,7 +99,7 @@ public class CarryManager {
         for (Map.Entry<UUID, UUID> entry : carryMapping.entrySet()) {
             Entity carrier = Bukkit.getEntity(entry.getKey());
             Entity target = Bukkit.getEntity(entry.getValue());
-            if (carrier != null && target != null) {
+            if (carrier != null && target != null && !carrier.getPassengers().isEmpty()) {
                 carrier.removePassenger(target);
             }
         }

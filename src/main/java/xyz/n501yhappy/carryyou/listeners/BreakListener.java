@@ -17,10 +17,10 @@ import java.util.UUID;
 public class BreakListener implements Listener {
 
     @EventHandler
-    public void onBreak(PlayerInteractEvent event) { //左右键都进行检测
+    public void onBreak(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
         if (!CarryManager.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
