@@ -2,42 +2,39 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.depends.GSitDepends;
+import xyz.n501yhappy.carryyou.depends.DependLoader;
 import xyz.n501yhappy.carryyou.listeners.*;
 import xyz.n501yhappy.carryyou.listeners.depends.GSIT_PlayerSitPlayer;
+import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
-import xyz.n501yhappy.carryyou.depends.DominionDepends;
-import xyz.n501yhappy.carryyou.depends.ResidenceDepends;
-import xyz.n501yhappy.carryyou.depends.WorldGuardDepends;
-import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import adapts.impl.Version;
 
 public final class CarryYou extends JavaPlugin {
     public static JavaPlugin instance;
 
-    public static Boolean worldguard_enable = false;
-    public static Boolean residence_enable = false;
-    public static Boolean dominion_enable = false;
-    public static Boolean gsit_enable = false;
+    public static boolean worldguard_enable = false;
+    public static boolean residence_enable = false;
+    public static boolean dominion_enable = false;
+    public static boolean gsit_enable = false;
+
+    public static DependLoader worldGuardDepends;
+    public static DependLoader residenceDepends;
+    public static DependLoader dominionDepends;
+    public static DependLoader gsitDepends;
 
     private Metrics metrics;
 
     @Override
     public void onLoad() {
         instance = this;
-        try {
-            Class.forName("com.sk89q.worldguard.WorldGuard");
-            WorldGuardDepends.load();
-        } catch (ClassNotFoundException ignored) {
-            worldguard_enable = false;
-        } catch (Throwable e) {
-            worldguard_enable = false;
-            getLogger().warning("Failed to load WorldGuard integration: " + e.getMessage());
-        }
+        worldGuardDepends = loadDepends(
+                "xyz.n501yhappy.carryyou.depends.WorldGuardDepends",
+                "com.sk89q.worldguard.WorldGuard", false);
+        worldguard_enable = worldGuardDepends != null;
         try {
             Version.init(getLogger());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }
@@ -45,36 +42,21 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Load residence
-        try {
-            Class.forName("com.bekvon.bukkit.residence.Residence");
-            ResidenceDepends.load();
-        } catch (ClassNotFoundException ignored) {
-            residence_enable = false;
-        } catch (Throwable e) {
-            residence_enable = false;
-            getLogger().warning("Failed to load Residence integration: " + e.getMessage());
-        }
-        // Load dominion
-        try {
-            Class.forName("cn.lunadeer.dominion.api.DominionAPI");
-            DominionDepends.load();
-        } catch (ClassNotFoundException ignored) {
-            dominion_enable = false;
-        } catch (Throwable e) {
-            dominion_enable = false;
-            getLogger().warning("Failed to load Dominion integration: " + e.getMessage());
-        }
-        // Load GSit
-        try {
-            Class.forName("dev.geco.gsit.GSitMain");
-            GSitDepends.load();
-        } catch (ClassNotFoundException ignored) {
-            gsit_enable = false;
-        } catch (Throwable e) {
-            gsit_enable = false;
-            getLogger().warning("Failed to load GSit integration: " + e.getMessage());
-        }
+        residenceDepends = loadDepends(
+                "xyz.n501yhappy.carryyou.depends.ResidenceDepends",
+                "com.bekvon.bukkit.residence.Residence", true);
+        residence_enable = residenceDepends != null;
+
+        dominionDepends = loadDepends(
+                "xyz.n501yhappy.carryyou.depends.DominionDepends",
+                "cn.lunadeer.dominion.api.DominionAPI", true);
+        dominion_enable = dominionDepends != null;
+
+        gsitDepends = loadDepends(
+                "xyz.n501yhappy.carryyou.depends.GSitDepends",
+                "dev.geco.gsit.GSitMain", true);
+        gsit_enable = gsitDepends != null;
+
         ConfigLoader.load();
 
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
@@ -82,7 +64,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
-        if(gsit_enable)
+        if (gsit_enable)
             getServer().getPluginManager().registerEvents(new GSIT_PlayerSitPlayer(), this);
 
         metrics = new Metrics(this, 29710);
@@ -103,5 +85,31 @@ public final class CarryYou extends JavaPlugin {
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();
         getLogger().info("§cPlugin Disabled!§r");
+    }
+
+    public static JavaPlugin getInstance() {
+        return instance;
+    }
+
+    /**
+     * 用反射检查依赖类是否存在
+     */
+    private DependLoader loadDepends(String dependsClassName, String checkClass, boolean checkEnabled) {
+        try {
+            Class.forName(checkClass);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        // 如果找到了就构造对应加载类，然后执行加载
+        try {
+            Class<?> clazz = Class.forName(dependsClassName);
+            DependLoader loader = (DependLoader) clazz.getDeclaredConstructor().newInstance();
+            if (loader.tryLoad(this, checkClass, checkEnabled)) {
+                return loader;
+            }
+        } catch (Throwable t) {
+            getLogger().warning("Failed to load " + dependsClassName + ": " + t.getMessage());
+        }
+        return null;
     }
 }
