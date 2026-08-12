@@ -15,13 +15,14 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.UUID;
 
 public class BreakListener implements Listener {
+    private CarryManager carryManager = CarryManager.getInstance();
 
     @EventHandler
     public void onBreak(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
-        if (!CarryManager.isCarried(playerUUID)) return;
+        if (!carryManager.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.BREAK_WEAKNESS.get());
@@ -35,12 +36,12 @@ public class BreakListener implements Listener {
     }
     @EventHandler
     public void onBreak_Dismount(EntityDismountEvent event) {
-        if (!CarryManager.isCarrying(event.getDismounted().getUniqueId())) return;
+        if (!carryManager.isCarrying(event.getDismounted().getUniqueId())) return;
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
             UUID playerUUID = player.getUniqueId();
 
-            if (!CarryManager.isCarried(playerUUID)) return;
+            if (!carryManager.isCarried(playerUUID)) return;
             event.setCancelled(true);
         }
     }

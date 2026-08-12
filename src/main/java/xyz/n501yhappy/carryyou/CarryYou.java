@@ -13,6 +13,8 @@ import adapts.impl.Version;
 public final class CarryYou extends JavaPlugin {
     public static JavaPlugin instance;
 
+    private CarryManager carryManager = CarryManager.getInstance();
+
     public static boolean worldguard_enable = false;
     public static boolean residence_enable = false;
     public static boolean dominion_enable = false;
@@ -81,7 +83,7 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        CarryManager.cleanup();
+        carryManager.cleanup();
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();
         getLogger().info("§cPlugin Disabled!§r");

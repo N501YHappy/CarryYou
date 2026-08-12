@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PROGRESS_BAR_LENGTH;
 
 public class BreakRunnable implements Runnable {
+    private CarryManager carryManager = CarryManager.getInstance();
+
     private static Map<UUID, Integer> score = new ConcurrentHashMap<>();
     private static Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
     private static Map<UUID, Long> lastSubTime = new ConcurrentHashMap<>(); // 每个玩家独立的扣分计时器
@@ -30,7 +32,7 @@ public class BreakRunnable implements Runnable {
         UUID[] playerUUIDs = score.keySet().toArray(new UUID[0]);
         for (UUID playerUUID : playerUUIDs) {
             Player player = Bukkit.getPlayer(playerUUID);
-            if (player == null || !player.isOnline() || !CarryManager.isCarried(playerUUID)) {
+            if (player == null || !player.isOnline() || !carryManager.isCarried(playerUUID)) {
                 removePlayer(playerUUID);
                 continue;
             }
@@ -61,14 +63,14 @@ public class BreakRunnable implements Runnable {
             
             //好耶！
             if (currentScore >= TARGET_SCORE) {
-                Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
+                Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
                 if (carrier != null) {
                     Version.getAdapts().EntityScheduler_execute(CarryYou.instance, player, () -> {
                         World world = player.getWorld();
                         Location particleLocation = player.getLocation();
                         world.spawnParticle(Particle.SMOKE_LARGE, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
                         world.spawnParticle(Particle.EXPLOSION_HUGE, particleLocation, 1);
-                        CarryManager.drop(player, 0);
+                        carryManager.drop(player, 0);
                     });
                 }
                 removePlayer(playerUUID);

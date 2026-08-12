@@ -17,17 +17,19 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.UUID;
 
 public class CarryCleanupListener implements Listener { //这个监听器是为了防止坏蛋故意触发bug的.
+    private CarryManager carryManager = CarryManager.getInstance();
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if (CarryManager.isCarrying(playerUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
-            if (target != null) CarryManager.drop(target,0);
+        if (carryManager.isCarrying(playerUUID)) {
+            Entity target = carryManager.getTargetEntityByCarrier(playerUUID);
+            if (target != null) carryManager.drop(target,0);
         }
-        if (CarryManager.isCarried(playerUUID)) {
-            Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
-            if (carrier != null) CarryManager.drop(player,0);
+        if (carryManager.isCarried(playerUUID)) {
+            Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
+            if (carrier != null) carryManager.drop(player,0);
         }
         BreakRunnable.removePlayer(playerUUID);
     }
@@ -35,17 +37,17 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
     public void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         UUID entityUUID = entity.getUniqueId();
-        if (CarryManager.isCarried(entityUUID)) {
-            Entity carrier = CarryManager.getCarrierEntityByTarget(entityUUID);
+        if (carryManager.isCarried(entityUUID)) {
+            Entity carrier = carryManager.getCarrierEntityByTarget(entityUUID);
             if (carrier != null) {
-                CarryManager.drop( entity,0);
+                carryManager.drop( entity,0);
             }
         }
 
-        if (CarryManager.isCarrying(entityUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(entityUUID);
+        if (carryManager.isCarrying(entityUUID)) {
+            Entity target = carryManager.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                CarryManager.drop( target,0);
+                carryManager.drop( target,0);
             }
         }
         if (entity instanceof Player) {
@@ -58,10 +60,10 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Entity entity = event.getEntity();
         UUID entityUUID = entity.getUniqueId();
 
-        if (CarryManager.isCarrying(entityUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(entityUUID);
+        if (carryManager.isCarrying(entityUUID)) {
+            Entity target = carryManager.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                CarryManager.drop( target,0);
+                carryManager.drop( target,0);
             }
         }
         if (entity instanceof Player) {
@@ -74,13 +76,13 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Player player = event.getPlayer();
         if (event.getNewGameMode() != GameMode.SPECTATOR) return;
         UUID playerUUID = player.getUniqueId();
-        if (CarryManager.isCarrying(playerUUID)) {
-            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
-            if (target != null) CarryManager.drop(target,0);
+        if (carryManager.isCarrying(playerUUID)) {
+            Entity target = carryManager.getTargetEntityByCarrier(playerUUID);
+            if (target != null) carryManager.drop(target,0);
         }
-        if (CarryManager.isCarried(playerUUID)) {
-            Entity carrier = CarryManager.getCarrierEntityByTarget(playerUUID);
-            if (carrier != null) CarryManager.drop(player,0);
+        if (carryManager.isCarried(playerUUID)) {
+            Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
+            if (carrier != null) carryManager.drop(player,0);
         }
         BreakRunnable.removePlayer(playerUUID);
     }

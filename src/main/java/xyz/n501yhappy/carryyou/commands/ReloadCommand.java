@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PREFIX;
 
 public class ReloadCommand implements CommandExecutor, TabExecutor {
+    private CarryManager carryManager = CarryManager.getInstance();
 
     private static final List<String> SUB_COMMANDS = Arrays.asList("on", "off", "reload");
 
@@ -25,8 +26,8 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                boolean current = CarryManager.isCarryDisabled(player.getUniqueId());
-                CarryManager.setCarryDisabled(player.getUniqueId(), !current);
+                boolean current = carryManager.isCarryDisabled(player.getUniqueId());
+                carryManager.setCarryDisabled(player.getUniqueId(), !current);
                 sender.sendMessage(PREFIX + (current ? MessageConfig.Message.ENABLE_CARRY.get() : MessageConfig.Message.DISABLE_CARRY.get()));
 
             }
@@ -36,12 +37,12 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
             return handleReload(sender);
         } else if (args[0].equalsIgnoreCase("on")) {
             if (sender instanceof Player)
-                CarryManager.setCarryDisabled(((Player) sender).getUniqueId(), false);
+                carryManager.setCarryDisabled(((Player) sender).getUniqueId(), false);
             sender.sendMessage(PREFIX + MessageConfig.Message.ENABLE_CARRY.get());
             return true;
         } else if (args[0].equalsIgnoreCase("off")) {
             if (sender instanceof Player)
-                CarryManager.setCarryDisabled(((Player) sender).getUniqueId(), true);
+                carryManager.setCarryDisabled(((Player) sender).getUniqueId(), true);
             sender.sendMessage(PREFIX + MessageConfig.Message.DISABLE_CARRY.get());
             return true;
         }

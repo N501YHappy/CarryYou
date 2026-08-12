@@ -25,6 +25,7 @@ import xyz.n501yhappy.carryyou.utils.StatePusher;
 import java.util.UUID;
 
 public class CarryListener implements Listener {
+    private CarryManager carryManager = CarryManager.getInstance();
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
@@ -58,8 +59,8 @@ public class CarryListener implements Listener {
         }
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
-        if (CarryManager.isCarrying(player.getUniqueId())) {
-            Entity target = CarryManager.getTargetEntityByCarrier(player.getUniqueId());
+        if (carryManager.isCarrying(player.getUniqueId())) {
+            Entity target = carryManager.getTargetEntityByCarrier(player.getUniqueId());
             if (target != null) {
                 throwEntity(player, ConfigLoader.THROW_POWER_DROP,event);
                 return;
@@ -67,18 +68,18 @@ public class CarryListener implements Listener {
         }
         Entity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
-        if (!CarryManager.checkCarry(player, target,carryCooldown)) return;
+        if (!carryManager.checkCarry(player, target,carryCooldown)) return;
 
         handlePickup(player, target);
     }
     private boolean isValidTarget(Player player, Entity target) {
         return target != null
             && !target.getUniqueId().equals(player.getUniqueId())
-            && !CarryManager.isCarried(target.getUniqueId());
+            && !carryManager.isCarried(target.getUniqueId());
     }
 
     private void handlePickup(Player player,Entity target) {
-        if (CarryManager.carry(player, target)){
+        if (carryManager.carry(player, target)){
             StatePusher.onCarry(player,target);
             carryCooldown.updateCooldown(player.getUniqueId());
             CDCooldown.updateCooldown(player.getUniqueId());
@@ -87,7 +88,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onDrop(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryManager.isCarrying(player.getUniqueId())) return;
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
             throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
             return;
@@ -103,7 +104,7 @@ public class CarryListener implements Listener {
     public void onAttack(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryManager.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
     }
 
@@ -111,23 +112,23 @@ public class CarryListener implements Listener {
     public void onInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (player.isSneaking()) return; //防止与抓举冲突
-        if (!CarryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryManager.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
     }
 
     private <T extends Cancellable> void throwEntity(Player player, double power,T event) {
         if (!CDCooldown.checkCooldown(player.getUniqueId())) return;
-        UUID targetUUID = CarryManager.getTargetByCarrier(player.getUniqueId());
+        UUID targetUUID = carryManager.getTargetByCarrier(player.getUniqueId());
         if (targetUUID == null){
             return;
         }
         Entity target = Bukkit.getEntity(targetUUID);
         if (target == null){
-            CarryManager.remove(player.getUniqueId(),targetUUID);
+            carryManager.remove(player.getUniqueId(),targetUUID);
             return;
         }
         event.setCancelled(true);
-        CarryManager.drop((LivingEntity) target, power);
+        carryManager.drop(target, power);
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 

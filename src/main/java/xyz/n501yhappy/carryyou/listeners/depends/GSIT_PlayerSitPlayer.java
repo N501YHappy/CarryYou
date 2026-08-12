@@ -9,11 +9,13 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.UUID;
 
 public class GSIT_PlayerSitPlayer implements Listener {
+    private CarryManager carryManager = CarryManager.getInstance();
+
     @EventHandler
     public void onSit(PrePlayerPlayerSitEvent event){
         Player player = event.getPlayer();
         UUID player_uuid = player.getUniqueId();
-        if(CarryManager.isCarried(player_uuid)) event.setCancelled(true);
+        if(carryManager.isCarried(player_uuid)) event.setCancelled(true);
 
     }
 }

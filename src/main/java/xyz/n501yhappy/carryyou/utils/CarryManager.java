@@ -14,11 +14,18 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CarryManager {
-    private static Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
-    private static Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
-    private static Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
+    public static CarryManager instance;
 
-    public static Boolean carry(Entity carrier, Entity target) {
+    public static CarryManager getInstance() {
+        if(instance == null) instance = new CarryManager();
+        return instance;
+    }
+
+    private Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
+    private Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
+    private Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
+
+    public Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
         UUID targetUUID = target.getUniqueId();
 
@@ -39,7 +46,7 @@ public class CarryManager {
         return false;
     }
     
-    public static Boolean drop(Entity target, double power) {
+    public Boolean drop(Entity target, double power) {
         UUID targetUUID = target.getUniqueId();
         if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
@@ -57,44 +64,44 @@ public class CarryManager {
         target.setVelocity(vec);
         return true;
     }
-    public static void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
+    public void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
         carryMapping.put(carrierUUID, targetUUID);
         mappingCarry.put(targetUUID, carrierUUID);
     }
     
-    public static void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
+    public void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
         carryMapping.remove(carrierUUID) ;
         mappingCarry.remove(targetUUID);
     }
-    public static UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
+    public UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
         return carryMapping.get(carrierUUID);
     }
     
 
-    public static UUID getCarrierByTarget(UUID targetUUID) {//通过被抓实体获取抓取者
+    public UUID getCarrierByTarget(UUID targetUUID) {//通过被抓实体获取抓取者
         return mappingCarry.get(targetUUID);
     }
     
     // 获取被抓实体的Entity对象
-    public static Entity getTargetEntityByCarrier(UUID carrierUUID) {
+    public Entity getTargetEntityByCarrier(UUID carrierUUID) {
         UUID targetUUID = getTargetByCarrier(carrierUUID);
         return targetUUID != null ? Bukkit.getEntity(targetUUID) : null;
     }
     
     // 获取抓取者的Entity对象
-    public static Entity getCarrierEntityByTarget(UUID targetUUID) {
+    public Entity getCarrierEntityByTarget(UUID targetUUID) {
         UUID carrierUUID = getCarrierByTarget(targetUUID);
         return carrierUUID != null ? Bukkit.getEntity(carrierUUID) : null;
     }
     // 检查实体是否抓着别人
-    public static boolean isCarrying(UUID carrierUUID) {
+    public boolean isCarrying(UUID carrierUUID) {
         return carryMapping.containsKey(carrierUUID);
     }
     // 检查实体是否被抓
-    public static boolean isCarried(UUID targetUUID) {
+    public boolean isCarried(UUID targetUUID) {
         return mappingCarry.containsKey(targetUUID);
     }
-    public static void cleanup() {
+    public void cleanup() {
         for (Map.Entry<UUID, UUID> entry : carryMapping.entrySet()) {
             Entity carrier = Bukkit.getEntity(entry.getKey());
             Entity target = Bukkit.getEntity(entry.getValue());
@@ -106,15 +113,15 @@ public class CarryManager {
         mappingCarry.clear();
     }
 
-    public static void setCarryDisabled(UUID uuid, boolean disabled) {
+    public void setCarryDisabled(UUID uuid, boolean disabled) {
         carryDisabled.put(uuid, disabled);
     }
 
-    public static boolean isCarryDisabled(UUID uuid) {
+    public boolean isCarryDisabled(UUID uuid) {
         return carryDisabled.getOrDefault(uuid, false);
     }
 
-    public static boolean checkCarry(Player player, Entity target,Cooldown cooldown) {
+    public boolean checkCarry(Player player, Entity target,Cooldown cooldown) {
         if (isCarryDisabled(target.getUniqueId())) return false;
 
         if(!cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
@@ -169,7 +176,7 @@ public class CarryManager {
         return true;
     }
 
-    private static Vector calcVector(Vector speed, Location loc,double power){
+    private Vector calcVector(Vector speed, Location loc,double power){
         //mc里面yaw和平面直角坐标系里面那个不一样，这里给乘-1就好了
         //Yaw: 我们 水平旋转 我们的头，也就是左右转头，这就是一次Yaw转动
         //Pitch: 我们 上下旋转 我们的头，也就是上下点头，这就是一次Pitch转动
