@@ -5,9 +5,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,9 +71,15 @@ public class CarryListener implements Listener {
         handlePickup(player, target);
     }
     private boolean isValidTarget(Player player, Entity target) {
-        return target != null
-            && !target.getUniqueId().equals(player.getUniqueId())
-            && !carryManager.isCarried(target.getUniqueId());
+        if(target == null) return false;
+        if(target.getUniqueId().equals(player.getUniqueId())) return false;
+        if(carryManager.isCarried(target.getUniqueId())) return false;
+        if(target instanceof LivingEntity) return true;
+        if(target instanceof TNTPrimed) return true;
+        if(target instanceof WitherSkull) return true;
+        if(target.getType().getName().contains("fireball")) return true;
+        if(target.getType().getName().contains("wind")) return true;
+        return false;
     }
 
     private void handlePickup(Player player,Entity target) {
