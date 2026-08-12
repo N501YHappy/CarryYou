@@ -1,7 +1,9 @@
+import org.gradle.kotlin.dsl.accessors.pluginTreesFrom
 import org.gradle.language.jvm.tasks.ProcessResources
 plugins {
     java
     id("com.gradleup.shadow") version "9.3.0"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "xyz.n501yhappy"
@@ -31,6 +33,11 @@ dependencies {
 }
 
 tasks {
+    runServer {
+        minecraftVersion("1.21.11")
+        downloadPlugins.modrinth("WorldGuard", "7.0.17")
+        downloadPlugins.url("https://cdn.modrinth.com/data/1u6JkXh5/versions/F5ea2ov3/worldedit-bukkit-7.4.5.jar?mr_download_reason=standalone&mr_game_version=1.21.11&mr_loader=paper")
+    }
     shadowJar {
         configurations.add(project.configurations.getByName("shadowLink"))
         // Shadow 9.x 需要手动指定 runtimeClasspath
