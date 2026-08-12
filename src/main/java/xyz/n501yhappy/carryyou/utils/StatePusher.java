@@ -15,11 +15,11 @@ public class StatePusher {
     private static List<UUID> withChicken = new CopyOnWriteArrayList<>();
     private static Map<UUID, UUID> linked = new ConcurrentHashMap<>(); // 被抓的指向抓人的
 
-    private static boolean isChicken(LivingEntity entity){
+    private static boolean isChicken(Entity entity){
         return entity instanceof Chicken;
     }
 
-    public static void onCarry(LivingEntity carrier, LivingEntity carried) {
+    public static void onCarry(Entity carrier, Entity carried) {
         if (!ConfigLoader.WITH_CHICKEN) return;
         if (isChicken(carried)){ // 如果抱的是鸡，直接把状态转移下去
             pushDown(carrier.getUniqueId(), carried.getUniqueId(),true);
@@ -52,7 +52,7 @@ public class StatePusher {
                 withChicken.add(fa);
             }
             withChicken.remove(uuid);
-            LivingEntity entity = getLivingEntity(uuid);
+            Entity entity = Bukkit.getEntity(uuid);
             if (entity != null && isChicken(entity)) return;
             hasChicken.put(uuid, false);
             next = linked.getOrDefault(uuid, null);
@@ -61,15 +61,7 @@ public class StatePusher {
         pushDown(next,uuid, b);
     }
 
-    private static LivingEntity getLivingEntity(UUID uuid) {
-        Entity entity = Bukkit.getEntity(uuid);
-        if (entity instanceof LivingEntity) {
-            return (LivingEntity) entity;
-        }
-        return null;
-    }
-
-    public static void onDrop(LivingEntity carrier, LivingEntity carried) {
+    public static void onDrop(Entity carrier, Entity carried) {
         if (!ConfigLoader.WITH_CHICKEN) return;
         if (isChicken(carried) || hasChicken.getOrDefault(carrier.getUniqueId(), false)){
             pushDown(carrier.getUniqueId(), carried.getUniqueId(),false);

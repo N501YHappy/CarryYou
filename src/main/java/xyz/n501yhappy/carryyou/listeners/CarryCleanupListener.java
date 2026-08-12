@@ -22,7 +22,7 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         if (CarryManager.isCarrying(playerUUID)) {
-            LivingEntity target = CarryManager.getTargetEntityByCarrier(playerUUID);
+            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
             if (target != null) CarryManager.drop(target,0);
         }
         if (CarryManager.isCarried(playerUUID)) {
@@ -38,14 +38,14 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         if (CarryManager.isCarried(entityUUID)) {
             Entity carrier = CarryManager.getCarrierEntityByTarget(entityUUID);
             if (carrier != null) {
-                CarryManager.drop((LivingEntity) entity,0);
+                CarryManager.drop( entity,0);
             }
         }
 
         if (CarryManager.isCarrying(entityUUID)) {
             Entity target = CarryManager.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                CarryManager.drop((LivingEntity) target,0);
+                CarryManager.drop( target,0);
             }
         }
         if (entity instanceof Player) {
@@ -61,7 +61,7 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         if (CarryManager.isCarrying(entityUUID)) {
             Entity target = CarryManager.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                CarryManager.drop((LivingEntity) target,0);
+                CarryManager.drop( target,0);
             }
         }
         if (entity instanceof Player) {
@@ -75,7 +75,7 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         if (event.getNewGameMode() != GameMode.SPECTATOR) return;
         UUID playerUUID = player.getUniqueId();
         if (CarryManager.isCarrying(playerUUID)) {
-            LivingEntity target = CarryManager.getTargetEntityByCarrier(playerUUID);
+            Entity target = CarryManager.getTargetEntityByCarrier(playerUUID);
             if (target != null) CarryManager.drop(target,0);
         }
         if (CarryManager.isCarried(playerUUID)) {

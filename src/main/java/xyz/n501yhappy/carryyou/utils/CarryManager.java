@@ -3,7 +3,6 @@ package xyz.n501yhappy.carryyou.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.CarryYou;
@@ -40,11 +39,11 @@ public class CarryManager {
         return false;
     }
     
-    public static Boolean drop(LivingEntity target, double power) {
+    public static Boolean drop(Entity target, double power) {
         UUID targetUUID = target.getUniqueId();
         if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
-        LivingEntity carrier = carrierUUID != null ?(LivingEntity) Bukkit.getEntity(carrierUUID) : null;
+        Entity carrier = carrierUUID != null ? Bukkit.getEntity(carrierUUID) : null;
 
         if (carrier == null) {
             remove(carrierUUID, targetUUID);
@@ -77,9 +76,9 @@ public class CarryManager {
     }
     
     // 获取被抓实体的Entity对象
-    public static LivingEntity getTargetEntityByCarrier(UUID carrierUUID) {
+    public static Entity getTargetEntityByCarrier(UUID carrierUUID) {
         UUID targetUUID = getTargetByCarrier(carrierUUID);
-        return targetUUID != null ? (LivingEntity) Bukkit.getEntity(targetUUID) : null;
+        return targetUUID != null ? Bukkit.getEntity(targetUUID) : null;
     }
     
     // 获取抓取者的Entity对象

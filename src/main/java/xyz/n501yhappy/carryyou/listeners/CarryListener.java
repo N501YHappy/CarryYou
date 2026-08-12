@@ -65,19 +65,19 @@ public class CarryListener implements Listener {
                 return;
             }
         }
-        LivingEntity target = getTargetEntity(player);
+        Entity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
         if (!CarryManager.checkCarry(player, target,carryCooldown)) return;
 
         handlePickup(player, target);
     }
-    private boolean isValidTarget(Player player, LivingEntity target) {
+    private boolean isValidTarget(Player player, Entity target) {
         return target != null
             && !target.getUniqueId().equals(player.getUniqueId())
             && !CarryManager.isCarried(target.getUniqueId());
     }
 
-    private void handlePickup(Player player,LivingEntity target) {
+    private void handlePickup(Player player,Entity target) {
         if (CarryManager.carry(player, target)){
             StatePusher.onCarry(player,target);
             carryCooldown.updateCooldown(player.getUniqueId());
@@ -132,7 +132,7 @@ public class CarryListener implements Listener {
     }
 
 
-    private LivingEntity getTargetEntity(Player player) {
+    private Entity getTargetEntity(Player player) {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
 
@@ -143,12 +143,10 @@ public class CarryListener implements Listener {
                 FluidCollisionMode.NEVER,
                 true,
                 0.1,
-                entity -> entity instanceof LivingEntity && !entity.equals(player) && !entity.isDead()
+                entity -> !entity.equals(player) && !entity.isDead()
         );
         if ((result != null && result.getHitEntity() != null)){
-            if (result.getHitEntity() instanceof LivingEntity){
-                return (LivingEntity) result.getHitEntity();
-             }
+            return result.getHitEntity();
         }
         return null;
     }

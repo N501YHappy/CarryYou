@@ -14,41 +14,41 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
 
-public class WorldGuardDepends {
-    public static StateFlag WG_FLAG_CARRIABLE;
+public class WorldGuardDepends extends DependLoader {
+    private StateFlag carriableFlag;
 
-    public static void load() {
-        CarryYou.worldguard_enable = true;
+    public WorldGuardDepends() {
+        super("WorldGuard");
+    }
+
+    @Override
+    protected void onLoad() {
         try {
             FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
-
             try {
                 StateFlag flag = new StateFlag("carriable", true);
                 registry.register(flag);
-                WG_FLAG_CARRIABLE = flag;
-
+                carriableFlag = flag;
             } catch (FlagConflictException e) {
                 Flag<?> existing = registry.get("carriable");
                 if (existing instanceof StateFlag) {
-                    WG_FLAG_CARRIABLE = (StateFlag) existing;
+                    carriableFlag = (StateFlag) existing;
                 } else {
                     CarryYou.instance.getLogger().warning("§6有别的flag叫这个名字但不是StateFlag...");
                 }
-            } catch (Exception e) {
-                CarryYou.instance.getLogger().warning("§c哇啊啊啊啊啊: " + e.getMessage());
-                throw e;
             }
         } catch (Exception e) {
             CarryYou.instance.getLogger().warning("§c小guard哈气了！她打我了: " + e.getMessage());
-            CarryYou.worldguard_enable = false;
             e.printStackTrace();
+            throw e;
         }
     }
 
-    public static boolean check(Entity target, Player player) {
+    @Override
+    public boolean check(Entity target, Player player) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = container.createQuery();
         ApplicableRegionSet regionSet = query.getApplicableRegions(BukkitAdapter.adapt(target.getLocation()));
-        return (regionSet.queryState(WorldGuardPlugin.inst().wrapPlayer(player), WG_FLAG_CARRIABLE) != StateFlag.State.DENY);
+        return regionSet.queryState(WorldGuardPlugin.inst().wrapPlayer(player), carriableFlag) != StateFlag.State.DENY;
     }
 }
