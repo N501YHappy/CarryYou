@@ -4,6 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
+import xyz.n501yhappy.carryyou.locales.en_US;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
+import xyz.n501yhappy.carryyou.locales.kl_BQ;
+import xyz.n501yhappy.carryyou.locales.zh_CN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +39,21 @@ public class ConfigLoader {
         FileConfiguration config = CarryYou.instance.getConfig();
         MessageConfig.load(CarryYou.instance, CarryYou.instance.getLogger());
 
-        CHECK_UPDATE = config.getBoolean("check_update", true);
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
+        String locales = config.getString("locales", "zh_CN");
+
+        if (locales.equalsIgnoreCase("en_US")) MessageInfo.set(new en_US());
+        else if (locales.equalsIgnoreCase("zh_CN")) MessageInfo.set(new zh_CN());
+        else if (locales.equalsIgnoreCase("kl_BQ")) {
+            CarryYou.getInstance().getLogger().info("诶？猫娘？喵喵喵喵喵~好想玩卡丘~（卡拉比丘）");
+            PREFIX = PREFIX.replace("§a", "§d");
+            MessageInfo.set(new kl_BQ());
+        }else{
+            CarryYou.getInstance().getLogger().info("Your config.yml goes wrong,please check \"locales\"");
+            MessageInfo.set(new en_US());
+        }
+
+        CHECK_UPDATE = config.getBoolean("check_update", true);
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
         COOLDOWN = (int) config.getDouble("cooldown", 1000);
         CarryListener.setCarryCooldown(COOLDOWN);

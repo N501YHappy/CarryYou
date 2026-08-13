@@ -1,6 +1,7 @@
 package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.Plugin;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -47,7 +48,7 @@ public class VersionCheck {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                plugin.getLogger().warning("版本检查请求失败: " + response.statusCode());
+                plugin.getLogger().warning(MessageInfo.current().checkRequestError(response.statusCode()));
                 return null;
             }
             String body = response.body();
@@ -60,7 +61,7 @@ public class VersionCheck {
             return body.substring(st + 1, ed);
 
         } catch (Exception e) {
-            plugin.getLogger().warning("版本检查失败: " + e.getMessage());
+            plugin.getLogger().warning(MessageInfo.current().checkError(e.getMessage()));
             return null;
         }
     }
@@ -69,13 +70,13 @@ public class VersionCheck {
         String currentVer = plugin.getDescription().getVersion();
         String latestVer = getLastVer();
         if (latestVer == null) {
-            plugin.getLogger().info("无法检查更新，跳过版本检测");
+            plugin.getLogger().info(MessageInfo.current().checkSkipped());
             return;
         }
         if (compare(latestVer, currentVer)) {
-            plugin.getLogger().warning("你的Carryyou插件版本落后啦！最新版是" + latestVer + "，请到github或相关渠道更新qwq，可能会修复一些bug什么的");
+            plugin.getLogger().warning(MessageInfo.current().updateAvailable(latestVer));
         } else {
-            plugin.getLogger().info("Carryyou是最新版本呢！ (" + currentVer + ")");
+            plugin.getLogger().info(MessageInfo.current().upToDate(currentVer));
         }
     }
 }

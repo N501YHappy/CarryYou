@@ -21,5 +21,3 @@ carry:
 # 命令提示
 command:
   no_permission: "&c你没有权限使用此命令！"
-  reload_success: "&a配置文件已重新加载！"
-  reload_error: "&c重新加载配置文件时出错: "

@@ -1,6 +1,5 @@
 package xyz.n501yhappy.carryyou;
 
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
@@ -10,6 +9,7 @@ import xyz.n501yhappy.carryyou.depends.gsit.GSitService;
 import xyz.n501yhappy.carryyou.depends.residence.ResidenceService;
 import xyz.n501yhappy.carryyou.depends.worldguard.WorldguardService;
 import xyz.n501yhappy.carryyou.listeners.*;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
@@ -32,7 +32,7 @@ public final class CarryYou extends JavaPlugin {
         try {
             Version.init(getLogger());
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, ChatColor.RED + "唔……糟糕，我可能不行了",e);
+            getLogger().log(Level.SEVERE, MessageInfo.current().anyError(), e);
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -58,7 +58,7 @@ public final class CarryYou extends JavaPlugin {
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new StateEffector(20), 20L, 20);
 
-        if(ConfigLoader.CHECK_UPDATE)         Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
+        if(ConfigLoader.CHECK_UPDATE) Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
 
         getLogger().info("§aPlugin Enabled!§r");
     }

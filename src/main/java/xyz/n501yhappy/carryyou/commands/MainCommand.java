@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.ArrayList;
@@ -54,17 +55,17 @@ public class MainCommand implements CommandExecutor, TabExecutor {
         }
         try {
             ConfigLoader.reload();
-            sender.sendMessage(PREFIX + MessageConfig.Message.COMMAND_RELOAD_SUCCESS.get());
+            sender.sendMessage(PREFIX + MessageInfo.current().reloadSuccess());
             return true;
         } catch (Exception e) {
-            sender.sendMessage(PREFIX + MessageConfig.Message.COMMAND_RELOAD_ERROR.get() + e.getMessage());
-            CarryYou.getInstance().getLogger().log(Level.SEVERE,"插件重载错误！",e);
+            sender.sendMessage(PREFIX + MessageInfo.current().reloadError() + e.getMessage());
+            CarryYou.getInstance().getLogger().log(Level.SEVERE, MessageInfo.current().reloadErrorLog(), e);
             return true;
         }
     }
     private void handleToggle(CommandSender sender,String arg) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("这个命令只能由玩家执行！！");
+            sender.sendMessage(MessageInfo.current().onlyPlayer());
             return;
         }
         if(!sender.hasPermission("carryyou.can_toggle")){
