@@ -22,12 +22,12 @@ public class MethodProvider implements DominionMethods {
     @Override 
     public void registerFlag() {
         this.dominionAPI = DominionAPI.getInstance();
-        this.carriableFlag = new PriFlag("carriable", "喵喵喵喵喵", "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵", false, true, Material.LEAD);
+        this.carriableFlag = new PriFlag("carriable", "可被抓举", "是否在领地内使用抓举功能", false, true, Material.LEAD);
         Flags.registerPriFlag(CarryYou.instance, this.carriableFlag);
         try {
             Flags.applyNewCustomFlags();
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, ChatColor.RED + "Dominion喵喵Flag喵喵", e);
+            this.logger.log(Level.WARNING, ChatColor.RED + "DominionFlag注册失败", e);
         }
     }
 

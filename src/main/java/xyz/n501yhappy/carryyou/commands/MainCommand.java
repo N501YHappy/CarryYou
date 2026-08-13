@@ -68,7 +68,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             return;
         }
         if(!sender.hasPermission("carryyou.can_toggle")){
-            sender.sendMessage("你没有权限执行！！");
+            sender.sendMessage(MessageConfig.Message.COMMAND_NO_PERMISSION.get());
             return;
         }
         carryManager.setCarryDisabled(((Player) sender).getUniqueId(), arg.equalsIgnoreCase("off"));
