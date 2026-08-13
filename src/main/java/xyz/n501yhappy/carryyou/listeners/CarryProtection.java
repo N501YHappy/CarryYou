@@ -6,7 +6,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 public class CarryProtection implements Listener {
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
     @EventHandler
     public void onSuffocation(EntityDamageEvent event){ //抱在墙里面窒息

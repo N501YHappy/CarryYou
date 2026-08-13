@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
 
@@ -21,9 +20,9 @@ public class CarryManager {
         return instance;
     }
 
-    private Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
-    private Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
-    private Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
+    private final Map<UUID,UUID> carryMapping = new ConcurrentHashMap<>(); // Carrier -> target
+    private final Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
+    private final Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
 
     public Boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
@@ -141,17 +140,17 @@ public class CarryManager {
             return false;
         }
 
-        if (CarryYou.worldguard_enable && !Checkers.worldguard_check(target, player) && !player.isOp()) {
+        if (!Checkers.worldguard_check(target, player) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
             return false;
         }
 
-        if (CarryYou.residence_enable && !Checkers.residence_check(target, player) && !player.isOp()) {
+        if (!Checkers.residence_check(target, player) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
             return false;
         }
 
-        if (CarryYou.dominion_enable && !Checkers.dominion_check(target, player) && !player.isOp()) {
+        if (!Checkers.dominion_check(target, player) && !player.isOp()) {
             player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_DOMINION_DENY.get());
             return false;
         }
@@ -161,8 +160,7 @@ public class CarryManager {
             return false;
         }
 
-        if (target instanceof Player) {
-            Player targetP = (Player) target;
+        if (target instanceof Player targetP) {
             if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
                 player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;

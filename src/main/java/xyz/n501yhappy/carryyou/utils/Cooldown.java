@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Cooldown {
-    private Map<UUID,Long> last_action = new ConcurrentHashMap<>();
+    private final Map<UUID,Long> last_action = new ConcurrentHashMap<>();
     private int cooldown = 1000;
     public Cooldown(int cooldown){
         this.cooldown = cooldown;
@@ -22,11 +22,7 @@ public class Cooldown {
         if (last == null) { // 第一次使用无冷却
             return true;
         }
-
-        if (now - last >= cooldown) {
-            return true;
-        }
-        return false;
+        return (now - last >= cooldown);
     }
     public void updateCooldown(UUID uuid){
         long now = System.currentTimeMillis();

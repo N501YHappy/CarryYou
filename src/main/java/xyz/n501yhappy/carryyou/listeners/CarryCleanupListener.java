@@ -3,7 +3,6 @@ package xyz.n501yhappy.carryyou.listeners;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +16,7 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.UUID;
 
 public class CarryCleanupListener implements Listener { //这个监听器是为了防止坏蛋故意触发bug的.
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {

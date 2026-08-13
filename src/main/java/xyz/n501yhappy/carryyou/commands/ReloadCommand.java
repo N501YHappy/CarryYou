@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
@@ -12,20 +13,20 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PREFIX;
 
 public class ReloadCommand implements CommandExecutor, TabExecutor {
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
     private static final List<String> SUB_COMMANDS = Arrays.asList("on", "off", "reload");
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 boolean current = carryManager.isCarryDisabled(player.getUniqueId());
                 carryManager.setCarryDisabled(player.getUniqueId(), !current);
                 sender.sendMessage(PREFIX + (current ? MessageConfig.Message.ENABLE_CARRY.get() : MessageConfig.Message.DISABLE_CARRY.get()));
@@ -60,8 +61,8 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
             return true;
         } catch (Exception e) {
             sender.sendMessage(PREFIX + MessageConfig.Message.COMMAND_RELOAD_ERROR.get() + e.getMessage());
-            e.printStackTrace();
-            return true;
+            CarryYou.getInstance().getLogger().log(Level.SEVERE,"插件重载错误！",e);
+            return false;
         }
     }
 

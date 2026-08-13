@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PROGRESS_BAR_LENGTH;
 
 public class BreakRunnable implements Runnable {
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
-    private static Map<UUID, Integer> score = new ConcurrentHashMap<>();
-    private static Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
-    private static Map<UUID, Long> lastSubTime = new ConcurrentHashMap<>(); // 每个玩家独立的扣分计时器
+    private static final Map<UUID, Integer> score = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
+    private static final Map<UUID, Long> lastSubTime = new ConcurrentHashMap<>(); // 每个玩家独立的扣分计时器
     private static final int TARGET_SCORE = 20;
     private static final int TIMEOUT_TIME = 2*1000;
 

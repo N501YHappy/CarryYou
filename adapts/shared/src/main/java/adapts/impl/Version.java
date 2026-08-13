@@ -27,6 +27,7 @@ public class Version {
         return newInstance(type);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T newInstance(Class<?> type) throws ReflectiveOperationException {
         return (T) type.getDeclaredConstructor().newInstance();
     }

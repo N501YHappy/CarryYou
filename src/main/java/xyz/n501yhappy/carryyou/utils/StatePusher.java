@@ -3,7 +3,6 @@ package xyz.n501yhappy.carryyou.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 
 import java.util.*;
@@ -11,9 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StatePusher {
-    private static Map<UUID, Boolean> hasChicken = new ConcurrentHashMap<>();
-    private static List<UUID> withChicken = new CopyOnWriteArrayList<>();
-    private static Map<UUID, UUID> linked = new ConcurrentHashMap<>(); // 被抓的指向抓人的
+    private static final Map<UUID, Boolean> hasChicken = new ConcurrentHashMap<>();
+    private static final List<UUID> withChicken = new CopyOnWriteArrayList<>();
+    private static final Map<UUID, UUID> linked = new ConcurrentHashMap<>(); // 被抓的指向抓人的
 
     private static boolean isChicken(Entity entity){
         return entity instanceof Chicken;
@@ -53,7 +52,7 @@ public class StatePusher {
             }
             withChicken.remove(uuid);
             Entity entity = Bukkit.getEntity(uuid);
-            if (entity != null && isChicken(entity)) return;
+            if (isChicken(entity)) return;
             hasChicken.put(uuid, false);
             next = linked.getOrDefault(uuid, null);
             if (next == null) return;

@@ -23,13 +23,13 @@ import xyz.n501yhappy.carryyou.utils.StatePusher;
 import java.util.UUID;
 
 public class CarryListener implements Listener {
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
 
-    private static Cooldown carryCooldown = new Cooldown(ConfigLoader.COOLDOWN);
-    private static Cooldown CDCooldown = new Cooldown(100);
+    private static final Cooldown carryCooldown = new Cooldown(ConfigLoader.COOLDOWN);
+    private static final Cooldown CDCooldown = new Cooldown(100);
 
     public static void setCarryCooldown(int cooldown) {
         CarryListener.carryCooldown.setCooldown(cooldown);
@@ -78,8 +78,7 @@ public class CarryListener implements Listener {
         if(target instanceof TNTPrimed) return true;
         if(target instanceof WitherSkull) return true;
         if(target.getType().getName().contains("fireball")) return true;
-        if(target.getType().getName().contains("wind")) return true;
-        return false;
+        return target.getType().getName().contains("wind");
     }
 
     private void handlePickup(Player player,Entity target) {
@@ -106,8 +105,7 @@ public class CarryListener implements Listener {
 
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) return;
-        Player player = (Player) event.getDamager();
+        if (!(event.getDamager() instanceof Player player)) return;
         if (!carryManager.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
     }

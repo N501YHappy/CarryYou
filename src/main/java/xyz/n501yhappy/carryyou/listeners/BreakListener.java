@@ -15,7 +15,7 @@ import xyz.n501yhappy.carryyou.utils.CarryManager;
 import java.util.UUID;
 
 public class BreakListener implements Listener {
-    private CarryManager carryManager = CarryManager.getInstance();
+    private final CarryManager carryManager = CarryManager.getInstance();
 
     @EventHandler
     public void onBreak(PlayerInteractEvent event) {
@@ -37,8 +37,7 @@ public class BreakListener implements Listener {
     @EventHandler
     public void onBreak_Dismount(EntityDismountEvent event) {
         if (!carryManager.isCarrying(event.getDismounted().getUniqueId())) return;
-        if(event.getEntity() instanceof Player){
-            Player player = (Player) event.getEntity();
+        if(event.getEntity() instanceof Player player){
             UUID playerUUID = player.getUniqueId();
 
             if (!carryManager.isCarried(playerUUID)) return;
