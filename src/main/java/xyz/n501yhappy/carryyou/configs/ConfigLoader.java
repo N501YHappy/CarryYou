@@ -24,7 +24,7 @@ public class ConfigLoader {
     public static Double THROW_POWER_DROP = 0.5;
     public static Double THROW_POWER_ATTACK = 0.9;
     public static Double THROW_POWER_INTERACT = 0.9;
-    public static Boolean TRIGGER_SHIFT_F = true;
+    public static Boolean TRIGGER_SHIFT_F = false;
     public static Boolean TRIGGER_EMPTY = false;
     public static Boolean WITH_CHICKEN = true;
     public static Boolean WITH_CREEPER = true;
