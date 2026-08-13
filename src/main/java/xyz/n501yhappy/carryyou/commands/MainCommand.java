@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PREFIX;
 
-public class ReloadCommand implements CommandExecutor, TabExecutor {
+public class MainCommand implements CommandExecutor, TabExecutor {
     private final CarryManager carryManager = CarryManager.getInstance();
 
     private static final List<String> SUB_COMMANDS = Arrays.asList("on", "off", "reload");
@@ -42,10 +42,7 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
             sender.sendMessage(PREFIX + MessageConfig.Message.ENABLE_CARRY.get());
             return true;
         } else if (args[0].equalsIgnoreCase("off")) {
-            if (sender instanceof Player)
-                carryManager.setCarryDisabled(((Player) sender).getUniqueId(), true);
-            sender.sendMessage(PREFIX + MessageConfig.Message.DISABLE_CARRY.get());
-            return true;
+            handleToggle(sender,"off");
         }
         return true;
     }
@@ -62,8 +59,20 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
         } catch (Exception e) {
             sender.sendMessage(PREFIX + MessageConfig.Message.COMMAND_RELOAD_ERROR.get() + e.getMessage());
             CarryYou.getInstance().getLogger().log(Level.SEVERE,"插件重载错误！",e);
-            return false;
+            return true;
         }
+    }
+    private void handleToggle(CommandSender sender,String arg) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("这个命令只能由玩家执行！！");
+            return;
+        }
+        if(!sender.hasPermission("carryyou.can_toggle")){
+            sender.sendMessage("你没有权限执行！！");
+            return;
+        }
+        carryManager.setCarryDisabled(((Player) sender).getUniqueId(), arg.equalsIgnoreCase("off"));
+        sender.sendMessage(PREFIX + MessageConfig.Message.DISABLE_CARRY.get());
     }
 
     @Override
@@ -72,6 +81,15 @@ public class ReloadCommand implements CommandExecutor, TabExecutor {
             String input = args[0].toLowerCase();
             return SUB_COMMANDS.stream()
                     .filter(s -> s.startsWith(input))
+                    .filter(s -> {
+                        if (s.equals("off") || s.equals("on")) {
+                            return sender.hasPermission("carryyou.can_toggle");
+                        }
+                        if (s.equals("reload")) {
+                            return sender.hasPermission("carryyou.reload");
+                        }
+                        return false;
+                    })
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();

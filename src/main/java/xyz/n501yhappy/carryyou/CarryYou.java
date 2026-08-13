@@ -2,6 +2,7 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.depends.DependsResolver;
 import xyz.n501yhappy.carryyou.depends.dominion.DominionService;
@@ -52,7 +53,7 @@ public final class CarryYou extends JavaPlugin {
 
         metrics = new Metrics(this, 29710);
 
-        getCommand("carryyou").setExecutor(new xyz.n501yhappy.carryyou.commands.ReloadCommand());
+        getCommand("carryyou").setExecutor(new MainCommand());
 
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new BreakRunnable(), 20L, 1);
         Version.getAdapts().GlobalRegionScheduler_runAtFixedRate(this, new StateEffector(20), 20L, 20);

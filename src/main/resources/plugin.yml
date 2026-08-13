@@ -28,3 +28,6 @@ permissions:
   carryyou.can:
     description: 可以抱别人
     default: true
+  carryyou.can_toggle:
+    description: 可以切换自己是否被抱起
+    default: true

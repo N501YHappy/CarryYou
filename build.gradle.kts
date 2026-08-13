@@ -36,6 +36,7 @@ tasks {
     runServer {
         minecraftVersion("1.21.11")
         downloadPlugins.modrinth("WorldGuard", "7.0.17")
+        downloadPlugins.modrinth("Luckperms", "v5.5.71-bukkit")
         downloadPlugins.url("https://cdn.modrinth.com/data/1u6JkXh5/versions/F5ea2ov3/worldedit-bukkit-7.4.5.jar?mr_download_reason=standalone&mr_game_version=1.21.11&mr_loader=paper")
     }
     shadowJar {

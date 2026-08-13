@@ -7,7 +7,7 @@
 
 <br>
 
-一个允许玩家**抓取并携带**其他实体（包括玩家）的 Minecraft 插件。
+一个允许玩家**抓取并携带**其他实体（包括TNT）的 Minecraft 插件。
 
 
 ## 安装方法 (还用说嘛？)
@@ -52,20 +52,22 @@
 ## 权限和命令
 
 ### 命令
-| 命令 | 描述 | 权限 | 默认 |
-|------|------|------|------|
-| `/carryyou` | 切换自己是否允许被他人抱起 | 无 | 所有人 |
-| `/carryyou on` | 允许被他人抱起 | 无 | 所有人 |
-| `/carryyou off` | 禁止被他人抱起 | 无 | 所有人 |
-| `/carryyou reload` | 重新加载插件配置 | `carryyou.reload` | OP |
+| 命令                 | 描述            | 权限                    | 默认  |
+|--------------------|---------------|-----------------------|-----|
+| `/carryyou`        | 切换自己是否允许被他人抱起 | 无                     | 所有人 |
+| `/carryyou on`     | 允许被他人抱起       | 无                     | 所有人 |
+| `/carryyou off`    | 禁止被他人抱起       | 无                     | 所有人 |
+| `/carryyou reload` | 重新加载插件配置      | `carryyou.reload`     | OP  |
+| `/carryyou on/off` | 切换自己是否被他人抱起   | `carryyou.can_toggle` | 所有人 |
 
 ### 权限节点
-| 权限节点                 | 描述               | 默认   |
-|----------------------|------------------|------|
-| `carryyou.reload`    | 允许重新加载插件配置       | OP   |
-| `carryyou.uncarried` | 有此权限的玩家无法被他人抓举   | 谁都没有 |
-| `carryyou.unbreak`   | 有此权限的玩家无法挣脱被抓举   | 谁都没有 |
-| `carryyou.can`       | 有此权限才能抱起别人       | 人人有份 |
+| 权限节点                  | 描述                | 默认   |
+|-----------------------|-------------------|------|
+| `carryyou.reload`     | 允许重新加载插件配置        | OP   |
+| `carryyou.uncarried`  | 有此权限的玩家无法被他人抓举    | 谁都没有 |
+| `carryyou.unbreak`    | 有此权限的玩家无法挣脱被抓举    | 谁都没有 |
+| `carryyou.can`        | 有此权限才能抱起别人        | 人人有份 |
+| `carryyou.can_toggle` | 有此权限才能使用命令切换是否被抱起 | 人人有份 |
 
 # 杂交
 ## WorldGuard
@@ -74,6 +76,9 @@
 通过调用Residence的API,注册Flag `carriable` 可设置领地内是否抓举
 ## Dominion
 通过调用Dominion的API,注册PriFlag `carriable` 可设置领地内是否抓举
+
+## GSit
+防止与gsit右键骑乘功能冲突
 
 ## 配置文件 (config.yml)
 
