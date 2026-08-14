@@ -11,18 +11,21 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class StatePusher {
-    private final Class<?> targetClass;
+    private final List<Class<?>> targetClasses;
 
     private final Map<UUID, Boolean> hasTarget = new ConcurrentHashMap<>();
     private final List<UUID> withTarget = new ArrayList<>();
     private final Map<UUID, UUID> linked = new ConcurrentHashMap<>(); // 被抓的指向抓人的
 
-    public StatePusher(Class<?> targetClass) {
-        this.targetClass = targetClass;
+    public StatePusher(Class<?>... targetClasses) {
+        this.targetClasses = List.of(targetClasses);
     }
 
     private boolean isTarget(Entity entity){
-        return targetClass.isInstance(entity);
+        for(Class<?> targetClass : targetClasses){
+            if(targetClass.isInstance(entity)) return true;
+        }
+        return false;
     }
     public abstract boolean trigger();
 
