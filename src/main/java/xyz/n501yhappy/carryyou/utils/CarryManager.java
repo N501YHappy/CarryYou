@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CarryManager {
     public static CarryManager instance;
+
+    private final ChickenState chickenState = ChickenState.getInstance();
 
     public static CarryManager getInstance() {
         if(instance == null) instance = new CarryManager();
@@ -58,7 +61,7 @@ public class CarryManager {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);
-        StatePusher.onDrop(carrier,target);
+        chickenState.onDrop(carrier,target);
         carrier.removePassenger(target);
         target.setVelocity(vec);
         return true;
