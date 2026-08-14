@@ -79,6 +79,8 @@ public class CarryListener implements Listener {
         if(target instanceof TNTPrimed) return true;
         if(target instanceof WitherSkull) return true;
         if(target.getType().getName().contains("fireball")) return true;
+        if(target.getType().getName().contains("minecart")) return true;
+        if(target.getType().getName().contains("boat")) return true;
         return target.getType().getName().contains("wind");
     }
 
