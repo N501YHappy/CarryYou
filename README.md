@@ -2,15 +2,7 @@
 
 <br>
 
-一个允许玩家**抓取并携带**其他实体（包括TNT）的 Minecraft 插件。
-
-
-## 安装方法 (还用说嘛？)
-
-1. 下载**最新版本**的 `CarryYou.jar` 文件
-2. 将文件放入服务器的 `plugins` 文件夹
-3. 重启服务器或使用 `/reload` 命令
-4. 插件会自动生成配置文件
+一个允许玩家**抓取并携带**其他实体（包括TNT）的 Minecraft 插件。 
 
 [CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
 
@@ -18,25 +10,23 @@
 
 ### 抓取实体
 1. **潜行**（按住Shift键）
-2. **看向**想要抓取的生物或玩家
-3. **按下交换主副手键**或 **右键（默认）**
-4. 成功抓取后，实体会坐在你头上
+2**右键**（默认触发方式；可在配置中改为 shift+F）
+3成功抓取后，实体会坐在你头上()
 
 > **冷却时间**：两次抓取之间需要等待冷却（可在配置中设置），管理员不受限制
 
 ### 放下实体
 
-1. **轻拿轻放**：再次按下抓取键（潜行状态下）
+1. **轻拿轻放**：再次按下触发键（潜行状态下）
 2. **大力飞天**：左键/右键
 
 ## 预览图
 ![cxk](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img.png)
 ![nya](https://gh-proxy.org/https://github.com/N501YHappy/CarryYou/blob/main/Preview/img2.png)
 
-### 特殊生物效
-- **抱起鸡**：自动获得缓降效果，防止摔落伤害
-- **抱起苦力怕**：苦力怕不会爆炸，安全无忧
-- 以上功能可在配置文件中开关（`fun.with_chicken` / `fun.with_creeper`）
+### 特殊效果
+- **抱起鸡**：自动获得缓降效果，防止摔落伤害（可用 `fun.with_chicken` 开关）
+- **抱起苦力怕**:（可用 `fun.with_creeper` 开关）
 
 ### 挣脱机制 (注意，这并不是第五人格)
 如果你被其他玩家抓取，可以：
@@ -49,9 +39,7 @@
 ### 命令
 | 命令                 | 描述            | 权限                    | 默认  |
 |--------------------|---------------|-----------------------|-----|
-| `/carryyou`        | 切换自己是否允许被他人抱起 | 无                     | 所有人 |
-| `/carryyou on`     | 允许被他人抱起       | 无                     | 所有人 |
-| `/carryyou off`    | 禁止被他人抱起       | 无                     | 所有人 |
+| `/carryyou`        | 切换自己是否允许被他人抱起 | 无                     | 所有人 ||
 | `/carryyou reload` | 重新加载插件配置      | `carryyou.reload`     | OP  |
 | `/carryyou on/off` | 切换自己是否被他人抱起   | `carryyou.can_toggle` | 所有人 |
 
@@ -88,6 +76,9 @@ check_update: true
 # 插件提示前缀
 prefix: "&7[&aCarry&bYou&7] "
 
+# 插件内部语言：zh_CN / en_US 
+locales: en_US
+
 # 逃脱所需要的CPS（每秒点击次数）
 # 默认值: 6.0 表示需要每秒点击6次才能挣脱
 
@@ -116,19 +107,12 @@ progress_bar:
 deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
   - "world_the_end"
 
-deny_entities: #这些生物禁止抓举！ 但是如果是管理员的话...
+deny_entities: #这些实体禁止抓举！ 但是如果是管理员的话...
   - "ender_dragon"
-
-# 有趣的功能设置
-fun:
-  # 抱起鸡时给予缓降效果
-  with_chicken: true
-  # 抱起苦力怕时不会爆炸
-  with_creeper: true
 
 # 丢出力度设置
 throw_power:
-  # SHIFT + F键丢出的力度
+  # 触发键丢出的力度
   drop: 0.1
   # 左键/攻击丢出的力度
   attack: 0.9
@@ -137,10 +121,17 @@ throw_power:
 
 # 触发方式设置
 trigger:
-  # true = SHIFT+F 触发，false = SHIFT+右键 触发
-  shift_f: true
+  # true = SHIFT+F 触发，false = SHIFT+右键 触发（默认）
+  shift_f: false
   # true = 需要空手才能触发，false = 不限制
   empty: false
+
+# 有趣的功能设置
+fun:
+  # 抱起鸡时给予缓降效果
+  with_chicken: true
+  # 抱起苦力怕时不会爆炸
+  with_creeper: true
 ```
 
 ## 消息配置 (messages.yml)
@@ -173,13 +164,11 @@ carry:
 # 命令相关消息
 command:
   no_permission: "&c你没有权限使用此命令！"
-  reload_success: "&a配置文件已重新加载！"
-  reload_error: "&c重新加载配置文件时出错: "
 ```
 
 支持 `&` 颜色代码。修改后使用 `/carryyou reload` 重新加载。
 
-### 技术要求
+### 版本
 - **Minecraft版本**: 1.16+ （不清楚）
 - **Java版本**: 8+
 ## 贡献指南
