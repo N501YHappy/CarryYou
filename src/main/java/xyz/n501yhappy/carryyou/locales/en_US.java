@@ -11,4 +11,19 @@ public class en_US implements MessageInfo {
     @Override public String checkSkipped() { return MessageInfo.color("Unable to check for updates, skipping version check"); }
     @Override public String updateAvailable(String latestVersion) { return MessageInfo.color(String.format("Your CarryYou plugin is outdated! The latest version is %s, update it on GitHub or related channels, it may fix some bugs", latestVersion)); }
     @Override public String upToDate(String currentVersion) { return MessageInfo.color(String.format("CarryYou is up to date! (%s)", currentVersion)); }
+
+    @Override
+    public String findSoftDepends() {
+        return "Found";
+    }
+
+    @Override
+    public String WrongConfig() {
+        return "Configuration file setup error!";
+    }
+
+    @Override
+    public String[] FlagInfo() {
+        return new String[]{"Can carry","can carry other entities up"};
+    }
 }

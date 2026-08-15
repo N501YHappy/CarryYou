@@ -13,6 +13,9 @@ public interface MessageInfo {
     String checkSkipped();
     String updateAvailable(String latestVersion);
     String upToDate(String currentVersion);
+    String findSoftDepends();
+    String WrongConfig();
+    String[] FlagInfo();
 
     static MessageInfo current() {
         return Holder.IMPL;
@@ -27,6 +30,6 @@ public interface MessageInfo {
     }
 
     final class Holder {
-        static MessageInfo IMPL = new zh_CN();
+        static MessageInfo IMPL = new en_US();
     }
 }

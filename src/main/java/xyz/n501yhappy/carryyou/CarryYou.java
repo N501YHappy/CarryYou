@@ -27,14 +27,14 @@ public final class CarryYou extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-        DependsResolver.setLogger(getLogger());
-        WorldguardService.getInstance().registerFlag();
         try {
             Version.init(getLogger());
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, MessageInfo.current().anyError(), e);
             getServer().getPluginManager().disablePlugin(this);
         }
+        DependsResolver.setLogger(getLogger());
+        WorldguardService.getInstance().registerFlag();
     }
 
     @Override

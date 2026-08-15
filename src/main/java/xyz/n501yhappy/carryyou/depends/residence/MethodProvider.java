@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class MethodProvider implements ResidenceMethods {
         try {
             FlagPermissions.addFlag("carriable");
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, ChatColor.RED + "Residence flag注册失败", e);
+            this.logger.log(Level.WARNING, ChatColor.RED + MessageInfo.current().anyError(), e);
         }
     }
 }

@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,12 +23,12 @@ public class MethodProvider implements DominionMethods {
     @Override 
     public void registerFlag() {
         this.dominionAPI = DominionAPI.getInstance();
-        this.carriableFlag = new PriFlag("carriable", "可被抓举", "是否在领地内使用抓举功能", false, true, Material.LEAD);
+        this.carriableFlag = new PriFlag("carriable", MessageInfo.current().FlagInfo()[0], MessageInfo.current().FlagInfo()[1], false, true, Material.LEAD);
         Flags.registerPriFlag(CarryYou.instance, this.carriableFlag);
         try {
             Flags.applyNewCustomFlags();
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, ChatColor.RED + "DominionFlag注册失败", e);
+            this.logger.log(Level.WARNING, ChatColor.RED + MessageInfo.current().anyError(), e);
         }
     }
 

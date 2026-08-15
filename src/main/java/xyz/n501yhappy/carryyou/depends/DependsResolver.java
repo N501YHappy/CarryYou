@@ -2,6 +2,7 @@ package xyz.n501yhappy.carryyou.depends;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -16,19 +17,17 @@ public class DependsResolver {
 
     public static <T> T resolve(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
         if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-            logger.info(ChatColor.AQUA + "找到 " + ChatColor.GREEN + pluginName);
+            logger.info(ChatColor.AQUA + MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
             return whenEnabled.get();
         }
         return fallback.get();
     }
 
-    public static <T> T resolveBeforeEnable(String className, String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
-        try {
-            Class.forName(className);
-            logger.info(ChatColor.AQUA + "找到 " + ChatColor.GREEN + pluginName);
+    public static <T> T resolveBeforeEnable(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
+        if (Bukkit.getPluginManager().getPlugin(pluginName) != null) {
+            logger.info(ChatColor.AQUA + MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
             return whenEnabled.get();
-        } catch (ClassNotFoundException e) {
-            return fallback.get();
         }
+        return fallback.get();
     }
 }

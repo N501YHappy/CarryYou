@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,11 +45,11 @@ public class MethodProvider implements WorldguardMethods {
                 if (stateFlag instanceof StateFlag) {
                     this.carriableFlag = (StateFlag) stateFlag;
                 } else {
-                    this.logger.log(Level.WARNING, ChatColor.YELLOW + "出错了！！！可能有其他名为carriable的flag,这是一些报错...", e);
+                    this.logger.log(Level.WARNING, ChatColor.YELLOW + MessageInfo.current().anyError(), e);
                 }
             }
         } catch (Exception e2) {
-            this.logger.log(Level.WARNING, ChatColor.RED + "无法依赖Worldguard", e2);
+            this.logger.log(Level.WARNING, ChatColor.RED + MessageInfo.current().anyError(), e2);
         }
     }
 }
