@@ -32,6 +32,13 @@ dependencies {
     add("shadowLink", project(":adapts:bukkit"))
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+
 tasks {
     runServer {
         minecraftVersion("1.21.11")
