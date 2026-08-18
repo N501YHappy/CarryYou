@@ -14,12 +14,17 @@ public class en_US implements MessageInfo {
 
     @Override
     public String findSoftDepends() {
-        return "Found";
+        return MessageInfo.color("&aFound");
     }
 
     @Override
-    public String WrongConfig() {
-        return "Configuration file setup error!";
+    public String enable() {
+        return MessageInfo.color("&aPlugin Enabled");
+    }
+
+    @Override
+    public String disable() {
+        return MessageInfo.color("&cPlugin Disabled");
     }
 
     @Override

@@ -17,7 +17,7 @@ public class DependsResolver {
 
     public static <T> T resolve(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
         if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-            logger.info(ChatColor.AQUA + MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
+            logger.info(MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
             return whenEnabled.get();
         }
         return fallback.get();
@@ -25,7 +25,7 @@ public class DependsResolver {
 
     public static <T> T resolveBeforeEnable(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
         if (Bukkit.getPluginManager().getPlugin(pluginName) != null) {
-            logger.info(ChatColor.AQUA + MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
+            logger.info(MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
             return whenEnabled.get();
         }
         return fallback.get();

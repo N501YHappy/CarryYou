@@ -14,7 +14,8 @@ public interface MessageInfo {
     String updateAvailable(String latestVersion);
     String upToDate(String currentVersion);
     String findSoftDepends();
-    String WrongConfig();
+    String enable();
+    String disable();
     String[] FlagInfo();
 
     static MessageInfo current() {

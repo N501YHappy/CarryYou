@@ -14,12 +14,17 @@ public class kl_BQ implements MessageInfo {
 
     @Override
     public String findSoftDepends() {
-        return "找到了喵！";
+        return MessageInfo.color("&a找到了喵！");
     }
 
     @Override
-    public String WrongConfig() {
-        return "配置文件编写错了喵，怎么搞的喵";
+    public String enable() {
+        return MessageInfo.color("&a活了喵！");
+    }
+
+    @Override
+    public String disable() {
+        return MessageInfo.color("&c似了喵！");
     }
 
     @Override

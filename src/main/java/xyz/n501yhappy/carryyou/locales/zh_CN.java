@@ -14,12 +14,17 @@ public class zh_CN implements MessageInfo {
 
     @Override
     public String findSoftDepends() {
-        return "找到";
+        return MessageInfo.color("&a找到");
     }
 
     @Override
-    public String WrongConfig() {
-        return "配置文件错误！请检查语法！";
+    public String enable() {
+        return MessageInfo.color("&a插件已加载");
+    }
+
+    @Override
+    public String disable() {
+        return MessageInfo.color("&c插件已卸载");
     }
 
     @Override
