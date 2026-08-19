@@ -4,9 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.events.PlayerCarryEvent;
+import xyz.n501yhappy.carryyou.events.PlayerDropEvent;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
@@ -27,7 +30,7 @@ public class CarryManager {
     private final Map<UUID,UUID> mappingCarry = new ConcurrentHashMap<>(); //反向映射，从value找key
     private final Map<UUID,Boolean> carryDisabled = new ConcurrentHashMap<>(); // true = 禁止抱起
 
-    public Boolean carry(Entity carrier, Entity target) {
+    public boolean carry(Entity carrier, Entity target) {
         UUID carrierUUID = carrier.getUniqueId();
         UUID targetUUID = target.getUniqueId();
 
@@ -41,6 +44,10 @@ public class CarryManager {
         }
         if (!carrier.getPassengers().isEmpty()) return false; //有人在上面也不行
 
+        PlayerCarryEvent event = new PlayerCarryEvent(carrier,target);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
         if(carrier.addPassenger(target)){
             put(carrierUUID, targetUUID);
             return true;
@@ -48,7 +55,7 @@ public class CarryManager {
         return false;
     }
     
-    public Boolean drop(Entity target, double power) {
+    public Boolean drop(Entity target, double power,boolean callEvent) {
         UUID targetUUID = target.getUniqueId();
         if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
@@ -58,6 +65,13 @@ public class CarryManager {
             remove(carrierUUID, targetUUID);
             return false;
         }
+
+        if (callEvent){
+            PlayerDropEvent event = new PlayerDropEvent(carrier,target);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (event.isCancelled()) return false;
+        }
+
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);

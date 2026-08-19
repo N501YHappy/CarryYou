@@ -169,15 +169,15 @@ command:
 支持 `&` 颜色代码。修改后使用 `/carryyou reload` 重新加载。
 
 ### 版本
-- **Minecraft版本**: 1.16+ （不清楚）
+- **Minecraft版本**: 1.16+
 - **Java版本**: 8+
 ## 贡献指南
 1. 遇到bug不要憋着不说！
-2. 有什么主意在issues说，或者通过邮件n501yhappy@outlook.com或者qq:3029340076
-
+2. 有什么主意在issues说，或者通过邮件n501yhappy@outlook.com或者qq:1031612019
+3. 汇报bug记得带上插件版本，服务端，报错信息））
 >一些小事情
 我知道我插件写的很烂，但是如果有bug可以给我说吗qwq
-github上面交issues,发邮件n501yhappy@outlook.com,QQ3029340076 什么的，有bug一定告诉我QAQ
+github上面交issues,发邮件n501yhappy@outlook.com,QQ1031612019 什么的，有bug一定告诉我QAQ
 还有就是你服务器如果运行不了的话...你把服务端告诉我我会尽快给你做适配的
 总之有什么建议直接说就行了，我不会杀死你的(
 

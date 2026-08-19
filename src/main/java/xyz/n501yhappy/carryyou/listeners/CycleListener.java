@@ -14,7 +14,7 @@ public class CycleListener implements Listener {
         Entity want = event.getEntity();
         Entity target = event.getMount();
         if(CarryManager.getInstance().isCarrying(want.getUniqueId()) && Checkers.hasMountCircle(target,want)){
-            CarryManager.getInstance().drop(target,0);
+            CarryManager.getInstance().drop(target,0,false);
         }
     }
 }

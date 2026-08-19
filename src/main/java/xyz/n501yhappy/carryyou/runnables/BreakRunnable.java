@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.events.PlayerBreakEvent;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.Map;
@@ -65,12 +66,15 @@ public class BreakRunnable implements Runnable {
             if (currentScore >= TARGET_SCORE) {
                 Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
                 if (carrier != null) {
+                    PlayerBreakEvent event = new PlayerBreakEvent(carrier,player);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) continue;
                     Version.getAdapts().EntityScheduler_execute(CarryYou.instance, player, () -> {
                         World world = player.getWorld();
                         Location particleLocation = player.getLocation();
                         world.spawnParticle(Particle.SMOKE_LARGE, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
                         world.spawnParticle(Particle.EXPLOSION_HUGE, particleLocation, 1);
-                        carryManager.drop(player, 0);
+                        carryManager.drop(player, 0,false);
                     });
                 }
                 removePlayer(playerUUID);

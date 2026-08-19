@@ -135,7 +135,7 @@ public class CarryListener implements Listener {
             return;
         }
         event.setCancelled(true);
-        carryManager.drop(target, power);
+        carryManager.drop(target, power,true);
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 
