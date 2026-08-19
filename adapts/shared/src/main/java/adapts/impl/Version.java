@@ -18,7 +18,6 @@ public class Version {
         } catch (ClassNotFoundException e) {
             isFolia = false;
         }
-        logger.info("§aCarryYou is running on §b" + (isFolia ? "folia" : "bukkit") + "§r");
         String pkg = Version.class.getPackage().getName() + "." + (isFolia ? "folia" : "bukkit");
         adapts = newInstance(pkg, "schedulerImpl");
     }

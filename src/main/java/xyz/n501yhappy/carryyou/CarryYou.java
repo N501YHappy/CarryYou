@@ -61,7 +61,7 @@ public final class CarryYou extends JavaPlugin {
 
         if(ConfigLoader.CHECK_UPDATE) Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
 
-        getLogger().info("§aPlugin Enabled!§r");
+        getLogger().info(MessageInfo.current().enable());
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class CarryYou extends JavaPlugin {
         carryManager.cleanup();
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();
-        getLogger().info("§cPlugin Disabled!§r");
+        getLogger().info(MessageInfo.current().disable());
     }
 
     public static JavaPlugin getInstance() {
