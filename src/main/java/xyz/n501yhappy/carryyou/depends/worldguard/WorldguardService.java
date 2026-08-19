@@ -21,7 +21,7 @@ public class WorldguardService {
     }
 
     public void init() {
-        this.methods = DependsResolver.resolveBeforeEnable("WorldGuard", MethodProvider::new, EmptyProvider::new);
+        this.methods = DependsResolver.resolveBeforeEnable("WorldGuard", () -> new MethodProvider(), EmptyProvider::new);
     }
 
     public boolean check(Entity target, Player player) {
