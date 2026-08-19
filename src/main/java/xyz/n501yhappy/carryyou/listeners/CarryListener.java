@@ -17,6 +17,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
@@ -68,6 +69,7 @@ public class CarryListener implements Listener {
         Entity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
         if (!carryManager.checkCarry(player, target,carryCooldown)) return;
+        if (!Checkers.hasMountCircle(player,target)) return;
 
         handlePickup(player, target);
     }

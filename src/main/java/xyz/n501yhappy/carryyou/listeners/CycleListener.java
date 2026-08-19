@@ -1,12 +1,15 @@
 package xyz.n501yhappy.carryyou.listeners;
 
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.spigotmc.event.entity.EntityMountEvent;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 
 public class CycleListener implements Listener {
+
+    @EventHandler
     public void onMount(EntityMountEvent event){
         Entity want = event.getEntity();
         Entity target = event.getMount();
