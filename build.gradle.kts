@@ -34,11 +34,12 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
-
-
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 17
+}
 tasks {
     runServer {
         minecraftVersion("1.21.11")
