@@ -7,7 +7,7 @@ import xyz.n501yhappy.carryyou.depends.DependsResolver;
 
 public class GSitService {
     private Listener listener = null;
-    private static GSitService instance = new GSitService();
+    private static GSitService instance = null;
 
     public static GSitService getInstance() {
         if (instance == null) {

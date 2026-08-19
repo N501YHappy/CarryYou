@@ -7,7 +7,7 @@ import xyz.n501yhappy.carryyou.depends.DependsResolver;
 
 public class ResidenceService {
     private ResidenceMethods methods = null;
-    private static ResidenceService instance = new ResidenceService();
+    private static ResidenceService instance = null;
 
     public static ResidenceService getInstance() {
         if (instance == null) {

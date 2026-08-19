@@ -7,7 +7,7 @@ import xyz.n501yhappy.carryyou.depends.DependsResolver;
 
 public class WorldguardService {
     private WorldguardMethods methods = null;
-    private static WorldguardService instance = new WorldguardService();
+    private static WorldguardService instance;
 
     public static WorldguardService getInstance() {
         if (instance == null) {
