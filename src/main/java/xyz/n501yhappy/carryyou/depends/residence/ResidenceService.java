@@ -3,6 +3,7 @@ package xyz.n501yhappy.carryyou.depends.residence;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.depends.DependsResolver;
+import xyz.n501yhappy.carryyou.depends.residence.MethodProvider;
 
 
 public class ResidenceService {
@@ -21,7 +22,7 @@ public class ResidenceService {
     }
 
     public void init() {
-        this.methods = DependsResolver.resolve("Residence", MethodProvider::new, EmptyProvider::new);
+        this.methods = DependsResolver.resolve("Residence", () -> new MethodProvider(), EmptyProvider::new);
     }
 
     public boolean check(Entity target, Player player) {

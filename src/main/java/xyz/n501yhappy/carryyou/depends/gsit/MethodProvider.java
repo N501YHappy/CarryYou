@@ -16,7 +16,7 @@ public class MethodProvider implements Listener {
     public void onSit(PrePlayerPlayerSitEvent event) {
         Player player = event.getPlayer();
         UUID player_uuid = player.getUniqueId();
-        if (this.carryManager.isCarried(player_uuid)) {
+        if (this.carryManager.isCarried(player_uuid) || this.carryManager.isCarrying(player_uuid)) {
             event.setCancelled(true);
         }
     }

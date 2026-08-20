@@ -21,7 +21,7 @@ public class DominionService {
     }
 
     public void init() {
-        this.methods = DependsResolver.resolve("Dominion", MethodProvider::new, EmptyProvider::new);
+        this.methods = DependsResolver.resolve("Dominion", () -> new MethodProvider(), EmptyProvider::new);
     }
 
     public boolean check(Entity target, Player player) {

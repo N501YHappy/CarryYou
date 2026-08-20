@@ -60,11 +60,7 @@ public class CarryListener implements Listener {
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
         if (carryManager.isCarrying(player.getUniqueId())) {
-            Entity target = carryManager.getTargetEntityByCarrier(player.getUniqueId());
-            if (target != null) {
-                throwEntity(player, ConfigLoader.THROW_POWER_DROP,event);
-                return;
-            }
+            return;
         }
         Entity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;

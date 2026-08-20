@@ -21,7 +21,7 @@ public class GSitService {
     }
 
     public void init() {
-        this.listener = DependsResolver.resolve("GSit", MethodProvider::new, EmptyProvider::new);
+        this.listener = DependsResolver.resolve("GSit",() -> new MethodProvider(),  EmptyProvider::new);
     }
 
     public void registerListener(Plugin plugin) {
