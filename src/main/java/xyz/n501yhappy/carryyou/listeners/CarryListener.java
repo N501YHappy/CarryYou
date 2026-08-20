@@ -69,7 +69,7 @@ public class CarryListener implements Listener {
         Entity target = getTargetEntity(player);
         if (!isValidTarget(player, target)) return;
         if (!carryManager.checkCarry(player, target,carryCooldown)) return;
-        if (!Checkers.hasMountCircle(player,target)) return;
+        if (Checkers.hasMountCircle(player,target)) return;
 
         handlePickup(player, target);
     }

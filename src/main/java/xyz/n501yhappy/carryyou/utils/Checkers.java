@@ -22,6 +22,7 @@ public class Checkers {
         return dominionService.check(target, player);
     }
     public static boolean hasMountCircle(Entity bottom,Entity test){
+        if (bottom.equals(test)) return true;
         if (bottom.getPassengers().isEmpty()) return false;
         for (Entity entity : bottom.getPassengers()){
             if(hasMountCircle(entity,test)) return true;

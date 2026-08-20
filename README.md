@@ -4,7 +4,7 @@
 
 一个允许玩家**抓取并携带**其他实体（包括TNT）的 Minecraft 插件。 
 
-[CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
+# [CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
 
 ## 使用方法
 
