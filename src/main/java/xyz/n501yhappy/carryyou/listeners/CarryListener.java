@@ -25,7 +25,6 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final CarryManager carryManager = CarryManager.getInstance();
-    private final ChickenState chickenState = ChickenState.getInstance();
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
@@ -84,7 +83,6 @@ public class CarryListener implements Listener {
 
     private void handlePickup(Player player,Entity target) {
         if (carryManager.carry(player, target)){
-            chickenState.onCarry(player,target);
             carryCooldown.updateCooldown(player.getUniqueId());
             CDCooldown.updateCooldown(player.getUniqueId());
         }

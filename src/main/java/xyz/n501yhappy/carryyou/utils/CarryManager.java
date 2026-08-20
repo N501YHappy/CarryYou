@@ -75,7 +75,6 @@ public class CarryManager {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);
-        chickenState.onDrop(carrier,target);
         carrier.removePassenger(target);
         target.setVelocity(vec);
         return true;
