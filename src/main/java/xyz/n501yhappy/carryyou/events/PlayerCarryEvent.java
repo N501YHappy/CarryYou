@@ -17,6 +17,7 @@ public class PlayerCarryEvent extends Event implements Cancellable {
     public PlayerCarryEvent(Entity player, Entity target){
         this.carrier = player;
         this.carried = target;
+        this.cancelled = false;
     }
 
     public Entity getCarrier() {
