@@ -53,8 +53,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CarryProtection(), this);
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
         getServer().getPluginManager().registerEvents(new CycleListener(), this);
-
-        metrics = new Metrics(this, 29710);
+        getServer().getPluginManager().registerEvents(new PluginListener(), this);
 
         getCommand("carryyou").setExecutor(new MainCommand());
 
@@ -64,6 +63,8 @@ public final class CarryYou extends JavaPlugin {
         if(ConfigLoader.CHECK_UPDATE) Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
 
         getLogger().info(MessageInfo.current().enable());
+
+        metrics = new Metrics(this, 29710);
     }
 
     @Override
