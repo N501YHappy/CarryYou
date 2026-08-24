@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "adapts.impl"
-version = "2.0"
+version = rootProject.version;
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "adapts.impl"
-version = "2.0"
+version = rootProject.version;
 
 repositories {
     mavenCentral()
@@ -11,5 +11,6 @@ repositories {
 }
 
 dependencies {
+    compileOnly("dev.folia:folia-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("dev.folia:folia-api:1.19.4-R0.1-SNAPSHOT")
 }
