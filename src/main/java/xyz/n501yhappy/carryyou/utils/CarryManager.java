@@ -1,22 +1,22 @@
 package xyz.n501yhappy.carryyou.utils;
 
+import carryyou.api.CarryManagerAPI;
+import carryyou.api.events.PlayerCarryEvent;
+import carryyou.api.events.PlayerDropEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
-import xyz.n501yhappy.carryyou.events.PlayerCarryEvent;
-import xyz.n501yhappy.carryyou.events.PlayerDropEvent;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CarryManager {
+public class CarryManager implements CarryManagerAPI {
     public static CarryManager instance;
 
     private final ChickenState chickenState = ChickenState.getInstance();
@@ -55,7 +55,7 @@ public class CarryManager {
         return false;
     }
     
-    public Boolean drop(Entity target, double power,boolean callEvent) {
+    public boolean drop(Entity target, double power,boolean callEvent) {
         UUID targetUUID = target.getUniqueId();
         if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);

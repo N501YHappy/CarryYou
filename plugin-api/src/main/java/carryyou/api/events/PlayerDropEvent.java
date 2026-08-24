@@ -1,12 +1,11 @@
-package xyz.n501yhappy.carryyou.events;
+package carryyou.api.events;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerCarryEvent extends Event implements Cancellable {
+public class PlayerDropEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
 
@@ -14,7 +13,7 @@ public class PlayerCarryEvent extends Event implements Cancellable {
     private final Entity carried;
 
 
-    public PlayerCarryEvent(Entity player, Entity target){
+    public PlayerDropEvent(Entity player, Entity target){
         this.carrier = player;
         this.carried = target;
         this.cancelled = false;
@@ -35,11 +34,15 @@ public class PlayerCarryEvent extends Event implements Cancellable {
 
     @Override
     public void setCancelled(boolean cancel) {
-        this.cancelled =cancel;
+        this.cancelled = cancel;
     }
 
     @Override
     public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

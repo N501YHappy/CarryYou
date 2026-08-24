@@ -28,8 +28,10 @@ dependencies {
     compileOnly(fileTree("libs"))
     compileOnly("cn.lunadeer:DominionAPI:4.7.3")
     implementation(project(":adapts:shared"))
+    compileOnly(project(":plugin-api"))
     add("shadowLink", project(":adapts:folia"))
     add("shadowLink", project(":adapts:bukkit"))
+    add("shadowLink", project(":plugin-api"))
 }
 
 java {

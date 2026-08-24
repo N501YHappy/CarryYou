@@ -3,3 +3,5 @@ include(":adapts:folia")
 
 include(":adapts:bukkit")
 include(":adapts:shared")
+
+include(":plugin-api")

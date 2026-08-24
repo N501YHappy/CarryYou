@@ -7,10 +7,10 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import carryyou.api.events.PlayerBreakEvent;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
-import xyz.n501yhappy.carryyou.events.PlayerBreakEvent;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.Map;

@@ -1,5 +1,6 @@
 package xyz.n501yhappy.carryyou;
 
+import carryyou.api.CarryyouAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
@@ -35,6 +36,7 @@ public final class CarryYou extends JavaPlugin {
         }
         DependsResolver.setLogger(getLogger());
         WorldguardService.getInstance().registerFlag();
+        CarryyouAPI.registerCarryManager(carryManager);
     }
 
     @Override
