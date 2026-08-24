@@ -4,7 +4,16 @@
 
 一个允许玩家**抓取并携带**其他实体（包括TNT）的 Minecraft 插件。 
 
-# [CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
+[![Documentation](https://img.shields.io/badge/插件文档-VitePress-fb8899?logo=readthedocs)](https://carryyou.n501yhappy.top)
+[![GitHub Repository](https://img.shields.io/badge/源代码-GitHub-00aeec?logo=github)](https://github.com/N501YHappy/CarryYou)
+[![bStats](https://img.shields.io/badge/bStats-Statistics-eacd76?logo=google-analytics)](https://bstats.org/plugin/bukkit/CarryYou/29710)
+[![Latest Build](https://img.shields.io/github/v/release/N501YHappy/CarryYou?label=%e6%9c%80%e6%96%b0%e7%89%88%e6%9c%ac&logo=gradle&color=0aa344)](https://github.com/N501YHappy/CarryYou/releases/latest)
+
+[![Minecraft Version](https://img.shields.io/badge/游戏版本-1.16.5+-4E6B33?logo=luanti)](https://github.com/N501YHappy/CarryYou)
+[![Folia](https://img.shields.io/badge/Folia-支持-EEEEEE?logo=thymeleaf)](https://papermc.io/software/folia/)
+
+
+## [CarryYou.jar点击下载](https://pluginversion.n501yhappy.top/carryyou/download)
 
 ## 使用方法
 
@@ -34,147 +43,19 @@
 2. 达到要求的CPS（每秒点击次数）即可成功挣脱
 3. 如果有虚弱buff就不能挣脱了
 
-## 权限和命令
+# [相关详细配置请查看文档谢谢喵！](https://carryyou.n501yhappy.top/)
 
-### 命令
-| 命令                 | 描述            | 权限                    | 默认  |
-|--------------------|---------------|-----------------------|-----|
-| `/carryyou`        | 切换自己是否允许被他人抱起 | 无                     | 所有人 ||
-| `/carryyou reload` | 重新加载插件配置      | `carryyou.reload`     | OP  |
-| `/carryyou on/off` | 切换自己是否被他人抱起   | `carryyou.can_toggle` | 所有人 |
-
-### 权限节点
-| 权限节点                  | 描述                | 默认   |
-|-----------------------|-------------------|------|
-| `carryyou.reload`     | 允许重新加载插件配置        | OP   |
-| `carryyou.uncarried`  | 有此权限的玩家无法被他人抓举    | 谁都没有 |
-| `carryyou.unbreak`    | 有此权限的玩家无法挣脱被抓举    | 谁都没有 |
-| `carryyou.can`        | 有此权限才能抱起别人        | 人人有份 |
-| `carryyou.can_toggle` | 有此权限才能使用命令切换是否被抱起 | 人人有份 |
-
-# 杂交
-## WorldGuard
-通过调用WorldGuard的API,注册Flag `carriable` 可设置领地内是否抓举
-## Residence
-通过调用Residence的API,注册Flag `carriable` 可设置领地内是否抓举
-## Dominion
-通过调用Dominion的API,注册PriFlag `carriable` 可设置领地内是否抓举
-
-## GSit
-防止与gsit右键骑乘功能冲突
-
-## 配置文件 (config.yml)
-
-插件首次运行时会自动生成配置文件。以下是默认配置和说明：
-
-```yaml
-# config.yml
-
-# 是否检查更新 这样会第一时间把新版本告诉你！
-check_update: true
-
-# 插件提示前缀
-prefix: "&7[&aCarry&bYou&7] "
-
-# 插件内部语言：zh_CN / en_US 
-locales: en_US
-
-# 逃脱所需要的CPS（每秒点击次数）
-# 默认值: 6.0 表示需要每秒点击6次才能挣脱
-
-needed_cps: 6.0
-
-# 抱起冷却时间（毫秒），管理员不受限制
-# 默认值: 1000 表示两次抓取间隔1秒
-cooldown: 1000
-
-# 进度条设置
-progress_bar:
-  # 进度条长度（字符数）
-  length: 20
-
-  # 进度条左边符号
-  left: "&7["
-
-  # 进度条右边符号
-  right: "&7]"
-
-  # 空心的心形（未完成部分）
-  empty: "&c♡"
-
-  # 实心的心形（已完成部分）
-  filled: "&c♥"
-deny_worlds: #这些世界禁止抓举！ 但是管理员干什么都可以哦
-  - "world_the_end"
-
-deny_entities: #这些实体禁止抓举！ 但是如果是管理员的话...
-  - "ender_dragon"
-
-# 丢出力度设置
-throw_power:
-  # 左键/攻击丢出的力度
-  attack: 0.9
-  # 右键丢出的力度
-  interact: 0.4
-
-# 触发方式设置
-trigger:
-  # true = SHIFT+F 触发，false = SHIFT+右键 触发（默认）
-  shift_f: false
-  # true = 需要空手才能触发，false = 不限制
-  empty: false
-
-# 有趣的功能设置
-fun:
-  # 抱起鸡时给予缓降效果
-  with_chicken: true
-  # 抱起苦力怕时不会爆炸
-  with_creeper: true
-```
-
-## 消息配置 (messages.yml)
-
-插件首次运行时会自动生成消息配置文件，你可以自定义所有插件消息。
-
-```yaml
-# messages.yml
-
-# 逃离/挣脱相关消息
-break:
-  weakness: "&c你现在处于虚弱状态！"
-  unbreak: "&c你现在不能挣脱哦...忍一会吧~"
-  break_free_subtitle: "&e快速点击左键挣脱！"
-  progress_bar_broken: "&7(&c坏掉了！&7)"
-
-# 抓取相关消息
-carry:
-  cooldown: "&c你还要再等 %s 秒" # %s是显示的秒数，不是毫秒数！
-  world_deny: "&c当前世界不允许你抱它..."
-  no_permission: "&c你太小啦，等你再长大一点点，它才愿意钻到你怀里哦"
-  worldguard_deny: "&c小guard告诉我这是别人的领地！你不可以这样！"
-  residence_deny: "&cres管理员不让你这么做哦"
-  dominion_deny: "&c不行！这是别人的地盘！"
-  entity_deny: "&c你不能抱它！"
-  player_uncarried: "&c你不能抱它！"
-  enable_carry: "&a你现在可以被抱起来！"
-  disable_carry: "&c你现在不可以被抱起来！"
-
-# 命令相关消息
-command:
-  no_permission: "&c你没有权限使用此命令！"
-```
-
-支持 `&` 颜色代码。修改后使用 `/carryyou reload` 重新加载。
-
-### 版本
-- **Minecraft版本**: 1.16+
-- **Java版本**: 8+
 ## 贡献指南
+### 如果你是开发者...
+fork下来之后pr上去就可以啦
+### 如果你想依赖这个插件...
+[这里有文档链接](https://carryyou.n501yhappy.top/api-install.html)
+### 如果你是一个用户
 1. 遇到bug不要憋着不说！
 2. 有什么主意在issues说，或者通过邮件n501yhappy@outlook.com或者qq:1031612019
 3. 汇报bug记得带上插件版本，服务端，报错信息））
->一些小事情
-我知道我插件写的很烂，但是如果有bug可以给我说吗qwq
+4. 
+>我知道我插件写的很烂，但是如果有bug记得给我说qwq
 github上面交issues,发邮件n501yhappy@outlook.com,QQ1031612019 什么的，有bug一定告诉我QAQ
 还有就是你服务器如果运行不了的话...你把服务端告诉我我会尽快给你做适配的
 总之有什么建议直接说就行了，我不会杀死你的(
