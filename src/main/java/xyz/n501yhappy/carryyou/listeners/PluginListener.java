@@ -17,6 +17,6 @@ public class PluginListener implements Listener {
     }
     @EventHandler
     public void onDrop(PlayerDropEvent event){
-        chickenState.onCarry(event.getCarrier(), event.getCarried());
+        chickenState.onDrop(event.getCarrier(), event.getCarried());
     }
 }
