@@ -1,23 +1,16 @@
 package xyz.n501yhappy.carryyou.depends;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import xyz.n501yhappy.carryyou.locales.MessageInfo;
+import xyz.n501yhappy.carryyou.services.MessageService;
 
 import java.util.function.Supplier;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 public class DependsResolver {
-    private static Logger logger;
-
-    public static void setLogger(Logger logger2) {
-        logger = logger2;
-    }
-
     public static <T> T resolve(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
         if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-            logger.info(MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
+            MessageService.getInstance().log(Level.INFO, "Plugin.plugin-link", pluginName);
             return whenEnabled.get();
         }
         return fallback.get();
@@ -25,7 +18,7 @@ public class DependsResolver {
 
     public static <T> T resolveBeforeEnable(String pluginName, Supplier<T> whenEnabled, Supplier<T> fallback) {
         if (Bukkit.getPluginManager().getPlugin(pluginName) != null) {
-            logger.info(MessageInfo.current().findSoftDepends() + " " + ChatColor.GREEN + pluginName);
+            MessageService.getInstance().log(Level.INFO, "Plugin.plugin-link", pluginName);
             return whenEnabled.get();
         }
         return fallback.get();

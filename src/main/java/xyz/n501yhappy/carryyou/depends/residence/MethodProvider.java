@@ -3,18 +3,15 @@ package xyz.n501yhappy.carryyou.depends.residence;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import xyz.n501yhappy.carryyou.CarryYou;
-import xyz.n501yhappy.carryyou.locales.MessageInfo;
+import xyz.n501yhappy.carryyou.services.MessageService;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class MethodProvider implements ResidenceMethods {
-    private final Logger logger = CarryYou.getInstance().getLogger();
+    private final MessageService messageService = MessageService.getInstance();
 
     @Override 
     public boolean check(Entity target, Player player) {
@@ -30,7 +27,7 @@ public class MethodProvider implements ResidenceMethods {
         try {
             FlagPermissions.addFlag("carriable");
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, ChatColor.RED + MessageInfo.current().anyError(), e);
+            messageService.log(Level.WARNING, "Plugin.plugin-error", e);
         }
     }
 }

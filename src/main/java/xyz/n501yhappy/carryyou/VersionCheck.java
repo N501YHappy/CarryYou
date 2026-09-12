@@ -1,13 +1,14 @@
 package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.Plugin;
-import xyz.n501yhappy.carryyou.locales.MessageInfo;
+import xyz.n501yhappy.carryyou.services.MessageService;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.logging.Level;
 
 public class VersionCheck {
     private static final HttpClient client = HttpClient.newBuilder()
@@ -48,7 +49,7 @@ public class VersionCheck {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                plugin.getLogger().warning(MessageInfo.current().checkRequestError(response.statusCode()));
+                MessageService.getInstance().log(Level.WARNING, "Update.check-request-error", response.statusCode());
                 return null;
             }
             String body = response.body();
@@ -61,7 +62,7 @@ public class VersionCheck {
             return body.substring(st + 1, ed);
 
         } catch (Exception e) {
-            plugin.getLogger().warning(MessageInfo.current().checkError(e.getMessage()));
+            MessageService.getInstance().log(Level.WARNING, "Update.check-error", e.getMessage());
             return null;
         }
     }
@@ -70,13 +71,13 @@ public class VersionCheck {
         String currentVer = plugin.getDescription().getVersion();
         String latestVer = getLastVer();
         if (latestVer == null) {
-            plugin.getLogger().info(MessageInfo.current().checkSkipped());
+            MessageService.getInstance().log(Level.INFO, "Update.check-skipped");
             return;
         }
         if (compare(latestVer, currentVer)) {
-            plugin.getLogger().warning(MessageInfo.current().updateAvailable(latestVer));
+            MessageService.getInstance().log(Level.WARNING, "Update.update-available", latestVer);
         } else {
-            plugin.getLogger().info(MessageInfo.current().upToDate(currentVer));
+            MessageService.getInstance().log(Level.INFO, "Update.up-to-date", currentVer);
         }
     }
 }
