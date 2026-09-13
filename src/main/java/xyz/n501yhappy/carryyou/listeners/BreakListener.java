@@ -7,8 +7,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
+import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
-import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.UUID;
@@ -24,11 +25,11 @@ public class BreakListener implements Listener {
         if (!carryManager.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Break.weakness");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.BREAK_WEAKNESS.get());
             return;
         }
         if (player.hasPermission("carryyou.unbreak") && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Break.unbreak");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.BREAK_UNBREAK.get());
             return;
         }
         BreakRunnable.addScore(playerUUID,1);

@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.utils.methods.RideMethod;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
@@ -146,46 +146,48 @@ public class CarryManager implements CarryManagerAPI {
 
         if(!cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){
             double remainingSeconds = cooldown.getRemains(player.getUniqueId()) / 1000.0;
-            MessageService.getInstance().sendMessage(player, "Carry.cooldown", String.format("%.2f", remainingSeconds));
+            String message = ConfigLoader.PREFIX + MessageConfig.Message.COOLDOWN.get()
+                    .replace("%s", String.format("%.2f", remainingSeconds));
+            player.sendMessage(message);
             return false;
         }
         if (ConfigLoader.DENY_WORLDS.contains(player.getWorld().getName()) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.world-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLD_DENY.get());
             return false;
         }
 
         if (!player.hasPermission("carryyou.can") && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.permission-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_NO_PERMISSION.get());
             return false;
         }
 
         if (!Checkers.worldguard_check(target, player) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.arean-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_WORLDGUARD_DENY.get());
             return false;
         }
 
         if (!Checkers.residence_check(target, player) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.arean-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_RESIDENCE_DENY.get());
             return false;
         }
 
         if (!Checkers.dominion_check(target, player) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.arean-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_DOMINION_DENY.get());
             return false;
         }
 
         if (ConfigLoader.DENY_ENTITIES.contains(target.getType().name()) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Carry.entity-deny");
+            player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_ENTITY_DENY.get());
             return false;
         }
 
         if (target instanceof Player targetP) {
             if (targetP.hasPermission("carryyou.uncarried") && !player.isOp()) {
-                MessageService.getInstance().sendMessage(player, "Carry.player-uncarried");
+                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;
             }
             if (isCarryDisabled(targetP.getUniqueId())  && !player.isOp()) {
-                MessageService.getInstance().sendMessage(player, "Carry.player-uncarried");
+                player.sendMessage(ConfigLoader.PREFIX + MessageConfig.Message.CARRY_PLAYER_UNCARRIED.get());
                 return false;
             }
         }

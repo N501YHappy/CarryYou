@@ -5,8 +5,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PREFIX;
 
 public class MainCommand implements CommandExecutor, TabExecutor {
     private final CarryManager carryManager = CarryManager.getInstance();
@@ -26,7 +30,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             if (sender instanceof Player player) {
                 boolean current = carryManager.isCarryDisabled(player.getUniqueId());
                 carryManager.setCarryDisabled(player.getUniqueId(), !current);
-                MessageService.getInstance().sendMessage(sender, current ? "Carry.enable" : "Carry.disable");
+                sender.sendMessage(PREFIX + (current ? MessageConfig.Message.ENABLE_CARRY.get() : MessageConfig.Message.DISABLE_CARRY.get()));
 
             }
             return true;
@@ -36,7 +40,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
         } else if (args[0].equalsIgnoreCase("on")) {
             if (sender instanceof Player)
                 carryManager.setCarryDisabled(((Player) sender).getUniqueId(), false);
-            MessageService.getInstance().sendMessage(sender, "Carry.enable");
+            sender.sendMessage(PREFIX + MessageConfig.Message.ENABLE_CARRY.get());
             return true;
         } else if (args[0].equalsIgnoreCase("off")) {
             handleToggle(sender,"off");
@@ -46,30 +50,30 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
     private boolean handleReload(CommandSender sender) {
         if (!sender.hasPermission("carryyou.reload")) {
-            MessageService.getInstance().sendMessage(sender, "Command.no-permission");
+            sender.sendMessage(PREFIX + MessageConfig.Message.COMMAND_NO_PERMISSION.get());
             return true;
         }
         try {
             ConfigLoader.reload();
-            MessageService.getInstance().sendMessage(sender, "Plugin.plugin-reload");
+            sender.sendMessage(PREFIX + MessageInfo.current().reloadSuccess());
             return true;
         } catch (Exception e) {
-            MessageService.getInstance().sendMessage(sender, "Plugin.config-reload-error", e.getMessage());
-            MessageService.getInstance().log(Level.SEVERE, "Plugin.plugin-reload-error", e);
+            sender.sendMessage(PREFIX + MessageInfo.current().reloadError() + e.getMessage());
+            CarryYou.getInstance().getLogger().log(Level.SEVERE, MessageInfo.current().reloadErrorLog(), e);
             return true;
         }
     }
     private void handleToggle(CommandSender sender,String arg) {
         if (!(sender instanceof Player)) {
-            MessageService.getInstance().sendMessage(sender, "Plugin.command-sender-error");
+            sender.sendMessage(MessageInfo.current().onlyPlayer());
             return;
         }
         if(!sender.hasPermission("carryyou.can_toggle")){
-            MessageService.getInstance().sendMessage(sender, "Command.no-permission");
+            sender.sendMessage(MessageConfig.Message.COMMAND_NO_PERMISSION.get());
             return;
         }
         carryManager.setCarryDisabled(((Player) sender).getUniqueId(), arg.equalsIgnoreCase("off"));
-        MessageService.getInstance().sendMessage(sender, "Carry.disable");
+        sender.sendMessage(PREFIX + MessageConfig.Message.DISABLE_CARRY.get());
     }
 
     @Override

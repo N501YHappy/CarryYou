@@ -10,16 +10,19 @@ import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.CarryYou;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class MethodProvider implements WorldguardMethods {
     private StateFlag carriableFlag;
-    private final MessageService messageService = MessageService.getInstance();
+    private final Logger logger = CarryYou.getInstance().getLogger();
 
     @Override 
     public boolean check(Entity target, Player player) {
@@ -42,11 +45,11 @@ public class MethodProvider implements WorldguardMethods {
                 if (stateFlag instanceof StateFlag) {
                     this.carriableFlag = (StateFlag) stateFlag;
                 } else {
-                    messageService.log(Level.WARNING, "Plugin.plugin-error", e);
+                    this.logger.log(Level.WARNING, ChatColor.YELLOW + MessageInfo.current().anyError(), e);
                 }
             }
         } catch (Exception e2) {
-            messageService.log(Level.WARNING, "Plugin.plugin-error", e2);
+            this.logger.log(Level.WARNING, ChatColor.RED + MessageInfo.current().anyError(), e2);
         }
     }
 }

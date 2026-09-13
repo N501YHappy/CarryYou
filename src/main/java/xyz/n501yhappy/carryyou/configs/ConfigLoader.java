@@ -1,24 +1,19 @@
 package xyz.n501yhappy.carryyou.configs;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.listeners.CarryListener;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.locales.en_US;
+import xyz.n501yhappy.carryyou.locales.MessageInfo;
+import xyz.n501yhappy.carryyou.locales.kl_BQ;
+import xyz.n501yhappy.carryyou.locales.zh_CN;
 
-import javax.swing.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 
 public class ConfigLoader {
-    private MessageService messageService = MessageService.getInstance();
-
     public static Boolean CHECK_UPDATE = true;
     public static String PREFIX = "&7[&aCarry&bYou&7] ";
     public static Double NEEDED_CPS = 6.0;
@@ -37,25 +32,25 @@ public class ConfigLoader {
     public static Boolean WITH_CHICKEN = true;
     public static Boolean WITH_CREEPER = true;
 
-    public static Configuration langConfig = null;
-
-    public static void load(Plugin plugin) {
-        plugin.saveDefaultConfig();
-        plugin.reloadConfig();
-        FileConfiguration config = plugin.getConfig();
+    public static void load() {
+        CarryYou.instance.saveDefaultConfig();
+        CarryYou.instance.reloadConfig();
+        FileConfiguration config = CarryYou.instance.getConfig();
+        MessageConfig.load(CarryYou.instance, CarryYou.instance.getLogger());
 
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
-        String locales = config.getString("locales", "zh_cn");
+        String locales = config.getString("locales", "zh_CN");
 
-        if(!isValidLocale(locales)){
-            plugin.getLogger().log(Level.WARNING,"The \"" + locales + "\" language file was not found; it has been replaced with en_us.");
-            locales = "en_us";
+        if (locales.equalsIgnoreCase("en_US")) MessageInfo.set(new en_US());
+        else if (locales.equalsIgnoreCase("zh_CN")) MessageInfo.set(new zh_CN());
+        else if (locales.equalsIgnoreCase("kl_BQ")) {
+            CarryYou.getInstance().getLogger().info("诶？猫娘？喵喵喵喵喵~好想玩卡丘~（卡拉比丘）");
+            PREFIX = PREFIX.replace("§a", "§d");
+            MessageInfo.set(new kl_BQ());
+        }else{
+            CarryYou.getInstance().getLogger().info("Your config.yml goes wrong,please check \"locales\"");
+            MessageInfo.set(new en_US());
         }
-        File lang_file = new File(plugin.getDataFolder().getPath() + "/langs/" + locales + ".yml");
-        if (!lang_file.exists()){
-            plugin.saveResource("langs/" + locales + ".yml",true);
-        }
-        MessageService.getInstance().setLangConfig(YamlConfiguration.loadConfiguration(lang_file));
 
         CHECK_UPDATE = config.getBoolean("check_update", true);
         NEEDED_CPS = config.getDouble("needed_cps", 6.0);
@@ -91,13 +86,10 @@ public class ConfigLoader {
         }
     }
     public static void reload() {
-        load(CarryYou.getInstance());
+        load();
     }
     private static String translateColors(String text) {
         if (text == null) return "";
         return ChatColor.translateAlternateColorCodes('&', text);
-    }
-    private static boolean isValidLocale(String locale){
-        return locale.equals("en_us") || locale.equals("zh_cn");
     }
 }

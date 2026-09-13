@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import carryyou.api.events.PlayerBreakEvent;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.configs.MessageConfig;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 
 import java.util.Map;
@@ -60,7 +60,7 @@ public class BreakRunnable implements Runnable {
 
             // 显示进度条
             String progressBar = getProgressBar(currentScore, TARGET_SCORE);
-            MessageService.getInstance().sendTitle(player, progressBar, "Break.break-free-subtitle", 0, 20, 10);
+            player.sendTitle(progressBar, MessageConfig.Message.BREAK_FREE_SUBTITLE.get(), 0, 20, 10);
             
             //好耶！
             if (currentScore >= TARGET_SCORE) {
@@ -96,7 +96,7 @@ public class BreakRunnable implements Runnable {
 
     private static String getProgressBar(Integer score, Integer total) {
         if (score == null || total == null || total <= 0) {
-            return MessageService.getInstance().getMessage("Break.progress-bar-broken");
+            return MessageConfig.Message.BREAK_PROGRESS_BAR_BROKEN.get();
         }
 
         StringBuilder sb = new StringBuilder();
