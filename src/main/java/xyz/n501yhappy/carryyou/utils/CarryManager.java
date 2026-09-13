@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.configs.MessageConfig;
+import xyz.n501yhappy.carryyou.utils.methods.RideMethod;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CarryManager implements CarryManagerAPI {
     public static CarryManager instance;
 
-    private final ChickenState chickenState = ChickenState.getInstance();
+    private final CarryMethod carryMethod = new RideMethod();
 
     public static CarryManager getInstance() {
         if(instance == null) instance = new CarryManager();
@@ -42,13 +43,17 @@ public class CarryManager implements CarryManagerAPI {
                 return false;
             }
         }
-        if (!carrier.getPassengers().isEmpty()) return false; //有人在上面也不行
+        if (!carryMethod.isEmpty(carrier)) return false; //有人在上面也不行
+
+        if (carryMethod instanceof RideMethod){
+            if (Checkers.hasMountCircle(carrier,target)) return false;
+        }
 
         PlayerCarryEvent event = new PlayerCarryEvent(carrier,target);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        if(carrier.addPassenger(target)){
+        if(carryMethod.carryOn(carrier,target)){
             put(carrierUUID, targetUUID);
             return true;
         }
@@ -75,7 +80,7 @@ public class CarryManager implements CarryManagerAPI {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);
-        carrier.removePassenger(target);
+        carryMethod.drop(carrier,target);
         target.setVelocity(vec);
         return true;
     }
@@ -120,8 +125,8 @@ public class CarryManager implements CarryManagerAPI {
         for (Map.Entry<UUID, UUID> entry : carryMapping.entrySet()) {
             Entity carrier = Bukkit.getEntity(entry.getKey());
             Entity target = Bukkit.getEntity(entry.getValue());
-            if (carrier != null && target != null && !carrier.getPassengers().isEmpty()) {
-                carrier.removePassenger(target);
+            if (carrier != null && target != null && !carryMethod.isEmpty(carrier)) {
+                carryMethod.drop(carrier,target);
             }
         }
         carryMapping.clear();
