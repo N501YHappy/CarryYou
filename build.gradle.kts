@@ -1,9 +1,11 @@
+import org.gradle.kotlin.dsl.accessors.pluginTreesFrom
+import org.gradle.language.jvm.tasks.ProcessResources
 plugins {
     java
     id("com.gradleup.shadow") version "9.3.0"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21" apply false
 }
+
 group = "xyz.n501yhappy"
 version = "2.5"
 
@@ -37,13 +39,8 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
-// paperweight 要求 Gradle 守护进程用 Java 21+ 运行,那只影响构建环境;
-// 插件能否在 1.17.1(Java 17)服务器上运行取决于字节码版本,所以所有模块默认 release 17。
-// 需要更高版本的模块(如 nms)用自己的 setupJava() 覆盖。
-subprojects {
-    tasks.withType<JavaCompile>().configureEach {
-        options.release = 17
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 17
 }
 tasks {
     runServer {
