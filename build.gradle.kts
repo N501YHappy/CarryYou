@@ -56,8 +56,10 @@ tasks {
         minecraftVersion("1.21.11")
     }
     shadowJar {
-        relocate("carryyou", "xyz.n501yhappy.carryyou")
         relocate("adapts.impl", "xyz.n501yhappy.carryyou.adapts")
+        relocate("carryyou", "xyz.n501yhappy.carryyou"){
+            skipStringConstants = true
+        }
     }
 
     processResources {
