@@ -4,11 +4,11 @@ import carryyou.api.events.PlayerCarryEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import carryyou.api.events.PlayerDropEvent;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.services.CarryService;
 import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 public class PluginListener implements Listener {
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
     private final ChickenState chickenState = ChickenState.getInstance();
 
     @EventHandler

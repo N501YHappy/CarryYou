@@ -21,15 +21,13 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.services.CarryBlockService;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
-import xyz.n501yhappy.carryyou.utils.Checkers;
+import xyz.n501yhappy.carryyou.services.CarryService;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
-import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.UUID;
 
 public class CarryListener implements Listener {
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
@@ -75,7 +73,7 @@ public class CarryListener implements Listener {
         }
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         event.setCancelled(true);
-        if (carryManager.isCarrying(player.getUniqueId())) {
+        if (carryService.isCarrying(player.getUniqueId())) {
             return;
         }
         Object target = getTargetEntity(player);
@@ -89,7 +87,7 @@ public class CarryListener implements Listener {
 
         if (target instanceof Entity){
             if (!isValidTarget(player, (Entity) target)) return;
-            if (!carryManager.checkCarry(player, (Entity) target,carryCooldown)) return;
+            if (!carryService.checkCarry(player, (Entity) target,carryCooldown)) return;
             carrier = (Entity) target;
         }else {
             Block block = (Block) target;
@@ -115,7 +113,7 @@ public class CarryListener implements Listener {
     private boolean isValidTarget(Player player, Entity target) {
         if(target == null) return false;
         if(target.getUniqueId().equals(player.getUniqueId())) return false;
-        if(carryManager.isCarried(target.getUniqueId())) return false;
+        if(carryService.isCarried(target.getUniqueId())) return false;
         if(target instanceof LivingEntity) return true;
         if(target instanceof TNTPrimed) return true;
         if(target instanceof WitherSkull) return true;
@@ -126,7 +124,7 @@ public class CarryListener implements Listener {
     }
 
     private boolean handlePickup(Player player,Entity target) {
-        if (carryManager.carry(player, target)){
+        if (carryService.carry(player, target)){
             carryCooldown.updateCooldown(player.getUniqueId());
             CDCooldown.updateCooldown(player.getUniqueId());
             return true;
@@ -136,7 +134,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onDrop(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!carryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryService.isCarrying(player.getUniqueId())) return;
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
             throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
             return;
@@ -151,7 +149,7 @@ public class CarryListener implements Listener {
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
-        if (!carryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryService.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
     }
 
@@ -159,23 +157,23 @@ public class CarryListener implements Listener {
     public void onInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (player.isSneaking()) return; //防止与抓举冲突
-        if (!carryManager.isCarrying(player.getUniqueId())) return;
+        if (!carryService.isCarrying(player.getUniqueId())) return;
         throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
     }
 
     private <T extends Cancellable> void throwEntity(Player player, double power,T event) {
         if (!CDCooldown.checkCooldown(player.getUniqueId())) return;
-        UUID targetUUID = carryManager.getTargetByCarrier(player.getUniqueId());
+        UUID targetUUID = carryService.getTargetByCarrier(player.getUniqueId());
         if (targetUUID == null){
             return;
         }
         Entity target = Bukkit.getEntity(targetUUID);
         if (target == null){
-            carryManager.remove(player.getUniqueId(),targetUUID);
+            carryService.remove(player.getUniqueId(),targetUUID);
             return;
         }
         event.setCancelled(true);
-        carryManager.drop(target, power,true);
+        carryService.drop(target, power,true);
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 

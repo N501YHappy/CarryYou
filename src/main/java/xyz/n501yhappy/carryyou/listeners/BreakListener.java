@@ -9,19 +9,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.services.MessageService;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.services.CarryService;
 
 import java.util.UUID;
 
 public class BreakListener implements Listener {
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
 
     @EventHandler
     public void onBreak(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
-        if (!carryManager.isCarried(playerUUID)) return;
+        if (!carryService.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
             MessageService.getInstance().sendMessage(player, "Break.weakness");
@@ -35,11 +35,11 @@ public class BreakListener implements Listener {
     }
     @EventHandler
     public void onBreak_Dismount(EntityDismountEvent event) {
-        if (!carryManager.isCarrying(event.getDismounted().getUniqueId())) return;
+        if (!carryService.isCarrying(event.getDismounted().getUniqueId())) return;
         if(event.getEntity() instanceof Player player){
             UUID playerUUID = player.getUniqueId();
 
-            if (!carryManager.isCarried(playerUUID)) return;
+            if (!carryService.isCarried(playerUUID)) return;
             event.setCancelled(true);
         }
     }

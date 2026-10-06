@@ -14,7 +14,7 @@ import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.services.MessageService;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.services.CarryService;
 import adapts.impl.Version;
 
 import java.util.logging.Level;
@@ -22,7 +22,7 @@ import java.util.logging.Level;
 public final class CarryYou extends JavaPlugin {
     public static JavaPlugin instance;
 
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
 
     private Metrics metrics;
 
@@ -36,7 +36,7 @@ public final class CarryYou extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
         WorldguardService.getInstance().registerFlag();
-        CarryyouAPI.registerCarryManager(carryManager);
+        CarryyouAPI.registerCarryManager(carryService);
     }
 
     @Override
@@ -70,7 +70,7 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        carryManager.cleanup();
+        carryService.cleanup();
         CarryBlockService.getInstance().cleanup();
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();

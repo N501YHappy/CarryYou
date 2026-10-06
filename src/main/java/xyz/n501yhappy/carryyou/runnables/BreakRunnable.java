@@ -11,7 +11,7 @@ import carryyou.api.events.PlayerBreakEvent;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.services.MessageService;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.services.CarryService;
 
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static xyz.n501yhappy.carryyou.configs.ConfigLoader.PROGRESS_BAR_LENGTH;
 
 public class BreakRunnable implements Runnable {
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
 
     private static final Map<UUID, Integer> score = new ConcurrentHashMap<>();
     private static final Map<UUID, Long> lastActionTime = new ConcurrentHashMap<>(); // 记录最后一次操作的tick
@@ -33,7 +33,7 @@ public class BreakRunnable implements Runnable {
         UUID[] playerUUIDs = score.keySet().toArray(new UUID[0]);
         for (UUID playerUUID : playerUUIDs) {
             Player player = Bukkit.getPlayer(playerUUID);
-            if (player == null || !player.isOnline() || !carryManager.isCarried(playerUUID)) {
+            if (player == null || !player.isOnline() || !carryService.isCarried(playerUUID)) {
                 removePlayer(playerUUID);
                 continue;
             }
@@ -64,7 +64,7 @@ public class BreakRunnable implements Runnable {
             
             //好耶！
             if (currentScore >= TARGET_SCORE) {
-                Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
+                Entity carrier = carryService.getCarrierEntityByTarget(playerUUID);
                 if (carrier != null) {
                     PlayerBreakEvent event = new PlayerBreakEvent(carrier,player);
                     Bukkit.getPluginManager().callEvent(event);
@@ -74,7 +74,7 @@ public class BreakRunnable implements Runnable {
                         Location particleLocation = player.getLocation();
                         world.spawnParticle(Particle.SMOKE_LARGE, particleLocation, 10, 0.5, 0.5, 0.5, 0.1);
                         world.spawnParticle(Particle.EXPLOSION_HUGE, particleLocation, 1);
-                        carryManager.drop(player, 0,false);
+                        carryService.drop(player, 0,false);
                     });
                 }
                 removePlayer(playerUUID);

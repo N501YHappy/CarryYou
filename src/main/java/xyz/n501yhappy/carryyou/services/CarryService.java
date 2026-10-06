@@ -1,4 +1,4 @@
-package xyz.n501yhappy.carryyou.utils;
+package xyz.n501yhappy.carryyou.services;
 
 import carryyou.api.CarryManagerAPI;
 import carryyou.api.events.PlayerCarryEvent;
@@ -9,21 +9,22 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
-import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.utils.CarryMethod;
+import xyz.n501yhappy.carryyou.utils.Checkers;
+import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.methods.RideMethod;
-import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CarryManager implements CarryManagerAPI {
-    public static CarryManager instance;
+public class CarryService implements CarryManagerAPI {
+    public static CarryService instance;
 
     private final CarryMethod carryMethod = new RideMethod();
 
-    public static CarryManager getInstance() {
-        if(instance == null) instance = new CarryManager();
+    public static CarryService getInstance() {
+        if(instance == null) instance = new CarryService();
         return instance;
     }
 
@@ -141,7 +142,7 @@ public class CarryManager implements CarryManagerAPI {
         return carryDisabled.getOrDefault(uuid, false);
     }
 
-    public boolean checkCarry(Player player, Entity target,Cooldown cooldown) {
+    public boolean checkCarry(Player player, Entity target, Cooldown cooldown) {
         if (isCarryDisabled(target.getUniqueId())) return false;
 
         if(!cooldown.checkCooldown(player.getUniqueId()) && !player.isOp()){

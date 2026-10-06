@@ -11,24 +11,24 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
-import xyz.n501yhappy.carryyou.utils.CarryManager;
+import xyz.n501yhappy.carryyou.services.CarryService;
 
 import java.util.UUID;
 
 public class CarryCleanupListener implements Listener { //这个监听器是为了防止坏蛋故意触发bug的.
-    private final CarryManager carryManager = CarryManager.getInstance();
+    private final CarryService carryService = CarryService.getInstance();
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if (carryManager.isCarrying(playerUUID)) {
-            Entity target = carryManager.getTargetEntityByCarrier(playerUUID);
-            if (target != null) carryManager.drop(target,0,false);
+        if (carryService.isCarrying(playerUUID)) {
+            Entity target = carryService.getTargetEntityByCarrier(playerUUID);
+            if (target != null) carryService.drop(target,0,false);
         }
-        if (carryManager.isCarried(playerUUID)) {
-            Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
-            if (carrier != null) carryManager.drop(player,0,false);
+        if (carryService.isCarried(playerUUID)) {
+            Entity carrier = carryService.getCarrierEntityByTarget(playerUUID);
+            if (carrier != null) carryService.drop(player,0,false);
         }
         BreakRunnable.removePlayer(playerUUID);
     }
@@ -36,17 +36,17 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
     public void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         UUID entityUUID = entity.getUniqueId();
-        if (carryManager.isCarried(entityUUID)) {
-            Entity carrier = carryManager.getCarrierEntityByTarget(entityUUID);
+        if (carryService.isCarried(entityUUID)) {
+            Entity carrier = carryService.getCarrierEntityByTarget(entityUUID);
             if (carrier != null) {
-                carryManager.drop( entity,0,false);
+                carryService.drop( entity,0,false);
             }
         }
 
-        if (carryManager.isCarrying(entityUUID)) {
-            Entity target = carryManager.getTargetEntityByCarrier(entityUUID);
+        if (carryService.isCarrying(entityUUID)) {
+            Entity target = carryService.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                carryManager.drop( target,0,false);
+                carryService.drop( target,0,false);
             }
         }
         if (entity instanceof Player) {
@@ -59,10 +59,10 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Entity entity = event.getEntity();
         UUID entityUUID = entity.getUniqueId();
 
-        if (carryManager.isCarrying(entityUUID)) {
-            Entity target = carryManager.getTargetEntityByCarrier(entityUUID);
+        if (carryService.isCarrying(entityUUID)) {
+            Entity target = carryService.getTargetEntityByCarrier(entityUUID);
             if (target != null) {
-                carryManager.drop( target,0,false);
+                carryService.drop( target,0,false);
             }
         }
         if (entity instanceof Player) {
@@ -75,13 +75,13 @@ public class CarryCleanupListener implements Listener { //这个监听器是为�
         Player player = event.getPlayer();
         if (event.getNewGameMode() != GameMode.SPECTATOR) return;
         UUID playerUUID = player.getUniqueId();
-        if (carryManager.isCarrying(playerUUID)) {
-            Entity target = carryManager.getTargetEntityByCarrier(playerUUID);
-            if (target != null) carryManager.drop(target,0,false);
+        if (carryService.isCarrying(playerUUID)) {
+            Entity target = carryService.getTargetEntityByCarrier(playerUUID);
+            if (target != null) carryService.drop(target,0,false);
         }
-        if (carryManager.isCarried(playerUUID)) {
-            Entity carrier = carryManager.getCarrierEntityByTarget(playerUUID);
-            if (carrier != null) carryManager.drop(player,0,false);
+        if (carryService.isCarried(playerUUID)) {
+            Entity carrier = carryService.getCarrierEntityByTarget(playerUUID);
+            if (carrier != null) carryService.drop(player,0,false);
         }
         BreakRunnable.removePlayer(playerUUID);
     }
