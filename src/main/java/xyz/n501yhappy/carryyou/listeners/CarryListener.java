@@ -68,7 +68,8 @@ public class CarryListener implements Listener {
 
     private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();
-        if (ConfigLoader.TRIGGER_EMPTY && !(player.getEquipment().getItemInMainHand() == null || player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
+        player.getEquipment().getItemInMainHand();
+        if (!(player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
             return;
         }
         if (player.getGameMode() == GameMode.SPECTATOR) return;

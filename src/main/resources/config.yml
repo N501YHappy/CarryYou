@@ -51,7 +51,6 @@ throw_power:
 
 trigger: # 什么情况触发抱起
   shift_f: false #true则shift+f false则shift+右键
-  empty: false #空手时触发
 
 fun: # 一些有趣的功能
   with_chicken: true #抱起鸡给予缓降
