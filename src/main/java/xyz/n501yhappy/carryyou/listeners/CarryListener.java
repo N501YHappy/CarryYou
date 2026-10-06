@@ -1,10 +1,13 @@
 package xyz.n501yhappy.carryyou.listeners;
 
+import carryyou.nms.entitys.BlockEntityFactory;
+import carryyou.nms.entitys.BlockEntityImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -13,9 +16,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
@@ -42,8 +47,9 @@ public class CarryListener implements Listener {
         if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
     }
+
     @EventHandler
-    public void onActive(PlayerInteractEntityEvent event) {
+    public void onActive(PlayerInteractEvent event) { // 用于判断右键方块
         if (ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+right click进行触发时
 
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -51,6 +57,17 @@ public class CarryListener implements Listener {
         if (!event.getPlayer().isSneaking()) return;
         onCarry(event);
     }
+
+    @EventHandler
+    public void onActive(PlayerInteractEntityEvent event) { //用于判断右键实体
+        if (ConfigLoader.TRIGGER_SHIFT_F) return; // 用shift+right click进行触发时
+
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;
+        // 左右手都会触发，这里做一下过滤
+        if (!event.getPlayer().isSneaking()) return;
+        onCarry(event);
+    }
+
     private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();
         if (ConfigLoader.TRIGGER_EMPTY && !(player.getEquipment().getItemInMainHand() == null || player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
@@ -61,11 +78,39 @@ public class CarryListener implements Listener {
         if (carryManager.isCarrying(player.getUniqueId())) {
             return;
         }
-        Entity target = getTargetEntity(player);
-        if (!isValidTarget(player, target)) return;
-        if (!carryManager.checkCarry(player, target,carryCooldown)) return;
+        Object target = getTargetEntity(player);
+        player.sendMessage(String.valueOf(target == null));
 
-        handlePickup(player, target);
+        if(target == null) target = getTargetBlock(player);
+        if(target == null) return;
+
+        Entity carrier;
+        CarryBlockService.CarriedBlock carriedBlock = null;
+
+        if (target instanceof Entity){
+            if (!isValidTarget(player, (Entity) target)) return;
+            if (!carryManager.checkCarry(player, (Entity) target,carryCooldown)) return;
+            carrier = (Entity) target;
+        }else {
+            Block block = (Block) target;
+            ItemStack itemStack= new ItemStack(block.getType());
+            BlockEntityImpl blockEntity = BlockEntityFactory.getInstance().create(player,itemStack);
+            if (blockEntity == null) return;
+            carrier = blockEntity.get(block.getLocation());
+            carriedBlock = new CarryBlockService.CarriedBlock(
+                    player.getUniqueId(),
+                    blockEntity,
+                    block.getBlockData().clone()
+            );
+        }
+
+        if (!handlePickup(player, carrier)){
+            if (carriedBlock != null) carrier.remove();
+            return;
+        }
+        if (carriedBlock != null) {
+            CarryBlockService.getInstance().register(carrier.getUniqueId(), carriedBlock);
+        }
     }
     private boolean isValidTarget(Player player, Entity target) {
         if(target == null) return false;
@@ -80,11 +125,13 @@ public class CarryListener implements Listener {
         return target.getType().getName().contains("wind");
     }
 
-    private void handlePickup(Player player,Entity target) {
+    private boolean handlePickup(Player player,Entity target) {
         if (carryManager.carry(player, target)){
             carryCooldown.updateCooldown(player.getUniqueId());
             CDCooldown.updateCooldown(player.getUniqueId());
+            return true;
         }
+        return false;
     }
     @EventHandler
     public void onDrop(PlayerInteractEvent event) {
@@ -133,7 +180,7 @@ public class CarryListener implements Listener {
     }
 
 
-    private Entity getTargetEntity(Player player) {
+    private RayTraceResult traceResult(Player player){
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
 
@@ -146,9 +193,18 @@ public class CarryListener implements Listener {
                 0.1,
                 entity -> !entity.equals(player) && !entity.isDead()
         );
-        if ((result != null && result.getHitEntity() != null)){
-            return result.getHitEntity();
-        }
-        return null;
+        return result;
+    }
+
+    private Entity getTargetEntity(Player player) {
+        RayTraceResult result = traceResult(player);
+        if(result == null) return null;
+        return result.getHitEntity();
+    }
+
+    private Block getTargetBlock(Player player) {
+        RayTraceResult result = traceResult(player);
+        if(result == null) return null;
+        return result.getHitBlock();
     }
 }

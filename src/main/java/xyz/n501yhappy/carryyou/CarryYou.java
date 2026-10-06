@@ -1,6 +1,7 @@
 package xyz.n501yhappy.carryyou;
 
 import carryyou.api.CarryyouAPI;
+import carryyou.nms.NMSLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
@@ -11,6 +12,7 @@ import xyz.n501yhappy.carryyou.depends.worldguard.WorldguardService;
 import xyz.n501yhappy.carryyou.listeners.*;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.runnables.StateEffector;
+import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.utils.CarryManager;
 import adapts.impl.Version;
@@ -45,6 +47,7 @@ public final class CarryYou extends JavaPlugin {
         DominionService.getInstance().registerFlag();
         GSitService.getInstance().registerListener(this);
 
+        NMSLoader.init(getLogger());
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
@@ -68,6 +71,7 @@ public final class CarryYou extends JavaPlugin {
     @Override
     public void onDisable() {
         carryManager.cleanup();
+        CarryBlockService.getInstance().cleanup();
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();
         MessageService.getInstance().log(Level.INFO, "Plugin.plugin-disabled");
