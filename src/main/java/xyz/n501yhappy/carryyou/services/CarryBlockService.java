@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class CarryBlockService {
 
     private final Map<UUID, CarriedBlock> carriedBlocks = new ConcurrentHashMap<>();
 
-    public record CarriedBlock(UUID owner, BlockEntityImpl entity, BlockData blockData) {}
+    public record CarriedBlock(UUID owner, BlockData blockData, ItemStack[] contents) {}
 
     public void register(UUID entityId, CarriedBlock block) {
         carriedBlocks.put(entityId, block);
@@ -37,6 +38,8 @@ public class CarryBlockService {
     }
 
     public CarriedBlock remove(UUID entityId) {
+        Entity blockEntity = Bukkit.getEntity(entityId);
+        if(blockEntity != null) blockEntity.remove();
         return carriedBlocks.remove(entityId);
     }
 

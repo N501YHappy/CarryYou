@@ -8,6 +8,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -28,6 +32,8 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final CarryService carryService = CarryService.getInstance();
+    private final CarryBlockService carryBlockService = CarryBlockService.getInstance();
+
 
     private static final double MAX_RAY_DISTANCE = 3;
     private static final double MAX_RAY_DISTANCE_CREATIVE = MAX_RAY_DISTANCE + 2;
@@ -68,23 +74,19 @@ public class CarryListener implements Listener {
 
     private <T extends PlayerEvent & Cancellable> void onCarry(T event){
         Player player = event.getPlayer();
-        player.getEquipment().getItemInMainHand();
         if (!(player.getEquipment().getItemInMainHand().getType() == Material.AIR)){
             return;
         }
         if (player.getGameMode() == GameMode.SPECTATOR) return;
-        event.setCancelled(true);
-        if (carryService.isCarrying(player.getUniqueId())) {
-            return;
-        }
+        if (carryService.isCarrying(player.getUniqueId()))  return;
         Object target = getTargetEntity(player);
-        player.sendMessage(String.valueOf(target == null));
 
         if(target == null) target = getTargetBlock(player);
         if(target == null) return;
 
         Entity carrier;
         CarryBlockService.CarriedBlock carriedBlock = null;
+        Block carriedSource = null;
 
         if (target instanceof Entity){
             if (!isValidTarget(player, (Entity) target)) return;
@@ -92,19 +94,25 @@ public class CarryListener implements Listener {
             carrier = (Entity) target;
         }else {
             Block block = (Block) target;
+            carriedSource = block;
+            if(!isValidBlock(block)) return;
             ItemStack itemStack= new ItemStack(block.getType());
             BlockEntityImpl blockEntity = BlockEntityFactory.getInstance().create(player,itemStack);
             if (blockEntity == null) return;
             carrier = blockEntity.get(block.getLocation());
-            carriedBlock = new CarryBlockService.CarriedBlock(
-                    player.getUniqueId(),
-                    blockEntity,
-                    block.getBlockData().clone()
-            );
-        }
 
+            carriedBlock = getCarriedBlock(block,player.getUniqueId());
+
+            block.setType(Material.AIR);
+
+        }
+        event.setCancelled(true);
         if (!handlePickup(player, carrier)){
-            if (carriedBlock != null) carrier.remove();
+            if (carriedBlock != null) {
+                carrier.remove();
+                // 抱起失败时把箱子原样放回，避免方块和物品凭空丢失
+                applyCarriedBlock(carriedSource, carriedBlock);
+            }
             return;
         }
         if (carriedBlock != null) {
@@ -123,6 +131,12 @@ public class CarryListener implements Listener {
         if(target.getType().getName().contains("boat")) return true;
         return target.getType().getName().contains("wind");
     }
+    private boolean isValidBlock(Block block){
+        if (block == null) return false;
+        Material type = block.getType();
+        if (type == Material.CHEST) return true;
+        return false;
+    }
 
     private boolean handlePickup(Player player,Entity target) {
         if (carryService.carry(player, target)){
@@ -136,14 +150,18 @@ public class CarryListener implements Listener {
     public void onDrop(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!carryService.isCarrying(player.getUniqueId())) return;
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
-            return;
-        }
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.isSneaking()) return; //防止与抓举冲突
+        if(carryService.isCarryingBlock(player.getUniqueId())){
+            throwBlock(player,event.getClickedBlock(),event.getBlockFace(),event);
+        }else{
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                throwEntity(player, ConfigLoader.THROW_POWER_ATTACK,event);
+                return;
+            }
+            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (player.isSneaking()) return; //防止与抓举冲突
 
-            throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
+                throwEntity(player, ConfigLoader.THROW_POWER_INTERACT,event);
+            }
         }
     }
 
@@ -178,6 +196,21 @@ public class CarryListener implements Listener {
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 
+    private <T extends Cancellable> void throwBlock(Player player,Block block,BlockFace face, T event) {
+        if (!CDCooldown.checkCooldown(player.getUniqueId())) return;
+        if(block == null) return;
+        UUID carried = carryService.getTargetByCarrier(player.getUniqueId());
+        Block target_block = player.getWorld().getBlockAt(block.getLocation().add(face.getDirection()));
+        CarryBlockService.CarriedBlock carried_block = carryBlockService.get(carried);
+
+        applyCarriedBlock(target_block,carried_block);
+
+        carryBlockService.remove(carried);
+        event.setCancelled(true);
+        carryService.remove(player.getUniqueId(),carried);
+        CDCooldown.updateCooldown(player.getUniqueId());
+    }
+
 
     private RayTraceResult traceResult(Player player){
         Location eyeLocation = player.getEyeLocation();
@@ -206,4 +239,36 @@ public class CarryListener implements Listener {
         if(result == null) return null;
         return result.getHitBlock();
     }
+
+    private CarryBlockService.CarriedBlock getCarriedBlock(Block block,UUID player){
+        CarryBlockService.CarriedBlock result = null;
+
+        BlockState block_state = block.getState();
+        BlockData block_data = block.getBlockData();
+        ItemStack[] contents = null;
+        if(block_state instanceof org.bukkit.block.Chest chest){
+            Chest chest_data = (Chest) block_data;
+            chest_data.setType(Chest.Type.SINGLE);
+            contents = chest.getBlockInventory().getContents();
+        }
+        result = new CarryBlockService.CarriedBlock(
+                player,
+                block_data,
+                contents
+        );
+
+        return result;
+    }
+
+    private void applyCarriedBlock (Block block, CarryBlockService.CarriedBlock carried_block){
+        block.setBlockData(carried_block.blockData());
+        // setBlockData 不会刷新 Block 对象缓存的 BlockData，必须重新获取，
+        // 否则 getState() 拿到的是旧方块的快照，箱子物品无法写回
+        BlockState state = block.getWorld().getBlockAt(block.getLocation()).getState();
+        if (state instanceof org.bukkit.block.Chest chest) {
+            chest.getBlockInventory().setContents(carried_block.contents());
+        }
+    }
+
 }
+

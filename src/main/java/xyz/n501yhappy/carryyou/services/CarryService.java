@@ -15,6 +15,7 @@ import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.methods.RideMethod;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +23,8 @@ public class CarryService implements CarryManagerAPI {
     public static CarryService instance;
 
     private final CarryMethod carryMethod = new RideMethod();
+
+    private final CarryBlockService carryBlockService = CarryBlockService.getInstance();
 
     public static CarryService getInstance() {
         if(instance == null) instance = new CarryService();
@@ -69,6 +72,7 @@ public class CarryService implements CarryManagerAPI {
 
         if (carrier == null) {
             remove(carrierUUID, targetUUID);
+            carryBlockService.remove(targetUUID);
             return false;
         }
 
@@ -81,6 +85,7 @@ public class CarryService implements CarryManagerAPI {
         Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
 
         remove(carrierUUID, targetUUID);
+        if(carryBlockService.isCarriedBlock(targetUUID)) carryBlockService.remove(targetUUID);
         carryMethod.drop(carrier,target);
         target.setVelocity(vec);
         return true;
@@ -122,6 +127,16 @@ public class CarryService implements CarryManagerAPI {
     public boolean isCarried(UUID targetUUID) {
         return mappingCarry.containsKey(targetUUID);
     }
+
+    public boolean isCarryingBlock(UUID carrierUUID) {
+        if(!isCarrying(carrierUUID)) return false;
+        return carryBlockService.isCarriedBlock(getTargetByCarrier(carrierUUID));
+    }
+    public boolean isCarriedBlock(UUID targetUUID) {
+        if(!isCarrying(targetUUID)) return false;
+        return carryBlockService.isCarriedBlock(targetUUID);
+    }
+
     public void cleanup() {
         for (Map.Entry<UUID, UUID> entry : carryMapping.entrySet()) {
             Entity carrier = Bukkit.getEntity(entry.getKey());

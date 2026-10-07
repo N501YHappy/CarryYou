@@ -17,7 +17,6 @@ import java.util.logging.Level;
 
 
 public class ConfigLoader {
-    private MessageService messageService = MessageService.getInstance();
 
     public static Boolean CHECK_UPDATE = true;
     public static String PREFIX = "&7[&aCarry&bYou&7] ";
@@ -33,7 +32,6 @@ public class ConfigLoader {
     public static Double THROW_POWER_ATTACK = 1.5;
     public static Double THROW_POWER_INTERACT = 0.5;
     public static Boolean TRIGGER_SHIFT_F = false;
-    public static Boolean TRIGGER_EMPTY = false;
     public static Boolean WITH_CHICKEN = true;
     public static Boolean WITH_CREEPER = true;
 
@@ -83,7 +81,6 @@ public class ConfigLoader {
         }
         if (config.contains("trigger")) {
             TRIGGER_SHIFT_F = config.getBoolean("trigger.shift_f", true);
-            TRIGGER_EMPTY = config.getBoolean("trigger.empty", false);
         }
         if (config.contains("fun")) {
             WITH_CHICKEN = config.getBoolean("fun.with_chicken", true);
