@@ -5,7 +5,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.21" apply false
 }
 group = "xyz.n501yhappy"
-version = "2.5"
+version = "3.0"
 
 repositories {
     maven("https://mirrors.huaweicloud.com/repository/maven")
