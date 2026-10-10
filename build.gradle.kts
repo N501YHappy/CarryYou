@@ -54,6 +54,9 @@ subprojects {
 tasks {
     runServer {
         minecraftVersion("1.21.11")
+        downloadPlugins {
+            github("LunaDeerMC", "Dominion", "v4.9.5-release", "Dominion-4.9.5-release-full.jar")
+        }
     }
     shadowJar {
         relocate("adapts.impl", "xyz.n501yhappy.carryyou.adapts")

@@ -2,6 +2,7 @@ package xyz.n501yhappy.carryyou.listeners;
 
 import carryyou.nms.entitys.BlockEntityFactory;
 import carryyou.nms.entitys.BlockEntityImpl;
+import com.sk89q.worldguard.bukkit.event.block.PlaceBlockEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
@@ -14,9 +15,12 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -96,6 +100,11 @@ public class CarryListener implements Listener {
             Block block = (Block) target;
             carriedSource = block;
             if(!isValidBlock(block)) return;
+
+            BlockBreakEvent break_event = new BlockBreakEvent(block,player);
+            Bukkit.getServer().getPluginManager().callEvent(break_event);
+            if (event.isCancelled()) return;
+
             ItemStack itemStack= new ItemStack(block.getType());
             BlockEntityImpl blockEntity = BlockEntityFactory.getInstance().create(player,itemStack);
             if (blockEntity == null) return;
@@ -201,6 +210,19 @@ public class CarryListener implements Listener {
         if(block == null) return;
         UUID carried = carryService.getTargetByCarrier(player.getUniqueId());
         Block target_block = player.getWorld().getBlockAt(block.getLocation().add(face.getDirection()));
+
+        BlockPlaceEvent place_event = new BlockPlaceEvent(
+                target_block,
+                target_block.getState(),
+                block,
+                player.getInventory().getItemInMainHand(),
+                player,
+                true,
+                EquipmentSlot.HAND
+        );
+        Bukkit.getServer().getPluginManager().callEvent(place_event);
+        if (event.isCancelled()) return;
+
         CarryBlockService.CarriedBlock carried_block = carryBlockService.get(carried);
 
         applyCarriedBlock(target_block,carried_block);
