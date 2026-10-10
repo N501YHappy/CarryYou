@@ -45,6 +45,8 @@ public class ConfigLoader {
         PREFIX = translateColors(config.getString("prefix", "&7[&aCarry&bYou&7] "));
         String locales = config.getString("locales", "zh_cn");
 
+        locales= locales.toLowerCase();
+
         if(!isValidLocale(locales)){
             plugin.getLogger().log(Level.WARNING,"The \"" + locales + "\" language file was not found; it has been replaced with en_us.");
             locales = "en_us";

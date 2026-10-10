@@ -7,7 +7,7 @@ Plugin:
   plugin-reload-error: "[P] &c Plugin reload error!"
   config-reload-error: "[P] &c Error reloading configuration file: %s"
 
-  plugin-link: "[P] &a Found %s"
+  plugin-link: "[P] &aFound %s"
 
   command-sender-error: "[P] This command can only be executed by players!!"
 
