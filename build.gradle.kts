@@ -20,7 +20,7 @@ repositories {
 
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
     compileOnly(fileTree("libs"))
     compileOnly("cn.lunadeer:DominionAPI:4.7.3")
