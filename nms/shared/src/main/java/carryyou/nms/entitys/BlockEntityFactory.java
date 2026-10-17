@@ -26,7 +26,7 @@ public class BlockEntityFactory {
             Class<?> clazz = Class.forName(classPath);
             return (BlockEntityImpl) clazz.getConstructor(Player.class, ItemStack.class).newInstance(player, block);
         } catch (ReflectiveOperationException e) {
-            NMSLoader.getLogger().log(Level.WARNING, "Failed to create NMS BlockEntity: " + classPath, e);
+            NMSLoader.log(Level.WARNING, "Failed to create NMS BlockEntity: " + classPath, e);
             return null;
         }
     }

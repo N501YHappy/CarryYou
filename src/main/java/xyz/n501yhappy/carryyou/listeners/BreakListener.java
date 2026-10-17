@@ -10,6 +10,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import xyz.n501yhappy.carryyou.runnables.BreakRunnable;
 import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.services.CarryService;
+import xyz.n501yhappy.carryyou.services.NotificationService;
 
 import java.util.UUID;
 
@@ -24,11 +25,11 @@ public class BreakListener implements Listener {
         if (!carryService.isCarried(playerUUID)) return;
         event.setCancelled(true);
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS) && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Break.weakness");
+            NotificationService.getInstance().info(player,MessageService.getInstance().getMessage("Break.weakness"));
             return;
         }
         if (player.hasPermission("carryyou.unbreak") && !player.isOp()) {
-            MessageService.getInstance().sendMessage(player, "Break.unbreak");
+            NotificationService.getInstance().warn(player, MessageService.getInstance().getMessage("Break.unbreak"));
             return;
         }
         BreakRunnable.addScore(playerUUID,1);

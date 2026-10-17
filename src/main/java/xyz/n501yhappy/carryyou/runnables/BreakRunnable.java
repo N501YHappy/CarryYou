@@ -12,6 +12,7 @@ import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.services.CarryService;
+import xyz.n501yhappy.carryyou.services.NotificationService;
 
 import java.util.Map;
 import java.util.UUID;
@@ -60,7 +61,7 @@ public class BreakRunnable implements Runnable {
 
             // 显示进度条
             String progressBar = getProgressBar(currentScore, TARGET_SCORE);
-            MessageService.getInstance().sendTitle(player, progressBar, "Break.break-free-subtitle", 0, 20, 10);
+            NotificationService.getInstance().title(player, progressBar, MessageService.getInstance().getMessage("Break.break-free-subtitle"), 0, 20, 10);
             
             //好耶！
             if (currentScore >= TARGET_SCORE) {

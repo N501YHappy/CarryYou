@@ -13,13 +13,11 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.services.MessageService;
-
-import java.util.logging.Level;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 
 
 public class MethodProvider implements WorldguardMethods {
     private StateFlag carriableFlag;
-    private final MessageService messageService = MessageService.getInstance();
 
     @Override 
     public boolean check(Entity target, Player player) {
@@ -42,11 +40,11 @@ public class MethodProvider implements WorldguardMethods {
                 if (stateFlag instanceof StateFlag) {
                     this.carriableFlag = (StateFlag) stateFlag;
                 } else {
-                    messageService.log(Level.WARNING, "Plugin.plugin-error", e);
+                    CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-error"), e);
                 }
             }
         } catch (Exception e2) {
-            messageService.log(Level.WARNING, "Plugin.plugin-error", e2);
+            CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-error"), e2);
         }
     }
 }
