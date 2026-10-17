@@ -1,28 +1,30 @@
 package carryyou.nms;
 
-import carryyou.nms.entitys.BlockEntityFactory;
 import org.bukkit.Bukkit;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 //Thanks https://github.com/MrXiaoM/nms-template
 
 public class NMSLoader {
 
+    @FunctionalInterface
+    public interface NMSLogger {
+        void log(Level level, String message, Throwable error);
+    }
+
     private static String NMSPath;
-    private static Logger logger;
+
+    private static NMSLogger log;
 
     public static String getNMSPath() {
         return NMSPath;
     }
 
-    public static Logger getLogger() {
-        return logger;
+    public static void log(Level level, String message, Throwable error) {
+        log.log(level, message, error);
     }
 
     // ================================================
@@ -59,21 +61,21 @@ public class NMSLoader {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static boolean init(Logger logger) {
+    public static boolean init(NMSLogger mlog) {
         if (loaded) return true;
-        NMSLoader.logger = logger;
+        log = mlog;
         String nmsVersion;
         try {
             String pkg = Bukkit.getServer().getClass().getPackage().getName();
             String ver = pkg.split("\\.")[3];
-            logger.info("Found Minecraft: " + ver + "! Trying to find NMS support");
+            log.log(Level.INFO, "Found Minecraft: " + ver + "! Trying to find NMS support", null);
             nmsVersion = VERSION_TO_REVISION.getOrDefault(ver, "unknown");
         } catch (Throwable e) {
             String bukkit = Bukkit.getServer().getBukkitVersion();
             int index = bukkit.indexOf('-');
             String ver = index != -1 ? bukkit.substring(0, index) : bukkit;
             nmsVersion = VERSION_TO_REVISION.getOrDefault(ver, "unknown");
-            logger.info("Found Minecraft: " + ver + " (" + nmsVersion + ")! Trying to find NMS support");
+            log.log(Level.INFO, "Found Minecraft: " + ver + " (" + nmsVersion + ")! Trying to find NMS support", null);
         }
         loaded = true;
         NMSPath = NMSLoader.class.getPackage().getName() + "." + nmsVersion;

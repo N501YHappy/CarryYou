@@ -2,6 +2,7 @@ package xyz.n501yhappy.carryyou;
 
 import carryyou.api.CarryyouAPI;
 import carryyou.nms.NMSLoader;
+import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
@@ -15,9 +16,9 @@ import xyz.n501yhappy.carryyou.runnables.StateEffector;
 import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.services.CarryService;
+import xyz.n501yhappy.carryyou.services.NotificationService;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 import adapts.impl.Version;
-
-import java.util.logging.Level;
 
 public final class CarryYou extends JavaPlugin {
     public static JavaPlugin instance;
@@ -29,10 +30,12 @@ public final class CarryYou extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
+        new NotificationService(this);
+        new CarryLogger(this);
         try {
             Version.init(getLogger());
         } catch (Exception e) {
-            MessageService.getInstance().log(Level.SEVERE, "Plugin.plugin-error", e);
+            CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-error"), e);
             getServer().getPluginManager().disablePlugin(this);
         }
         WorldguardService.getInstance().registerFlag();
@@ -47,7 +50,11 @@ public final class CarryYou extends JavaPlugin {
         DominionService.getInstance().registerFlag();
         GSitService.getInstance().registerListener(this);
 
-        NMSLoader.init(getLogger());
+        NMSLoader.init((level, message, error) -> {
+            if (error != null) CarryLogger.error(message, error);
+            else if (level == Level.WARNING) CarryLogger.warn(message);
+            else CarryLogger.info(message);
+        });
         getServer().getPluginManager().registerEvents(new CarryListener(), this);
         getServer().getPluginManager().registerEvents(new BreakListener(), this);
         getServer().getPluginManager().registerEvents(new CarryCleanupListener(), this);
@@ -63,7 +70,7 @@ public final class CarryYou extends JavaPlugin {
 
         if(ConfigLoader.CHECK_UPDATE) Version.getAdapts().AsyncScheduler_run(this, () -> new VersionCheck(this).checkVersion());
 
-        MessageService.getInstance().log(Level.INFO, "Plugin.plugin-enabled");
+        CarryLogger.info(MessageService.getInstance().getMessage("Plugin.plugin-enabled"));
 
         metrics = new Metrics(this, 29710);
     }
@@ -74,7 +81,7 @@ public final class CarryYou extends JavaPlugin {
         CarryBlockService.getInstance().cleanup();
         Version.getAdapts().cancelTasks(this);
         metrics.shutdown();
-        MessageService.getInstance().log(Level.INFO, "Plugin.plugin-disabled");
+        CarryLogger.info(MessageService.getInstance().getMessage("Plugin.plugin-disabled"));
     }
 
     public static JavaPlugin getInstance() {

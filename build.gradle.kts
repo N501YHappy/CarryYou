@@ -20,9 +20,16 @@ repositories {
 
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+
+    implementation("net.kyori:adventure-platform-bukkit:4.4.1")
+    implementation("net.kyori:adventure-api:5.2.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
+
+
     compileOnly(fileTree("libs"))
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
+
     compileOnly("cn.lunadeer:DominionAPI:4.7.3")
 
     implementation(project(":adapts:shared"))

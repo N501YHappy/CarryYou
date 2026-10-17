@@ -31,34 +31,10 @@ public class MessageService {
         return buildString(msg,vars);
     }
 
-    public void log(Level level, String path,Object ...vars){
-        CarryYou.getInstance().getLogger().log(level,getMessage(path,vars));
-    }
-
-    public void log(Level level, String path, Throwable throwable){
-        CarryYou.getInstance().getLogger().log(level,getMessage(path),throwable);
-    }
-
-    public void sendMessage(CommandSender sender, String path,Object ...vars){
-        sender.sendMessage(getMessage(path,vars));
-    }
-
-    public void sendTitle(Player player, String title, String subtitlePath, int fadeIn, int stay, int fadeOut){
-        player.sendTitle(title,getMessage(subtitlePath),fadeIn,stay,fadeOut);
-    }
-
     private String buildString(String s,Object ...vars){
-        s = addPluginPerfix(s);
-        if(vars != null) s = format(s,vars);
+        if(vars != null) s = s.formatted(vars);
         s = color(s);
         return s;
-    }
-
-    private String addPluginPerfix(String msg){
-        return msg.replace("[P]",ConfigLoader.PREFIX);
-    }
-    private String format(String msg,Object ...vars){
-        return msg.formatted(vars);
     }
 
     private String color(String text) {

@@ -8,11 +8,12 @@ import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.services.MessageService;
 import xyz.n501yhappy.carryyou.services.CarryService;
+import xyz.n501yhappy.carryyou.services.NotificationService;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MainCommand implements CommandExecutor, TabExecutor {
@@ -26,7 +27,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             if (sender instanceof Player player) {
                 boolean current = carryService.isCarryDisabled(player.getUniqueId());
                 carryService.setCarryDisabled(player.getUniqueId(), !current);
-                MessageService.getInstance().sendMessage(sender, current ? "Carry.enable" : "Carry.disable");
+                NotificationService.getInstance().info(sender, MessageService.getInstance().getMessage(current ? "Carry.enable" : "Carry.disable"));
 
             }
             return true;
@@ -36,7 +37,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
         } else if (args[0].equalsIgnoreCase("on")) {
             if (sender instanceof Player)
                 carryService.setCarryDisabled(((Player) sender).getUniqueId(), false);
-            MessageService.getInstance().sendMessage(sender, "Carry.enable");
+            NotificationService.getInstance().info(sender, MessageService.getInstance().getMessage("Carry.enable"));
             return true;
         } else if (args[0].equalsIgnoreCase("off")) {
             handleToggle(sender,"off");
@@ -46,30 +47,30 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
     private boolean handleReload(CommandSender sender) {
         if (!sender.hasPermission("carryyou.reload")) {
-            MessageService.getInstance().sendMessage(sender, "Command.no-permission");
+            NotificationService.getInstance().warn(sender, MessageService.getInstance().getMessage("Command.no-permission"));
             return true;
         }
         try {
             ConfigLoader.reload();
-            MessageService.getInstance().sendMessage(sender, "Plugin.plugin-reload");
+            NotificationService.getInstance().info(sender, MessageService.getInstance().getMessage("Plugin.plugin-reload"));
             return true;
         } catch (Exception e) {
-            MessageService.getInstance().sendMessage(sender, "Plugin.config-reload-error", e.getMessage());
-            MessageService.getInstance().log(Level.SEVERE, "Plugin.plugin-reload-error", e);
+            NotificationService.getInstance().error(sender, MessageService.getInstance().getMessage("Plugin.config-reload-error", e.getMessage()));
+            CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-reload-error"), e);
             return true;
         }
     }
     private void handleToggle(CommandSender sender,String arg) {
         if (!(sender instanceof Player)) {
-            MessageService.getInstance().sendMessage(sender, "Plugin.command-sender-error");
+            NotificationService.getInstance().error(sender, MessageService.getInstance().getMessage("Plugin.command-sender-error"));
             return;
         }
         if(!sender.hasPermission("carryyou.can_toggle")){
-            MessageService.getInstance().sendMessage(sender, "Command.no-permission");
+            NotificationService.getInstance().warn(sender, MessageService.getInstance().getMessage("Command.no-permission"));
             return;
         }
         carryService.setCarryDisabled(((Player) sender).getUniqueId(), arg.equalsIgnoreCase("off"));
-        MessageService.getInstance().sendMessage(sender, "Carry.disable");
+        NotificationService.getInstance().info(sender, MessageService.getInstance().getMessage("Carry.disable"));
     }
 
     @Override

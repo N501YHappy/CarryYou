@@ -6,14 +6,11 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.services.MessageService;
-
-import java.util.logging.Level;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 
 
 public class MethodProvider implements ResidenceMethods {
-    private final MessageService messageService = MessageService.getInstance();
-
-    @Override 
+    @Override
     public boolean check(Entity target, Player player) {
         ClaimedResidence residence = Residence.getInstance().getResidenceManager().getByLoc(target);
         if (residence == null) {
@@ -27,7 +24,7 @@ public class MethodProvider implements ResidenceMethods {
         try {
             FlagPermissions.addFlag("carriable");
         } catch (Exception e) {
-            messageService.log(Level.WARNING, "Plugin.plugin-error", e);
+            CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-error"), e);
         }
     }
 }

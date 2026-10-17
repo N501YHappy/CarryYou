@@ -9,8 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.services.MessageService;
-
-import java.util.logging.Level;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 
 
 public class MethodProvider implements DominionMethods {
@@ -26,7 +25,7 @@ public class MethodProvider implements DominionMethods {
         try {
             Flags.applyNewCustomFlags();
         } catch (Exception e) {
-            messageService.log(Level.WARNING, "Plugin.plugin-error", e);
+            CarryLogger.error(messageService.getMessage("Plugin.plugin-error"), e);
         }
     }
 

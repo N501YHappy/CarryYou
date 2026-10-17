@@ -2,13 +2,13 @@ package xyz.n501yhappy.carryyou;
 
 import org.bukkit.plugin.Plugin;
 import xyz.n501yhappy.carryyou.services.MessageService;
+import xyz.n501yhappy.carryyou.utils.CarryLogger;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.logging.Level;
 
 public class VersionCheck {
     private static final HttpClient client = HttpClient.newBuilder()
@@ -49,7 +49,7 @@ public class VersionCheck {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                MessageService.getInstance().log(Level.WARNING, "Update.check-request-error", response.statusCode());
+                CarryLogger.warn(MessageService.getInstance().getMessage("Update.check-request-error", response.statusCode()));
                 return null;
             }
             String body = response.body();
@@ -62,7 +62,7 @@ public class VersionCheck {
             return body.substring(st + 1, ed);
 
         } catch (Exception e) {
-            MessageService.getInstance().log(Level.WARNING, "Update.check-error", e.getMessage());
+            CarryLogger.error(MessageService.getInstance().getMessage("Update.check-error", e.getMessage()),e);
             return null;
         }
     }
@@ -71,13 +71,13 @@ public class VersionCheck {
         String currentVer = plugin.getDescription().getVersion();
         String latestVer = getLastVer();
         if (latestVer == null) {
-            MessageService.getInstance().log(Level.INFO, "Update.check-skipped");
+            CarryLogger.info(MessageService.getInstance().getMessage("Update.check-skipped"));
             return;
         }
         if (compare(latestVer, currentVer)) {
-            MessageService.getInstance().log(Level.WARNING, "Update.update-available", latestVer);
+            CarryLogger.warn(MessageService.getInstance().getMessage("Update.update-available", latestVer));
         } else {
-            MessageService.getInstance().log(Level.INFO, "Update.up-to-date", currentVer);
+            CarryLogger.info(MessageService.getInstance().getMessage("Update.up-to-date", currentVer));
         }
     }
 }
