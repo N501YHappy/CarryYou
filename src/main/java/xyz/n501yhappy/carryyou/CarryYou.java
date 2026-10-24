@@ -46,6 +46,7 @@ public final class CarryYou extends JavaPlugin {
     public void onEnable() {
         ConfigLoader.load(this);
 
+
         ResidenceService.getInstance().registerFlag();
         DominionService.getInstance().registerFlag();
         GSitService.getInstance().registerListener(this);

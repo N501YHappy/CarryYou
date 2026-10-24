@@ -22,8 +22,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-platform-bukkit:4.4.1")
-    implementation("net.kyori:adventure-api:5.2.0")
+    implementation("net.kyori:adventure-text-serializer-ansi:5.2.0")
+    implementation("net.kyori:adventure-text-minimessage:4.22.0")
     implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
 
 
