@@ -26,6 +26,7 @@ public final class CarryYou extends JavaPlugin {
     private final CarryService carryService = CarryService.getInstance();
 
     private Metrics metrics;
+    private boolean versionReady;
 
     @Override
     public void onLoad() {
@@ -34,9 +35,10 @@ public final class CarryYou extends JavaPlugin {
         new CarryLogger(this);
         try {
             Version.init(getLogger());
+            versionReady = true;
         } catch (Exception e) {
             CarryLogger.error(MessageService.getInstance().getMessage("Plugin.plugin-error"), e);
-            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         WorldguardService.getInstance().registerFlag();
         CarryyouAPI.registerCarryManager(carryService);
@@ -44,6 +46,10 @@ public final class CarryYou extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!versionReady) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         ConfigLoader.load(this);
 
 
@@ -80,8 +86,8 @@ public final class CarryYou extends JavaPlugin {
     public void onDisable() {
         carryService.cleanup();
         CarryBlockService.getInstance().cleanup();
-        Version.getAdapts().cancelTasks(this);
-        metrics.shutdown();
+        if (Version.getAdapts() != null) Version.getAdapts().cancelTasks(this);
+        if (metrics != null) metrics.shutdown();
         CarryLogger.info(MessageService.getInstance().getMessage("Plugin.plugin-disabled"));
     }
 

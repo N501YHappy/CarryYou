@@ -2,7 +2,6 @@ package xyz.n501yhappy.carryyou.utils.state;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public abstract class StatePusher {
     }
 
     public void onDrop(Entity carrier, Entity carried) {
-        if (!ConfigLoader.WITH_CHICKEN) return;
+        if (!trigger()) return;
         if (isTarget(carried) || hasTarget.getOrDefault(carrier.getUniqueId(), false)){
             pushDown(carrier.getUniqueId(), carried.getUniqueId(),false);
         }

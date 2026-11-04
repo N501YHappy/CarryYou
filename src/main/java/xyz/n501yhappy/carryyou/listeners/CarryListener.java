@@ -31,6 +31,7 @@ import xyz.n501yhappy.carryyou.configs.ConfigLoader;
 import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.services.CarryService;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
+import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.UUID;
 
@@ -103,7 +104,7 @@ public class CarryListener implements Listener {
 
             BlockBreakEvent break_event = new BlockBreakEvent(block,player);
             Bukkit.getServer().getPluginManager().callEvent(break_event);
-            if (event.isCancelled()) return;
+            if (break_event.isCancelled()) return;
 
             ItemStack itemStack= new ItemStack(block.getType());
             BlockEntityImpl blockEntity = BlockEntityFactory.getInstance().create(player,itemStack);
@@ -221,15 +222,21 @@ public class CarryListener implements Listener {
                 EquipmentSlot.HAND
         );
         Bukkit.getServer().getPluginManager().callEvent(place_event);
-        if (event.isCancelled()) return;
+        if (place_event.isCancelled()) return;
 
         CarryBlockService.CarriedBlock carried_block = carryBlockService.get(carried);
+        if (carried_block == null) {
+            carryBlockService.remove(carried);
+            carryService.remove(player.getUniqueId(), carried);
+            return;
+        }
 
         applyCarriedBlock(target_block,carried_block);
 
         carryBlockService.remove(carried);
         event.setCancelled(true);
         carryService.remove(player.getUniqueId(),carried);
+        ChickenState.getInstance().remove(carried);
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 

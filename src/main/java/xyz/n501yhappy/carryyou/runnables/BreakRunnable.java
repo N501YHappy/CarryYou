@@ -69,7 +69,10 @@ public class BreakRunnable implements Runnable {
                 if (carrier != null) {
                     PlayerBreakEvent event = new PlayerBreakEvent(carrier,player);
                     Bukkit.getPluginManager().callEvent(event);
-                    if (event.isCancelled()) continue;
+                    if (event.isCancelled()) {
+                        removePlayer(playerUUID);
+                        continue;
+                    }
                     Version.getAdapts().EntityScheduler_execute(CarryYou.instance, player, () -> {
                         World world = player.getWorld();
                         Location particleLocation = player.getLocation();

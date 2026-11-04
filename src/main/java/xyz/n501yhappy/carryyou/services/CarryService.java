@@ -13,6 +13,7 @@ import xyz.n501yhappy.carryyou.utils.CarryMethod;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
 import xyz.n501yhappy.carryyou.utils.methods.RideMethod;
+import xyz.n501yhappy.carryyou.utils.state.ChickenState;
 
 import java.util.Map;
 import java.util.Optional;
@@ -73,6 +74,7 @@ public class CarryService implements CarryManagerAPI {
         if (carrier == null) {
             remove(carrierUUID, targetUUID);
             carryBlockService.remove(targetUUID);
+            ChickenState.getInstance().remove(targetUUID);
             return false;
         }
 
@@ -88,6 +90,7 @@ public class CarryService implements CarryManagerAPI {
         if(carryBlockService.isCarriedBlock(targetUUID)) carryBlockService.remove(targetUUID);
         carryMethod.drop(carrier,target);
         target.setVelocity(vec);
+        if (!callEvent) ChickenState.getInstance().onDrop(carrier,target);
         return true;
     }
     public void put(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
@@ -96,8 +99,8 @@ public class CarryService implements CarryManagerAPI {
     }
     
     public void remove(UUID carrierUUID, UUID targetUUID) { //保证原子性直接拿函数
-        carryMapping.remove(carrierUUID) ;
-        mappingCarry.remove(targetUUID);
+        carryMapping.remove(carrierUUID, targetUUID);
+        mappingCarry.remove(targetUUID, carrierUUID);
     }
     public UUID getTargetByCarrier(UUID carrierUUID) {//通过抓取者获取被抓实体
         return carryMapping.get(carrierUUID);
@@ -133,7 +136,7 @@ public class CarryService implements CarryManagerAPI {
         return carryBlockService.isCarriedBlock(getTargetByCarrier(carrierUUID));
     }
     public boolean isCarriedBlock(UUID targetUUID) {
-        if(!isCarrying(targetUUID)) return false;
+        if(!isCarried(targetUUID)) return false;
         return carryBlockService.isCarriedBlock(targetUUID);
     }
 
