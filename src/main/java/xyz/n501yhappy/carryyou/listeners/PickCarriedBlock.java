@@ -1,14 +1,15 @@
 package xyz.n501yhappy.carryyou.listeners;
 
 import carryyou.nms.entitys.BlockEntityFactory;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemMergeEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,5 +40,28 @@ public class PickCarriedBlock implements Listener {
         carryBlockService.register(blockEntity.getUniqueId(),carriedBlock);
 
         itemEntity.remove();
+    }
+
+    @EventHandler
+    public void onHopperPickup(InventoryPickupItemEvent event){
+        Item item = event.getItem();
+        if (item.getPersistentDataContainer().has(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemMerge(ItemMergeEvent event){
+        if (event.getEntity().getPersistentDataContainer().has(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING)
+                || event.getTarget().getPersistentDataContainer().has(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemDespawn(ItemDespawnEvent event){
+        if (event.getEntity().getPersistentDataContainer().has(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING)) {
+            event.setCancelled(true);
+        }
     }
 }

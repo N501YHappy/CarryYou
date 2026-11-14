@@ -167,6 +167,7 @@ public class CarryService implements CarryManagerAPI {
                 Location location = target.getLocation();
                 Item itemEntity = location.getWorld().dropItem(location,itemStack);
                 itemEntity.getPersistentDataContainer().set(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING,serialized);
+                itemEntity.setInvulnerable(true);
             }
             carryBlockService.remove(targetUUID);
         }else {
