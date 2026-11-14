@@ -11,8 +11,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -28,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.models.CarriedBlock;
 import xyz.n501yhappy.carryyou.services.CarryBlockService;
 import xyz.n501yhappy.carryyou.services.CarryService;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
@@ -90,7 +93,7 @@ public class CarryListener implements Listener {
         if(target == null) return;
 
         Entity carrier;
-        CarryBlockService.CarriedBlock carriedBlock = null;
+        CarriedBlock carriedBlock = null;
         Block carriedSource = null;
 
         if (target instanceof Entity){
@@ -109,24 +112,23 @@ public class CarryListener implements Listener {
             ItemStack itemStack= new ItemStack(block.getType());
             BlockEntityImpl blockEntity = BlockEntityFactory.getInstance().create(player,itemStack);
             if (blockEntity == null) return;
+
             carrier = blockEntity.get(block.getLocation());
 
-            carriedBlock = getCarriedBlock(block,player.getUniqueId());
+            carriedBlock = new CarriedBlock(player.getUniqueId(),block);
 
             block.setType(Material.AIR);
+            carryBlockService.register(carrier.getUniqueId(), carriedBlock);
 
         }
+
         event.setCancelled(true);
         if (!handlePickup(player, carrier)){
             if (carriedBlock != null) {
+                carryBlockService.remove(carrier.getUniqueId());
                 carrier.remove();
-                // 抱起失败时把箱子原样放回，避免方块和物品凭空丢失
                 applyCarriedBlock(carriedSource, carriedBlock);
             }
-            return;
-        }
-        if (carriedBlock != null) {
-            CarryBlockService.getInstance().register(carrier.getUniqueId(), carriedBlock);
         }
     }
     private boolean isValidTarget(Player player, Entity target) {
@@ -145,6 +147,10 @@ public class CarryListener implements Listener {
         if (block == null) return false;
         Material type = block.getType();
         if (type == Material.CHEST) return true;
+        if (type == Material.TRAPPED_CHEST) return true;
+        if (type == Material.OAK_SIGN) return true;
+        if (type == Material.FURNACE) return true;
+        if (type.name().endsWith("SHULKER_BOX")) return true; // 包含染色变体
         return false;
     }
 
@@ -202,7 +208,7 @@ public class CarryListener implements Listener {
             return;
         }
         event.setCancelled(true);
-        carryService.drop(target, power,true);
+        carryService.drop(target,power,false);
         CDCooldown.updateCooldown(player.getUniqueId());
     }
 
@@ -224,7 +230,7 @@ public class CarryListener implements Listener {
         Bukkit.getServer().getPluginManager().callEvent(place_event);
         if (place_event.isCancelled()) return;
 
-        CarryBlockService.CarriedBlock carried_block = carryBlockService.get(carried);
+        CarriedBlock carried_block = carryBlockService.get(carried);
         if (carried_block == null) {
             carryBlockService.remove(carried);
             carryService.remove(player.getUniqueId(), carried);
@@ -269,34 +275,30 @@ public class CarryListener implements Listener {
         return result.getHitBlock();
     }
 
-    private CarryBlockService.CarriedBlock getCarriedBlock(Block block,UUID player){
-        CarryBlockService.CarriedBlock result = null;
+    private void applyCarriedBlock(Block block, CarriedBlock carriedBlock) {
+        block.setType(carriedBlock.material(), false);
 
-        BlockState block_state = block.getState();
-        BlockData block_data = block.getBlockData();
-        ItemStack[] contents = null;
-        if(block_state instanceof org.bukkit.block.Chest chest){
-            Chest chest_data = (Chest) block_data;
-            chest_data.setType(Chest.Type.SINGLE);
-            contents = chest.getBlockInventory().getContents();
+        BlockState state = block.getState();
+        BlockState source = carriedBlock.blockState();
+
+        if (state instanceof org.bukkit.block.Chest dstChest && source instanceof org.bukkit.block.Chest srcChest) {
+            dstChest.getBlockInventory().setContents(srcChest.getBlockInventory().getContents());
+        } else if (state instanceof Furnace dstFurnace && source instanceof Furnace srcFurnace) {
+            dstFurnace.getInventory().setContents(srcFurnace.getInventory().getContents());
+            dstFurnace.setBurnTime(srcFurnace.getBurnTime());
+            dstFurnace.setCookTime(srcFurnace.getCookTime());
+            dstFurnace.setCookTimeTotal(srcFurnace.getCookTimeTotal());
+        } else if (state instanceof Sign dstSign && source instanceof Sign srcSign) {
+            String[] lines = srcSign.getLines();
+            for (int i = 0; i < lines.length; i++) {
+                dstSign.setLine(i, lines[i]);
+            }
+            dstSign.setColor(srcSign.getColor());
+            dstSign.setGlowingText(srcSign.isGlowingText());
+        } else if (state instanceof org.bukkit.block.ShulkerBox dstShulker && source instanceof org.bukkit.block.ShulkerBox srcShulker) {
+            dstShulker.getInventory().setContents(srcShulker.getInventory().getContents());
         }
-        result = new CarryBlockService.CarriedBlock(
-                player,
-                block_data,
-                contents
-        );
 
-        return result;
-    }
-
-    private void applyCarriedBlock (Block block, CarryBlockService.CarriedBlock carried_block){
-        block.setBlockData(carried_block.blockData());
-        // setBlockData 不会刷新 Block 对象缓存的 BlockData，必须重新获取，
-        // 否则 getState() 拿到的是旧方块的快照，箱子物品无法写回
-        BlockState state = block.getWorld().getBlockAt(block.getLocation()).getState();
-        if (state instanceof org.bukkit.block.Chest chest) {
-            chest.getBlockInventory().setContents(carried_block.contents());
-        }
     }
 
 }

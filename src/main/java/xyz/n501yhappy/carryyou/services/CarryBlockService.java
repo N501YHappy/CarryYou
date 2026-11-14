@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import xyz.n501yhappy.carryyou.models.CarriedBlock;
 
 import java.util.Map;
 import java.util.UUID;
@@ -37,14 +38,6 @@ public class CarryBlockService {
 
     private final Map<UUID, CarriedBlock> carriedBlocks = new ConcurrentHashMap<>();
 
-    /**
-     * Snapshot of a carried block.
-     *
-     * @param owner     UUID of the player who picked the block up
-     * @param blockData block data to restore on placement
-     * @param contents  inventory contents to restore, or {@code null} for non-container blocks
-     */
-    public record CarriedBlock(UUID owner, BlockData blockData, ItemStack[] contents) {}
 
     /**
      * Registers the snapshot for a carried block entity.

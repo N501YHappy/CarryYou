@@ -3,12 +3,23 @@ package xyz.n501yhappy.carryyou.services;
 import carryyou.api.CarryManagerAPI;
 import carryyou.api.events.PlayerCarryEvent;
 import carryyou.api.events.PlayerDropEvent;
+import dev.geco.gsit.metric.BStatsMetric;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
+import xyz.n501yhappy.carryyou.CarryYou;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
+import xyz.n501yhappy.carryyou.models.CarriedBlock;
+import xyz.n501yhappy.carryyou.utils.BlockSerializer;
 import xyz.n501yhappy.carryyou.utils.CarryMethod;
 import xyz.n501yhappy.carryyou.utils.Checkers;
 import xyz.n501yhappy.carryyou.utils.Cooldown;
@@ -93,7 +104,23 @@ public class CarryService implements CarryManagerAPI {
         }
         return false;
     }
-    
+
+    /**
+     * Force-releases the carried {@code target} and launches it along the
+     * carrier's view direction. Equivalent to {@code drop(target, power, true)},
+     * bypassing the {@link PlayerDropEvent} check
+     *
+     * @param target    the carried entity to release
+     * @param power     multiplier applied to the calculated throw vector; {@code 0}
+     *                  releases the target without launching it
+     * @return {@code true} if the target was released; {@code false} if it was
+     *         not carried, its carrier no longer exists, or the event was cancelled
+     */
+
+    public boolean dropForce(Entity target, double power){
+        return drop(target,power,true);
+    }
+
     /**
      * Releases the entity currently carrying {@code target} and launches the
      * target using the carrier's view direction.
@@ -101,13 +128,11 @@ public class CarryService implements CarryManagerAPI {
      * @param target    the carried entity to release
      * @param power     multiplier applied to the calculated throw vector; {@code 0}
      *                  releases the target without launching it
-     * @param callEvent whether to fire a cancellable {@link PlayerDropEvent}
-     *                  first; {@code false} forces the drop (used by cleanup
-     *                  paths) and still synchronizes {@link ChickenState}
+     * @param isForce   whether to force the trigger: {@code true} forces execution, {@code false} follows the regular (conditional) trigger logic.
      * @return {@code true} if the target was released; {@code false} if it was
      *         not carried, its carrier no longer exists, or the event was cancelled
      */
-    public boolean drop(Entity target, double power,boolean callEvent) {
+    public boolean drop(Entity target, double power,boolean isForce) {
         UUID targetUUID = target.getUniqueId();
         if (!mappingCarry.containsKey(targetUUID)) return false;
         UUID carrierUUID = getCarrierByTarget(targetUUID);
@@ -120,19 +145,37 @@ public class CarryService implements CarryManagerAPI {
             return false;
         }
 
-        if (callEvent){
+        if (!isForce){
             PlayerDropEvent event = new PlayerDropEvent(carrier,target);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) return false;
         }
 
-        Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
-
-        remove(carrierUUID, targetUUID);
-        if(carryBlockService.isCarriedBlock(targetUUID)) carryBlockService.remove(targetUUID);
         carryMethod.drop(carrier,target);
-        target.setVelocity(vec);
-        if (!callEvent) ChickenState.getInstance().onDrop(carrier,target);
+        remove(carrierUUID, targetUUID);
+
+        if (carryBlockService.isCarriedBlock(targetUUID)){
+            if (isForce){
+                CarriedBlock carriedBlock = carryBlockService.get(targetUUID);
+                ItemStack itemStack = new ItemStack(carriedBlock.material());
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                if (itemMeta instanceof BlockStateMeta){
+                    ((BlockStateMeta) itemMeta).setBlockState(carriedBlock.blockState());
+                }
+                itemStack.setItemMeta(itemMeta);
+                String serialized = BlockSerializer.serializer(itemStack);
+                Location location = target.getLocation();
+                Item itemEntity = location.getWorld().dropItem(location,itemStack);
+                itemEntity.getPersistentDataContainer().set(CarryYou.CARRIED_BLOCK_KEY, PersistentDataType.STRING,serialized);
+            }
+            carryBlockService.remove(targetUUID);
+        }else {
+            Vector vec = calcVector(carrier.getVelocity(), carrier.getLocation(),power);
+            target.setVelocity(vec);
+            ChickenState.getInstance().onDrop(carrier,target);
+        }
+
+
         return true;
     }
     /**

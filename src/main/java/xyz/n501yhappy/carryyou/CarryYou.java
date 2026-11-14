@@ -3,6 +3,8 @@ package xyz.n501yhappy.carryyou;
 import carryyou.api.CarryyouAPI;
 import carryyou.nms.NMSLoader;
 import java.util.logging.Level;
+
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.n501yhappy.carryyou.commands.MainCommand;
 import xyz.n501yhappy.carryyou.configs.ConfigLoader;
@@ -27,6 +29,8 @@ public final class CarryYou extends JavaPlugin {
 
     private Metrics metrics;
     private boolean versionReady;
+
+    public static final NamespacedKey CARRIED_BLOCK_KEY = new NamespacedKey("carryyou","carried_block");
 
     @Override
     public void onLoad() {
@@ -69,6 +73,7 @@ public final class CarryYou extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CreeperCharge(), this);
         getServer().getPluginManager().registerEvents(new CycleListener(), this);
         getServer().getPluginManager().registerEvents(new PluginListener(), this);
+        getServer().getPluginManager().registerEvents(new PickCarriedBlock(), this);
 
         getCommand("carryyou").setExecutor(new MainCommand());
 
